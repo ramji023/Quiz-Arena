@@ -3,16 +3,16 @@ import { Button } from "../components/ui/Button";
 export default function Navbar() {
   return (
     <>
-      <div className="bg-black font-poppins flex items-center justify-between px-5 py-3 text-white">
+      <div className="bg-primary font-poppins flex items-center justify-between px-5 py-3 text-secondary">
         <div className="cursor-pointer">
           <Logo />
         </div>
         <ul className="flex justify-between items-center gap-10 text-md">
-          <li className="mx-2 cursor-pointer hover:text-purple-500">
+          <li className="mx-2 cursor-pointer hover:text-pink-500">
             Features
           </li>
-          <li className="mx-2 cursor-pointer hover:text-purple-500">About</li>
-          <li className="mx-2 cursor-pointer hover:text-purple-500">
+          <li className="mx-2 cursor-pointer hover:text-pink-500">About</li>
+          <li className="mx-2 cursor-pointer hover:text-pink-500">
             Contacts
           </li>
         </ul>

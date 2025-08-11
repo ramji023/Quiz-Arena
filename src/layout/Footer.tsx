@@ -6,7 +6,7 @@ import {
 } from "../components/icons/SocialIcons";
 export default function Footer() {
   return (
-    <footer className="bg-black text-white font-poppins px-5 py-3">
+    <footer className="bg-primary text-white font-poppins px-5 py-3">
       <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Top section */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
@@ -23,19 +23,25 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
             <ul className="space-y-2">
-              <li className="hover:text-purple-500 cursor-pointer">Features</li>
-              <li className="hover:text-purple-500 cursor-pointer">About</li>
-              <li className="hover:text-purple-500 cursor-pointer">Contact</li>
+              <li className="hover:text-pink-500 cursor-pointer">Features</li>
+              <li className="hover:text-pink-500 cursor-pointer">About</li>
+              <li className="hover:text-pink-500 cursor-pointer">Contact</li>
             </ul>
           </div>
 
           {/* Social Media */}
           <div>
             <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
-            <div className="flex gap-4">
-              <FacebookIcon />
-              <TwitterIcon />
-              <InstaIcon />
+            <div className="flex gap-4 ">
+              <div className="bg-pink rounded-full p-1">
+                <FacebookIcon />
+              </div>
+              <div className="bg-pink rounded-full p-1">
+                <TwitterIcon />
+              </div>
+              <div className="bg-pink rounded-full p-1">
+                <InstaIcon />
+              </div>
             </div>
           </div>
         </div>
