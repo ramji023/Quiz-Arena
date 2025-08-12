@@ -1,7 +1,7 @@
 export default function Dashboard() {
   return (
     <>
-      <div className="bg-pink">Hii I am Dashboard</div>
+      <div className="">Hii I am Dashboard</div>
     </>
   );
 }

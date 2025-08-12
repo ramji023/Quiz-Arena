@@ -3,6 +3,7 @@ import Layout from "./layout/Layout";
 import Layout_2 from "./layout/Layout_2";
 import LandingPage from "./pages/landingPage/LandingPage";
 import Dashboard from "./pages/dashboard/Dashboard";
+import Quizzes from "./pages/Quizzes/Quizzes";
 export default function App() {
   return (
     <>
@@ -12,7 +13,7 @@ export default function App() {
             <Route index element={<LandingPage />} />
           </Route>
           <Route path="/home" element={<Layout_2 />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<Quizzes />} />
           </Route>
         </Routes>
       </BrowserRouter>

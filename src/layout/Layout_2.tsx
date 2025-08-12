@@ -37,7 +37,7 @@ export default function Layout_2() {
         <Navbar_2 />
 
         {/* Scrollable content */}
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 overflow-y-auto bg-secondary">
           <Outlet />
         </main>
       </div>
