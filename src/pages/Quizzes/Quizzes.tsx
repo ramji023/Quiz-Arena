@@ -1,3 +1,4 @@
+import { Button } from "../../components/ui/Button";
 import QuizCard from "../../components/ui/QuizCard";
 export const quizzes = [
   {
@@ -61,12 +62,18 @@ export const quizzes = [
     image: "https://picsum.photos/id/1022/400/250",
   },
 ];
-
+import { Plus } from "lucide-react";
 export default function Quizzes() {
   return (
     <>
       <div className="text-primary ">
-        <h1 className="text-2xl font-bold ">Happy To See You! Zassica</h1>
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-bold ">Happy To See You! Zassica</h1>
+          <Button variant="primary">
+            Add Quiz <Plus />
+          </Button>
+        </div>
+
         {/* if there is no Quiz Available  
         <div className="flex flex-col gap-4 justify-center items-center min-h-full p-50">
           <h1 className="text-3xl ">There is no Quiz Available</h1>
@@ -78,7 +85,7 @@ export default function Quizzes() {
         <div className="flex gap-8 justify-between items-center flex-wrap p-6">
           {quizzes.map((quiz, index) => (
             <>
-              <QuizCard quiz={quiz} index={index}/>
+              <QuizCard quiz={quiz} index={index} />
             </>
           ))}
         </div>
