@@ -5,6 +5,7 @@ import LandingPage from "./pages/landingPage/LandingPage";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Quizzes from "./pages/Quizzes/Quizzes";
 import QuizCreation from "./pages/QuizCreation/QuizCreation";
+import Themes from "./pages/themes/Theme";
 export default function App() {
   return (
     <>
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/home" element={<Layout_2 />}>
             <Route index element={<Quizzes />} />
             <Route path="create-quiz" element={<QuizCreation/>} />
+            <Route path="themes" element={<Themes/>}/>
           </Route>
         </Routes>
       </BrowserRouter>
