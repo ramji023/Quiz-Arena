@@ -63,13 +63,20 @@ export const quizzes = [
   },
 ];
 import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 export default function Quizzes() {
+  const navigate = useNavigate();
   return (
     <>
       <div className="text-primary ">
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold ">Happy To See You! Zassica</h1>
-          <Button variant="primary">
+          <Button
+            variant="primary"
+            onClick={() => {
+              navigate("create-quiz");
+            }}
+          >
             Add Quiz <Plus />
           </Button>
         </div>

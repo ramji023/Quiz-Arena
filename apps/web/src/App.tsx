@@ -5,6 +5,8 @@ import LandingPage from "./pages/landingPage/LandingPage";
 import Quizzes from "./pages/Quizzes/Quizzes";
 import QuizCreation from "./pages/QuizCreation/QuizCreation";
 import Themes from "./pages/themes/Theme";
+import Signup from "./pages/auth/Signup";
+import Login from "./pages/auth/Login";
 export default function App() {
   return (
     <>
@@ -12,11 +14,15 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<LandingPage />} />
+            <Route path="/auth" element={<LandingPage />}>
+              <Route path="signup" element={<Signup />} />
+              <Route path="login" element={<Login />} />
+            </Route>
           </Route>
           <Route path="/home" element={<Layout_2 />}>
             <Route index element={<Quizzes />} />
-            <Route path="create-quiz" element={<QuizCreation/>} />
-            <Route path="themes" element={<Themes/>}/>
+            <Route path="create-quiz" element={<QuizCreation />} />
+            <Route path="themes" element={<Themes />} />
           </Route>
         </Routes>
       </BrowserRouter>

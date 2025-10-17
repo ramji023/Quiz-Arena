@@ -1,6 +1,8 @@
 import { Logo } from "@repo/ui/components/Logo";
 import { Button } from "@repo/ui/components/ui/Button";
+import { useNavigate } from "react-router-dom";
 export default function Navbar() {
+  const navigate = useNavigate()
   return (
     <>
       <div className="bg-primary font-poppins flex items-center justify-between px-5 py-3 text-secondary">
@@ -17,8 +19,8 @@ export default function Navbar() {
           </li>
         </ul>
         <div className="flex gap-4">
-          <Button variant="primary">Login</Button>
-          <Button variant="secondary">Signup</Button>
+          <Button variant="primary" onClick={()=>navigate("/auth/login")}>Login</Button>
+          <Button variant="secondary" onClick={()=>navigate("/auth/signup")} >Signup</Button>
         </div>
       </div>
     </>

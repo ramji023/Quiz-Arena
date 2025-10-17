@@ -4,6 +4,7 @@ import FeaturesSection from "./Features";
 import LeaderboardFeat from "./LeaderboardFeat";
 import CTASection from "./CTASection";
 import QuizFeat from "./Quizfeat";
+import { Outlet } from "react-router-dom";
 
 export default function LandingPage() {
   return (
@@ -15,6 +16,7 @@ export default function LandingPage() {
         <QuizFeat />    
         <HowItWorks />
         <CTASection />
+        <Outlet/>
       </div>
     </>
   );

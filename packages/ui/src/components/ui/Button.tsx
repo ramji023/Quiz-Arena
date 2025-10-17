@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 interface ButtonProp {
   children: ReactNode;
   variant: string;
+  onClick:()=>void;
 }
 
 type variantStyleType = Record<string, string>;
@@ -14,12 +15,13 @@ const variantStyle: variantStyleType = {
 
 const defaultStyle =
   "px-4 py-2 cursor-pointer rounded-md outline-none flex items-center gap-2";
-export function Button({ children, variant }: ButtonProp) {
+export function Button({ children, variant,onClick }: ButtonProp) {
   return (
     <>
       <motion.button
        whileHover={{scale : 1.1}}
         className={`${defaultStyle} ${variantStyle[variant]}`}
+        onClick={()=>{onClick()}}
       >
         {children}
       </motion.button>

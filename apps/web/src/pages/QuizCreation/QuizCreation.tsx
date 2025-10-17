@@ -9,7 +9,7 @@ export default function QuizCreation() {
         {/* first common heading  */}
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold ">Happy To See You! Zassica</h1>
-          <Button variant="primary">
+          <Button variant="primary" onClick={()=>{}}>
             Add Quiz <Plus />
           </Button>
         </div>
@@ -34,8 +34,8 @@ export default function QuizCreation() {
           </div>
 
           <div className="flex justify-evenly items-center">
-            <Button variant="primary" >Add Question</Button>
-            <Button variant="primary">Save Quiz</Button>
+            <Button variant="primary" onClick={()=>{}}>Add Question</Button>
+            <Button variant="primary" onClick={()=>{}}>Save Quiz</Button>
           </div>
         </div>
       </div>

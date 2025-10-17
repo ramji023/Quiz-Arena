@@ -16,7 +16,7 @@ export default function Layout_2() {
         }`}
       >
         <button
-          className="flex justify-center py-2 mx-3 hover:bg-primary-shadow rounded-lg"
+          className="flex justify-center py-2 mx-3 my-2 hover:bg-primary-shadow rounded-lg"
           onClick={() => setSidebarOpen((prev) => !prev)}
         >
           {sidebarOpen ? (
