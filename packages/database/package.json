@@ -1,15 +1,24 @@
 {
-  "name": "database",
+  "name": "@repo/database",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "exports": {
+    ".": "./dist/client.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc --build",
+    "db:migrate:dev": "prisma migrate dev"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
+    "@types/node": "^24.8.1",
     "prisma": "^6.17.1"
+  },
+  "dependencies": {
+    "@prisma/client": "6.17.1",
+    "@repo/typescript-config": "workspace:*"
   }
 }

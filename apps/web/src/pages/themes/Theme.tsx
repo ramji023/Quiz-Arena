@@ -8,7 +8,7 @@ export default function Themes() {
         {/* first section  */}
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold ">Happy To See You! Zassica</h1>
-          <Button variant="primary">
+          <Button variant="primary" onClick={()=>{}}>
             Add Quiz <Plus />
           </Button>
         </div>
