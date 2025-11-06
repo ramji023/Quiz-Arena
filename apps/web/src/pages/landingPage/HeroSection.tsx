@@ -63,7 +63,7 @@ export function HeroSection() {
         transition={{ duration: 1, delay: 0.1 }}
         className="font-playfair text-4xl md:text-6xl/tight break-words text-shadow-2xs text-shadow-white flex text-center"
       >
-        Create, Play, and Host Quizzes — All in One Arena
+        Create, Play, and Host Quizzes  All in One Arena
       </motion.div>
 
       <motion.div
@@ -82,7 +82,7 @@ export function HeroSection() {
         transition={{ duration: 1, delay: 0.3 }}
         className="mt-5"
       >
-        <Button variant="primary">
+        <Button variant="primary" onClick={()=>{}}>
           Create Quiz{" "}
           <span>
             <RightArrow />

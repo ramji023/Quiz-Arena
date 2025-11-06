@@ -3,25 +3,29 @@ import { motion } from "motion/react";
 interface ButtonProp {
   children: ReactNode;
   variant: string;
-  onClick:()=>void;
+  type?: "button" | "submit";
+  onClick: () => void;
 }
 
 type variantStyleType = Record<string, string>;
 const variantStyle: variantStyleType = {
   primary: "bg-pink text-white ",
   secondary: "hover:text-pink text-secondary ",
-  other : "bg-secondary text-primary hover:bg-card"
+  other: "bg-secondary text-primary hover:bg-card",
 };
 
 const defaultStyle =
   "px-4 py-2 cursor-pointer rounded-md outline-none flex items-center gap-2";
-export function Button({ children, variant,onClick }: ButtonProp) {
+export function Button({ children, variant, type, onClick }: ButtonProp) {
   return (
     <>
       <motion.button
-       whileHover={{scale : 1.1}}
+        type={type}
+        whileHover={{ scale: 1.1 }}
         className={`${defaultStyle} ${variantStyle[variant]}`}
-        onClick={()=>{onClick()}}
+        onClick={() => {
+          onClick();
+        }}
       >
         {children}
       </motion.button>
