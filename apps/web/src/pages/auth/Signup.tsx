@@ -1,8 +1,22 @@
 import { Logo } from "@repo/ui/components/Logo";
 import { Button } from "@repo/ui/components/ui/Button";
 import { useNavigate } from "react-router-dom";
-
+import { useForm } from "react-hook-form";
+import { AuthForm } from "../../types/auth";
 export default function Signup() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AuthForm>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+  function onSubmit(data: AuthForm) {
+    console.log("signup form data : ", data);
+  }
   const navigate = useNavigate();
   return (
     <>
@@ -14,7 +28,7 @@ export default function Signup() {
             </div>
             <h1 className=" text-md text-gray-300">Create Your Account</h1>
           </div>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="">
               {/* <div>
                     {signupMutation.isError && (
@@ -29,9 +43,15 @@ export default function Signup() {
                   type="text"
                   placeholder="Enter email"
                   className="p-2 rounded-lg outline-1 outline-secondary focus:outline-pink"
+                  {...register("email", {
+                    required: {
+                      value: true,
+                      message: "Email is Required",
+                    },
+                  })}
                 />
                 <span className="text-red-500 text-xs min-h-[16px] flex flex-row-reverse">
-                  **
+                  {errors.email?.message}
                 </span>
               </div>
               <div className="flex flex-col gap-1 py-1 ">
@@ -40,14 +60,20 @@ export default function Signup() {
                   type="text"
                   placeholder="Enter Strong Password"
                   className="p-2 rounded-lg outline-1 outline-secondary focus:outline-pink"
+                  {...register("password", {
+                    required: {
+                      value: true,
+                      message: "Password is Required",
+                    },
+                  })}
                 />
                 <span className="text-red-500 text-xs min-h-[16px] flex flex-row-reverse">
-                  **
+                  {errors.password?.message}
                 </span>
               </div>
             </div>
             <div className="flex justify-center items-center">
-              <Button variant="primary" onClick={() => {}}>
+              <Button variant="primary" type="submit" onClick={() => {}}>
                 Signup
               </Button>
             </div>
