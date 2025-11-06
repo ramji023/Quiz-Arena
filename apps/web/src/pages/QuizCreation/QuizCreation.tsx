@@ -2,11 +2,12 @@ import { Button } from "@repo/ui/components/ui/Button";
 import { InputBox } from "./InputBox";
 import { Plus, Save } from "lucide-react";
 import { QuestionBox } from "./QuestionBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QuizFormState } from "../../types/quizForm";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
+import AutoSave from "./AutoSave";
 export default function QuizCreation() {
-  const { control, register, handleSubmit } = useForm<QuizFormState>({
+  const { control, register, handleSubmit, watch } = useForm<QuizFormState>({
     defaultValues: {
       title: "",
       description: "",
@@ -42,6 +43,7 @@ export default function QuizCreation() {
           </Button>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
+          <AutoSave control={control} />
           <div className="p-6">
             {/* enter quiz details  */}
             <div>
