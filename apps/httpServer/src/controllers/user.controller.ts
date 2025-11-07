@@ -135,8 +135,8 @@ export async function refreshedToken(req: Request, res: Response) {
   }
 }
 
-// export function logout(req: Request, res: Response) {
-//   const userId = req.userId;
-//   res.clearCookie("refreshToken");
-//   return res.json({ msg: "User has logged out successfully" });
-// }
+export function logOut(req: Request, res: Response) {
+  const userId = req.user;
+  res.clearCookie("refreshToken");
+  return res.json({ msg: "User has logged out successfully" });
+}

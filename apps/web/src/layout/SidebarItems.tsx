@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import {
   LayoutDashboard,
   ListChecks,
@@ -6,6 +7,8 @@ import {
   LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../utils/axiosInterceptor";
+import { useAuthStore } from "../stores/authStore";
 const SidebarIcons = [
   {
     item: "Home",
@@ -26,6 +29,28 @@ const SidebarIcons = [
 ];
 export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
   const navigate = useNavigate();
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await api.post("/api/v1/user/logout", {});
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("user successfully logged out");
+      console.log(data);
+      useAuthStore.setState({
+        token: null,
+        isAuthenticate: false,
+        id: null,
+        userName: null,
+      });
+      navigate("/");
+    },
+    onError: (error) => {
+      console.log("something went wrong while logging out");
+    },
+  });
+
   return (
     <>
       <div className="flex flex-col justify-between h-full">
@@ -59,7 +84,7 @@ export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
             <div
               className="flex items-center justify-center cursor-pointer text-secondary py-2 rounded-lg hover:bg-primary-shadow my-2 mx-3"
               onClick={() => {
-                navigate("/");
+                logoutMutation.mutate();
               }}
             >
               <LogOut className="w-6 h-6 text-red-500" />

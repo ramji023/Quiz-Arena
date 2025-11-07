@@ -17,7 +17,7 @@ export default function Navbar_2() {
               Play Quiz
             </button>
           </div>
-          <div className="w-8 h-8 mr-2 rounded-full text-2xl text-pink outline-2 outline-secondary flex items-center justify-center">
+          <div className="w-8 h-8 mr-2 rounded-full text-lg text-pink outline-2 outline-secondary flex items-center justify-center">
             {name?.charAt(0).toUpperCase()}
           </div>
         </div>

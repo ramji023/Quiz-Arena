@@ -7,7 +7,7 @@ export default function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  console.log("header of the client request", req.header);
+  // console.log("header of the client request", req.header);
   const token = req.header("Authorization")?.replace("Bearer ", "");
   console.log("token : ", token);
   if (!token) {
