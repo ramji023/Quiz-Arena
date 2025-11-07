@@ -3,9 +3,30 @@ import { Button } from "@repo/ui/components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { AuthForm } from "../../types/auth";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "../../utils/axiosInterceptor";
+import { useAuthStore } from "../../stores/authStore";
 export default function Login() {
   const navigate = useNavigate();
-  console.log("login component rendered...");
+  const setIsAuthenticate = useAuthStore((s) => s.setIsAuthenticate);
+  const setToken = useAuthStore((s) => s.setToken);
+  const loginMutation = useMutation({
+    mutationFn: async (data: AuthForm) => {
+      const response = await api.post("/api/v1/user/auth/login", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("response from login endpoint ", data);
+      setIsAuthenticate(true);
+      setToken(data.token, data.id, data.userName);
+      navigate("/home");
+    },
+    onError: (err) => {
+      console.log("something went wrong while signed up : ", err);
+    },
+  });
+
+  // console.log("login component rendered...");
 
   const {
     register,
@@ -20,6 +41,7 @@ export default function Login() {
 
   function onSubmit(data: AuthForm) {
     console.log("login form data : ", data);
+    loginMutation.mutate(data);
   }
   return (
     <>

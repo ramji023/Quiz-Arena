@@ -1,6 +1,9 @@
 import { Logo } from "@repo/ui/components/Logo";
 import Logo_2 from "./Logo_2";
+import { useAuthStore } from "../stores/authStore";
 export default function Navbar_2() {
+  const name = useAuthStore((s) => s.userName);
+  console.log("user name is : ", name);
   return (
     <>
       <div className="bg-primary text-secondary py-2 px-3 flex justify-between items-center">
@@ -14,13 +17,17 @@ export default function Navbar_2() {
               Play Quiz
             </button>
           </div>
-          <img
-            src="https://i.pravatar.cc/150?img=3"
-            alt=""
-            className="rounded-full w-10 h-10 mr-2"
-          />
+          <div className="w-8 h-8 mr-2 rounded-full text-2xl text-pink outline-2 outline-secondary flex items-center justify-center">
+            {name?.charAt(0).toUpperCase()}
+          </div>
         </div>
       </div>
     </>
   );
 }
+
+//  <img
+//             src="https://i.pravatar.cc/150?img=3"
+//             alt=""
+//             className="rounded-full w-10 h-10 mr-2"
+//           />

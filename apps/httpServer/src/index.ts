@@ -4,7 +4,12 @@ import express from "express";
 import cors from "cors";
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -13,11 +18,10 @@ import userRoutes from "./routes/user.route";
 app.use("/api/v1/user", userRoutes); // user operations like signup, signin
 
 //route for quizes
-import quizRoutes from "./routes/quiz.route"
-app.use("/api/v1/quiz",quizRoutes)
-
+import quizRoutes from "./routes/quiz.route";
+app.use("/api/v1/quiz", quizRoutes);
 
 // middleware to handle error
 import errorMiddleware from "./middleware/error.middleware";
-app.use(errorMiddleware);  // handle application error
+app.use(errorMiddleware); // handle application error
 app.listen(3000);

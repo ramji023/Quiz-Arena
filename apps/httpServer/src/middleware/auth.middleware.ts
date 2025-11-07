@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import ApiError from "../utils/customError";
 
 export default function authMiddleware(
   req: Request,
@@ -10,8 +11,7 @@ export default function authMiddleware(
   const token = req.header("Authorization")?.replace("Bearer ", "");
   console.log("token : ", token);
   if (!token) {
-    // throw error
-    return;
+    throw new ApiError("User is not authorised", 401);
   }
   try {
     const verifiedToken = jwt.verify(
@@ -19,7 +19,9 @@ export default function authMiddleware(
       process.env.ACCESS_TOKEN_KEY as string
     ) as jwt.JwtPayload;
     console.log("decoded token data : ", verifiedToken);
-    req.userId = verifiedToken.id;
+    req.user = verifiedToken.id;
     next();
-  } catch (err) {}
+  } catch (err) {
+    throw new ApiError("Something went wrong while verifying user token", 401);
+  }
 }

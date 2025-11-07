@@ -3,7 +3,24 @@ import { Button } from "@repo/ui/components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { AuthForm } from "../../types/auth";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "../../utils/axiosInterceptor";
 export default function Signup() {
+  const navigate = useNavigate();
+  const signupMutation = useMutation({
+    mutationFn: async (data: AuthForm) => {
+      const response = await api.post("/api/v1/user/auth/signup", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("response from signup endpoint ", data);
+      navigate("/auth/login");
+    },
+    onError: (err) => {
+      console.log("something went wrong while signed up : ", err);
+    },
+  });
+
   const {
     register,
     handleSubmit,
@@ -16,8 +33,9 @@ export default function Signup() {
   });
   function onSubmit(data: AuthForm) {
     console.log("signup form data : ", data);
+    signupMutation.mutate(data);
   }
-  const navigate = useNavigate();
+
   return (
     <>
       <div className="fixed top-0 left-0 w-full h-full backdrop-blur-[2px] z-50 flex justify-center items-center">

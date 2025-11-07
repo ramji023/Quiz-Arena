@@ -1,10 +1,7 @@
 import express from "express";
 import {
-  changeAvatar,
   login,
-  refreshedToken,
   signup,
-  updateProfile,
 } from "../controllers/user.controller";
 import authMiddleware from "../middleware/auth.middleware";
 const router: express.Router = express.Router();
@@ -12,8 +9,8 @@ const router: express.Router = express.Router();
 router.route("/auth/signup").post(signup);
 router.route("/auth/login").post(login);
 
-router.route("/changeAvatar").all(authMiddleware).post(updateProfile);
-router.route("/updateProfile").all(authMiddleware).post(changeAvatar);
+// router.route("/changeAvatar").all(authMiddleware).post(updateProfile);
+// router.route("/updateProfile").all(authMiddleware).post(changeAvatar);
 
-router.route("/refreshedToken").all(authMiddleware).post(refreshedToken);
+// router.route("/refreshedToken").all(authMiddleware).post(refreshedToken);
 export default router;

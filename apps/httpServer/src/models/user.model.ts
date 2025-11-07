@@ -14,10 +14,14 @@ export async function createUser(userData: userData) {
 
 //find user
 export async function findUserByEmail(email: string) {
-  return await prisma.user.findUnique({
-    where: { email: email },
-    select: { id: true, username: true, email: true },
-  });
+  try {
+    return await prisma.user.findUnique({
+      where: { email: email },
+      select: { id: true, username: true, email: true },
+    });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 //find and update user by id
