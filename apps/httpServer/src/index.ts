@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser"
 const app = express();
 
 app.use(
@@ -12,7 +13,7 @@ app.use(
 );
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser())
 //route for admin
 import userRoutes from "./routes/user.route";
 app.use("/api/v1/user", userRoutes); // user operations like signup, signin

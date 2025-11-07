@@ -103,25 +103,33 @@ export async function login(req: Request, res: Response) {
 // }
 
 export async function refreshedToken(req: Request, res: Response) {
+  // console.log("cookies : ", req.cookies);
   const oldRefreshToken = req.cookies.refreshToken;
+  // console.log("old refresh token : ", oldRefreshToken);
+  if (!oldRefreshToken) {
+    throw new ApiError("Refresh token is missing", 404);
+  }
   const decodedToken = jwt.verify(
     oldRefreshToken,
     process.env.REFRESH_TOKEN_KEY as string
   ) as jwt.JwtPayload;
   const userData = await findUserById(decodedToken.id);
   if (!userData) {
-    // throw error
-    return;
+    throw new ApiError("User don't have valid refresh token", 404);
   }
+  // console.log("user data : ", userData);
   const { refreshToken, accessToken } = generateToken({
     id: userData.id,
     email: userData.email,
   })!;
-
+  // console.log("access token : ", accessToken);
+  // console.log("refresh token : ", refreshToken);
   if (refreshToken && accessToken) {
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
     return res.json({
       token: accessToken,
+      id: userData.id,
+      userName: userData.username,
       msg: "token is refreshed successfully",
     });
   }

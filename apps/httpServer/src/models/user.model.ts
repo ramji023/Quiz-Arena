@@ -39,6 +39,6 @@ export async function findAndUpdateUserbyId(userData: {
 export async function findUserById(id: string) {
   return await prisma.user.findUnique({
     where: { id },
-    select: { id: true, email: true },
+    select: { id: true, email: true, username: true },
   });
 }

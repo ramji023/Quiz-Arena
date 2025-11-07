@@ -1,9 +1,11 @@
-import SidebarItems from "@repo/ui/components/ui/SidebarItems";
+import SidebarItems from "./SidebarItems";
 
 export default function Sidebar({ collapsed }: { collapsed: boolean }) {
   return (
     <>
-      <div className="flex flex-col"><SidebarItems collapsed={collapsed}/></div>
+      <div className="flex flex-col justify-between h-full">
+      <SidebarItems collapsed={collapsed} />
+    </div>
     </>
   );
 }

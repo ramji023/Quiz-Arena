@@ -24,7 +24,8 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/express": "^5.0.3",
-    "@repo/database": "workspace:*"
+    "@repo/database": "workspace:*",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.3"
   }
 }
