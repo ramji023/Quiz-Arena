@@ -6,8 +6,24 @@ import { useEffect, useState } from "react";
 import { QuizFormState } from "../../types/quizForm";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import AutoSave from "./AutoSave";
+import { useAuthStore } from "../../stores/authStore";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "../../utils/axiosInterceptor";
 export default function QuizCreation() {
-  const { control, register, handleSubmit, watch } = useForm<QuizFormState>({
+  const username = useAuthStore((s) => s.userName);
+  const quizCreation = useMutation({
+    mutationFn: async (data: QuizFormState) => {
+      const response = await api.post("/api/v1/quiz/createQuiz", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("response data from quiz creation : ", data);
+    },
+    onError: (error) => {
+      console.log("something went wrong while creating quiz : ", error);
+    },
+  });
+  const { control, register, handleSubmit } = useForm<QuizFormState>({
     defaultValues: {
       title: "",
       description: "",
@@ -30,6 +46,7 @@ export default function QuizCreation() {
 
   function onSubmit(data: QuizFormState) {
     console.log("quiz data : ", data);
+    quizCreation.mutate(data);
   }
 
   return (
@@ -37,7 +54,7 @@ export default function QuizCreation() {
       <div className="text-primary">
         {/* first common heading  */}
         <div className="flex justify-between">
-          <h1 className="text-2xl font-bold ">Happy To See You! Zassica</h1>
+          <h1 className="text-2xl font-bold ">Happy To See You! {username}</h1>
           <Button variant="primary" onClick={() => {}}>
             Add Quiz <Plus className="w-4 h-4" />
           </Button>

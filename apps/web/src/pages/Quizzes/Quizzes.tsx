@@ -64,13 +64,15 @@ export const quizzes = [
 ];
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../stores/authStore";
 export default function Quizzes() {
   const navigate = useNavigate();
+  const username = useAuthStore((s) => s.userName);
   return (
     <>
       <div className="text-primary ">
         <div className="flex justify-between">
-          <h1 className="text-2xl font-bold ">Happy To See You! Zassica</h1>
+          <h1 className="text-2xl font-bold ">Happy To See You! {username}</h1>
           <Button
             variant="primary"
             onClick={() => {
