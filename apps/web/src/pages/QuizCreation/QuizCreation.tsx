@@ -9,7 +9,10 @@ import AutoSave from "./AutoSave";
 import { useAuthStore } from "../../stores/authStore";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInterceptor";
+import { useLocation } from "react-router-dom";
 export default function QuizCreation() {
+  const location = useLocation();
+  const quizData: QuizFormState = location.state;
   const username = useAuthStore((s) => s.userName);
   const quizCreation = useMutation({
     mutationFn: async (data: QuizFormState) => {
@@ -23,7 +26,7 @@ export default function QuizCreation() {
       console.log("something went wrong while creating quiz : ", error);
     },
   });
-  const { control, register, handleSubmit } = useForm<QuizFormState>({
+  const { control, register, handleSubmit, reset } = useForm<QuizFormState>({
     defaultValues: {
       title: "",
       description: "",
@@ -39,6 +42,26 @@ export default function QuizCreation() {
     },
   });
 
+  useEffect(() => {
+    if (quizData) {
+      reset({
+        title: quizData.title ?? "",
+        description: quizData.description ?? "",
+        quiz: quizData.quiz?.length
+          ? quizData.quiz.map((q) => ({
+              question: q.question ?? "",
+              options: q.options ?? [
+                { text: "", isCorrect: false },
+                { text: "", isCorrect: false },
+                { text: "", isCorrect: false },
+                { text: "", isCorrect: false },
+              ],
+              points: q.points ?? 0,
+            }))
+          : [],
+      });
+    }
+  }, [quizData, reset]);
   const { fields, append, remove } = useFieldArray({
     control,
     name: "quiz",
