@@ -13,18 +13,22 @@ const SidebarIcons = [
   {
     item: "Home",
     icon: LayoutDashboard,
+    route: "/home",
   },
   {
     item: "Quizzes",
     icon: ListChecks,
+    route: "",
   },
   {
     item: "Saved",
     icon: Package,
+    route: "",
   },
   {
     item: "History",
     icon: Ellipsis,
+    route: "",
   },
 ];
 export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
@@ -59,7 +63,12 @@ export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
             <>
               {SidebarIcons.map((items, index) => (
                 <div key={index}>
-                  <div className="flex items-center  justify-center cursor-pointer text-secondary py-2 rounded-lg hover:bg-primary-shadow my-2 mx-3">
+                  <div
+                    onClick={() => {
+                      navigate(items.route);
+                    }}
+                    className="flex items-center  justify-center cursor-pointer text-secondary py-2 rounded-lg hover:bg-primary-shadow my-2 mx-3"
+                  >
                     <items.icon className="w-6 h-6" />
                     <span className="text-lg px-5">{items.item}</span>
                   </div>

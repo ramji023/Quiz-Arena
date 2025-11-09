@@ -20,6 +20,7 @@ model Quiz {
   id          String     @id @default(uuid())
   title       String
   description String
+  difficulty  Difficulty @default(easy)
   questions   Question[]
   createdBy   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
@@ -44,4 +45,10 @@ model Option {
   isCorrect  Boolean
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
 }

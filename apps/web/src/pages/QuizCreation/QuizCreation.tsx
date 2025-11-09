@@ -2,15 +2,16 @@ import { Button } from "@repo/ui/components/ui/Button";
 import { InputBox } from "./InputBox";
 import { Plus, Save } from "lucide-react";
 import { QuestionBox } from "./QuestionBox";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { QuizFormState } from "../../types/quizForm";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import AutoSave from "./AutoSave";
 import { useAuthStore } from "../../stores/authStore";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInterceptor";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 export default function QuizCreation() {
+  const navigate = useNavigate();
   const location = useLocation();
   const quizData: QuizFormState = location.state;
   const username = useAuthStore((s) => s.userName);
@@ -21,6 +22,7 @@ export default function QuizCreation() {
     },
     onSuccess: (data) => {
       console.log("response data from quiz creation : ", data);
+      navigate("/home");
     },
     onError: (error) => {
       console.log("something went wrong while creating quiz : ", error);
@@ -30,6 +32,7 @@ export default function QuizCreation() {
     defaultValues: {
       title: "",
       description: "",
+      difficulty: "easy",
       quiz: Array(2)
         .fill(null)
         .map(() => ({
@@ -78,8 +81,13 @@ export default function QuizCreation() {
         {/* first common heading  */}
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold ">Happy To See You! {username}</h1>
-          <Button variant="primary" onClick={() => {}}>
-            Add Quiz <Plus className="w-4 h-4" />
+          <Button
+            variant="primary"
+            onClick={() => {
+              navigate("/home/ai-quiz");
+            }}
+          >
+            Use Ai-Quiz Builder <Plus className="w-4 h-4" />
           </Button>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -109,6 +117,20 @@ export default function QuizCreation() {
                   },
                 })}
               />
+              <div className="flex flex-col gap-1 p-2 min-w-[300px]">
+                <label htmlFor="difficulty" className="text-sm font-semibold">
+                  Difficulty
+                </label>
+                <select
+                  id="difficulty"
+                  {...register("difficulty", { required: true })}
+                  className="px-2 py-2 rounded outline-1 hover:bg-secondary-shadow"
+                >
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
             </div>
             {/* question card  */}
             <div className="px-2 py-5 flex flex-col gap-6">

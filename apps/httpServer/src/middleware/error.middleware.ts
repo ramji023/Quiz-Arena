@@ -8,6 +8,7 @@ export default function errorMiddleware(
   res: Response,
   next: NextFunction
 ) {
+  console.log("error is : ", error);
   const statusCode = error instanceof ApiError ? error.statusCode : 500;
   const message =
     error instanceof ApiError ? error.message : "Something went wrong";

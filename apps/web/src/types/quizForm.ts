@@ -1,6 +1,7 @@
 export interface QuizFormState {
   title: string;
   description: string;
+  difficulty: "easy" | "medium" | "hard";
   quiz: {
     question: string;
     options: {
@@ -9,4 +10,13 @@ export interface QuizFormState {
     }[];
     points: number;
   }[];
+}
+
+export interface AllQuizzes {
+  title: string;
+  difficulty: "easy" | "medium" | "hard";
+  id: string;
+  _count: {
+    questions: number;
+  };
 }

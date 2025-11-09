@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { quizFormValidation } from "../validations/quizForm.validation";
 import ApiError from "../utils/customError";
-import { createNewQuiz } from "../models/quiz.model";
+import { createNewQuiz, getAllQuizs } from "../models/quiz.model";
 import quizGenerator from "../utils/quizGenerator";
+import { cleanJson } from "../utils/helperFun";
 
 export async function createQuiz(req: Request, res: Response) {
   const id = req.user;
@@ -51,10 +52,16 @@ export async function createAiQuiz(req: Request, res: Response) {
       404
     );
   }
-  return res.json({ quiz: JSON.parse(quizResponse), msg: "done" });
+  const cleanedResponse = cleanJson(quizResponse);
+  const quiz = JSON.parse(cleanedResponse);
+  return res.json({ quiz: quiz, msg: "done" });
 }
 
-export function getAllQuiz() {}
+export async function getAllQuiz(req: Request, res: Response) {
+  const response = await getAllQuizs();
+  console.log("all quizzes data : ", response);
+  return res.json({ data: response, message: "Fetch all the Quizzes" });
+}
 
 export function getSingleQuiz() {}
 

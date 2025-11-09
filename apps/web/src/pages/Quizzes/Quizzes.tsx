@@ -62,43 +62,44 @@ export const quizzes = [
     image: "https://picsum.photos/id/1022/400/250",
   },
 ];
-import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 import { useAuthStore } from "../../stores/authStore";
+import { useGetAllQuiz } from "../../queries/reactQueries";
 export default function Quizzes() {
-  const navigate = useNavigate();
   const username = useAuthStore((s) => s.userName);
-  return (
-    <>
-      <div className="text-primary ">
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-bold ">Happy To See You! {username}</h1>
-          <Button
-            variant="primary"
-            onClick={() => {
-              navigate("create-quiz");
-            }}
-          >
-            Add Quiz <Plus />
-          </Button>
-        </div>
+  const { data, isLoading, error } = useGetAllQuiz();
+  if (isLoading) {
+    return (
+      <>
+        <div>Quizzes are processing</div>
+      </>
+    );
+  }
+  if (error) {
+    return (
+      <>
+        <div>Something went wrong while fetching quizzes</div>
+      </>
+    );
+  }
+  if (data) {
+    return (
+      <>
+        <div className="text-primary ">
+          <div className="flex justify-between px-6">
+            <h1 className="text-2xl font-semibold ">
+              Happy To See You! {username}
+            </h1>
+          </div>
 
-        {/* if there is no Quiz Available  
-        <div className="flex flex-col gap-4 justify-center items-center min-h-full p-50">
-          <h1 className="text-3xl ">There is no Quiz Available</h1>
-          <Button variant="primary">Create your first Quiz</Button>
+          {/* if there is quiz available  */}
+          <div className="flex items-center flex-wrap p-6 gap-y-5 gap-x-10">
+            {data.map((quiz, index) => (
+              <QuizCard quiz={quiz}  />
+            ))}
+          </div>
         </div>
-        */}
-
-        {/* if there is quiz available  */}
-        <div className="flex gap-8 justify-between items-center flex-wrap p-6">
-          {quizzes.map((quiz, index) => (
-            <>
-              <QuizCard quiz={quiz} index={index} />
-            </>
-          ))}
-        </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  }
 }

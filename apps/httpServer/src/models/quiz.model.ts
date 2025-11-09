@@ -11,6 +11,7 @@ export async function createNewQuiz(quiz: QuizFormType) {
       data: {
         title: quiz.title,
         description: quiz.description,
+        difficulty: quiz.difficulty,
         userId: quiz.userId,
         questions: {
           create: quiz.quiz.map((q) => ({
@@ -40,7 +41,26 @@ export async function createNewQuiz(quiz: QuizFormType) {
 }
 //find quiz by id
 export function findQuizById() {}
+
 //get all quizzes
-export function getAllQuiz() {}
+export async function getAllQuizs() {
+  try {
+    return await prisma.quiz.findMany({
+      select: {
+        id: true,
+        title: true,
+        difficulty: true,
+        _count: {
+          select: {
+            questions: true,
+          },
+        },
+      },
+    });
+  } catch (err) {
+    console.error("Error creating quiz:", err);
+    throw err;
+  }
+}
 //delete quiz
 export function deleteQuiz() {}

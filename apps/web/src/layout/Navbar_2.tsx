@@ -12,7 +12,12 @@ export default function Navbar_2() {
         <Logo_2 />
         <div className="flex justify-between items-center gap-4">
           <div className="flex items-center justify-between gap-2">
-            <button className="text-sm bg-secondary font-semibold text-primary hover:bg-card px-4 py-2 cursor-pointer rounded-md outline-none flex items-center gap-2">
+            <button
+              onClick={() => {
+                navigate("create-quiz");
+              }}
+              className="text-sm bg-secondary font-semibold text-primary hover:bg-card px-4 py-2 cursor-pointer rounded-md outline-none flex items-center gap-2"
+            >
               Create Quiz
             </button>
             <button

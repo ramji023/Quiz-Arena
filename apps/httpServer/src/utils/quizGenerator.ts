@@ -36,8 +36,8 @@ Return the output in **strict JSON format** like this example:
     }
   ]
 }
-
-Do not include any text, explanation, or markdown before or after the JSON.
+Keep Questions sort. Dont include anything extra like code or images.
+Do not include any text,code, explanation, or markdown before or after the JSON.
 Return only valid JSON.
 `;
   const response = await ai.models.generateContent({
