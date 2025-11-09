@@ -20,3 +20,21 @@ export interface AllQuizzes {
     questions: number;
   };
 }
+
+export interface Quiz {
+  id: string;
+  title: string;
+  description: string;
+  difficulty: string;
+  createdBy: {
+    username: string;
+  };
+  questions: {
+    question: string;
+    points: number;
+    options: {
+      text: string;
+      isCorrect: boolean;
+    }[];
+  }[];
+}

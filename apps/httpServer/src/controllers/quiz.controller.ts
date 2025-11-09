@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { quizFormValidation } from "../validations/quizForm.validation";
 import ApiError from "../utils/customError";
-import { createNewQuiz, getAllQuizs } from "../models/quiz.model";
+import { createNewQuiz, findQuizById, getAllQuizs } from "../models/quiz.model";
 import quizGenerator from "../utils/quizGenerator";
 import { cleanJson } from "../utils/helperFun";
 
@@ -63,7 +63,22 @@ export async function getAllQuiz(req: Request, res: Response) {
   return res.json({ data: response, message: "Fetch all the Quizzes" });
 }
 
-export function getSingleQuiz() {}
+export async function getSingleQuiz(req: Request, res: Response) {
+  const quizId = req.params.quizId;
+  if (!quizId) {
+    throw new ApiError("Quiz id is not given", 404);
+  }
+
+  const quiz = await findQuizById(quizId);
+  if (!quiz) {
+    throw new ApiError("Something went wrong while fetching quiz", 404);
+  }
+
+  return res.json({
+    data: quiz,
+    message: "Quiz data has been fetched successfully",
+  });
+}
 
 export function deleteQuiz() {}
 

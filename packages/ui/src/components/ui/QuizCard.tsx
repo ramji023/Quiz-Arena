@@ -8,7 +8,13 @@ interface QuizPropType {
     questions: number;
   };
 }
-export default function QuizCard({ quiz }: { quiz: QuizPropType }) {
+export default function QuizCard({
+  quiz,
+  navigation,
+}: {
+  quiz: QuizPropType;
+  navigation: (id: string) => void;
+}) {
   return (
     <>
       <div className="bg-white rounded-xl shadow overflow-hidden w-60 cursor-pointer">
@@ -48,12 +54,17 @@ export default function QuizCard({ quiz }: { quiz: QuizPropType }) {
           </div>
 
           <div className="flex items-center justify-between">
-            <button className="bg-pink text-white px-3 py-1 rounded-md hover:bg-pink-600 text-sm">
-              Play Now
+            <button
+              onClick={() => {
+                navigation(quiz.id);
+              }}
+              className="bg-pink text-white px-3 py-1 rounded-md hover:bg-pink-600 text-sm"
+            >
+              See details
             </button>
             <div className="flex gap-2">
               <button>
-                <Bookmark className="w-5 h-5"/>
+                <Bookmark className="w-5 h-5" />
               </button>
             </div>
           </div>

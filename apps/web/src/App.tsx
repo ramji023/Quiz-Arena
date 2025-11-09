@@ -9,6 +9,7 @@ import Signup from "./pages/auth/Signup";
 import Login from "./pages/auth/Login";
 import ProtectedRoute from "./layout/ProtectedRoute";
 import AiQuiz from "./pages/QuizCreation/AiQuiz";
+import Quiz from "./pages/Quizzes/Quiz";
 export default function App() {
   return (
     <>
@@ -26,6 +27,7 @@ export default function App() {
               <Route index element={<Quizzes />} />
               <Route path="create-quiz" element={<QuizCreation />} />
               <Route path="ai-quiz" element={<AiQuiz />} />
+              <Route path="quiz/:quizId" element={<Quiz/>} />
               <Route path="themes" element={<Themes />} />
             </Route>
           </Route>

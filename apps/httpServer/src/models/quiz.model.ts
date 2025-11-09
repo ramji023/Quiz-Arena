@@ -40,7 +40,39 @@ export async function createNewQuiz(quiz: QuizFormType) {
   }
 }
 //find quiz by id
-export function findQuizById() {}
+export async function findQuizById(quizId: string) {
+  try {
+    return await prisma.quiz.findUnique({
+      where: { id: quizId },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        difficulty: true,
+        createdBy: {
+          select: {
+            username: true,
+          },
+        },
+        questions: {
+          select: {
+            question: true,
+            points: true,
+            options: {
+              select: {
+                text: true,
+                isCorrect: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
 
 //get all quizzes
 export async function getAllQuizs() {

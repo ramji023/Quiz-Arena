@@ -65,9 +65,15 @@ export const quizzes = [
 
 import { useAuthStore } from "../../stores/authStore";
 import { useGetAllQuiz } from "../../queries/reactQueries";
+import { useNavigate } from "react-router-dom";
 export default function Quizzes() {
+  const navigate = useNavigate();
   const username = useAuthStore((s) => s.userName);
   const { data, isLoading, error } = useGetAllQuiz();
+
+  function navigation(id: string) {
+    navigate(`quiz/${id}`);
+  }
   if (isLoading) {
     return (
       <>
@@ -87,15 +93,13 @@ export default function Quizzes() {
       <>
         <div className="text-primary ">
           <div className="flex justify-between px-6">
-            <h1 className="text-2xl font-semibold ">
-              Happy To See You! {username}
-            </h1>
+            <h1 className="text-2xl font-semibold ">Welcome, {username} 👋</h1>
           </div>
 
           {/* if there is quiz available  */}
           <div className="flex items-center flex-wrap p-6 gap-y-5 gap-x-10">
             {data.map((quiz, index) => (
-              <QuizCard quiz={quiz}  />
+              <QuizCard quiz={quiz} navigation={navigation}/>
             ))}
           </div>
         </div>
