@@ -11,4 +11,5 @@ export interface ThemeData {
   backgroundImage: string;
   overlayEffect: string;
   optionColors: string[];
+  fonts ?: any
 }

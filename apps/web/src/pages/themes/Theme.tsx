@@ -1,5 +1,5 @@
 import { THEMES } from "./themesData";
-import Themes from "./ThemeWrapper";
+import ThemeWrapper from "./ThemeWrapper";
 import QuestionCard from "@repo/ui/components/ui/themes/QuestionCard";
 
 export default function Theme() {
@@ -11,19 +11,19 @@ export default function Theme() {
     { name: "Tara", score: 640, rank: 235 },
   ];
 
-  const jungle = THEMES.find((t) => t.id === "jungle-quest")!;
+  const jungle = THEMES.find((t) => t.id === "desert-mirage")!;
   const questionData = {
     question: "Which animal is known as the King of the Jungle?",
     options: ["Elephant", "Lion", "Tiger", "Leopard"],
   };
 
   return (
-    <Themes themeData={jungle} players={players}>
+    <ThemeWrapper themeData={jungle} players={players}>
       <QuestionCard
         questionData={questionData}
         onAnswer={(option: string) => console.log("Selected:", option)}
-        optionColors={jungle.optionColors}
+        optionColors={jungle.optionColor}
       />
-    </Themes>
+    </ThemeWrapper>
   );
 }

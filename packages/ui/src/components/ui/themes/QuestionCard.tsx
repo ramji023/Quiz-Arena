@@ -3,11 +3,11 @@ import { useState } from "react";
 export default function QuestionCard({
   questionData,
   onAnswer,
-  optionColors
+  optionColors,
 }: {
   questionData: { question: string; options: string[] };
   onAnswer: (option: string) => void;
-  optionColors:string[]
+  optionColors: Record<number, { from?: string; to?: string; color?: string }>;
 }) {
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -29,27 +29,50 @@ export default function QuestionCard({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-w-2xl">
         {questionData.options.map((option, index) => {
           const isSelected = selected === option;
-          const color = optionColors[index % optionColors.length];
+          const colorSet =
+            optionColors[index % Object.keys(optionColors).length];
+
+          const background = colorSet.yellow
+            ? colorSet.yellow
+            : `linear-gradient(to bottom right, ${colorSet.from}, ${colorSet.to})`;
 
           return (
             <button
               key={index}
               onClick={() => handleSelect(option)}
-              className={`relative py-3 rounded-2xl font-bold text-2xl tracking-wide transition-all duration-300 border-4 
-                ${
-                  isSelected
-                    ? "scale-105 text-white border-yellow-300 shadow-[0_0_20px_rgba(255,255,100,0.6)]"
-                    : "border-transparent hover:border-yellow-200"
-                }
-                ${
-                  isSelected
-                    ? `bg-gradient-to-br ${color}`
-                    : `bg-gradient-to-br ${color} opacity-90 hover:opacity-100`
-                }`}
+              style={{
+                background,
+                border: isSelected
+                  ? `4px solid ${optionColors[4].color}`
+                  : "4px solid transparent",
+                transform: isSelected ? "scale(1.05)" : "scale(1)",
+                transition: "all 0.3s ease",
+                color: "#fff",
+                borderRadius: "1rem",
+                padding: "0.75rem 1rem",
+                fontWeight: 700,
+                fontSize: "1.25rem",
+                boxShadow: isSelected
+                  ? "0 0 20px rgba(255, 255, 100, 0.6)"
+                  : "none",
+                opacity: isSelected ? 1 : 0.9,
+                cursor: "pointer",
+                position: "relative",
+              }}
+              onMouseEnter={(e) => {
+                if (!isSelected) e.currentTarget.style.opacity = "1";
+              }}
+              onMouseLeave={(e) => {
+                if (!isSelected) e.currentTarget.style.opacity = "0.9";
+              }}
             >
               <span className="drop-shadow-md">{option}</span>
 
-              <div className="absolute inset-0 rounded-xl bg-white/10 pointer-events-none"></div>
+              {/* Overlay shimmer layer */}
+              <div
+                className="absolute inset-0 rounded-xl pointer-events-none"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+              ></div>
             </button>
           );
         })}
@@ -57,13 +80,3 @@ export default function QuestionCard({
     </div>
   );
 }
-
-
-
-
-//   const optionColors = [
-//     "from-green-700 to-green-500",
-//     "from-amber-500 to-yellow-400",
-//     "from-emerald-600 to-teal-500",
-//     "from-lime-500 to-green-400",
-//   ];
