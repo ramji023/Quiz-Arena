@@ -4,12 +4,13 @@ import Layout_2 from "./layout/Layout_2";
 import LandingPage from "./pages/landingPage/LandingPage";
 import Quizzes from "./pages/Quizzes/Quizzes";
 import QuizCreation from "./pages/QuizCreation/QuizCreation";
-import Themes from "./pages/themes/Theme";
+import Themes from "./pages/themes/Themes";
 import Signup from "./pages/auth/Signup";
 import Login from "./pages/auth/Login";
 import ProtectedRoute from "./layout/ProtectedRoute";
 import AiQuiz from "./pages/QuizCreation/AiQuiz";
 import Quiz from "./pages/Quizzes/Quiz";
+import Theme from "./pages/themes/Theme";
 export default function App() {
   return (
     <>
@@ -28,8 +29,8 @@ export default function App() {
               <Route path="create-quiz" element={<QuizCreation />} />
               <Route path="ai-quiz" element={<AiQuiz />} />
               <Route path="quiz/:quizId" element={<Quiz/>} />
-              <Route path="themes" element={<Themes />} />
             </Route>
+            <Route path="themes" element={<Theme />} />
           </Route>
         </Routes>
       </BrowserRouter>
