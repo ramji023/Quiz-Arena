@@ -1,16 +1,23 @@
-export const THEMES = [
+import { ThemeData } from "../../types/themeType";
+
+export const THEMES: ThemeData[] = [
   {
     id: "jungle-quest",
-    name: "Jungle Quest",
-    description:
-      "Venture into the wild and test your wits in the heart of the jungle!",
+    name: "🌿 Jungle Quest",
     colors: {
-      background: "#1B4332",
-      text: "#FFFBEA",
-      accent: "#FFD166",
-      button: "#2D6A4F",
+      primaryText: "yellow",
+      secondaryText: "white",
+      bg:"black",
+      primaryBackground: "green",
+      secondaryBackground: "emerald",
     },
     backgroundImage: "./themes/15027.jpg",
     overlayEffect: "fireflies",
+    optionColors: [
+      "from-green-700 to-green-500",
+      "from-amber-500 to-yellow-400",
+      "from-emerald-600 to-teal-500",
+      "from-lime-500 to-green-400",
+    ],
   },
 ];
