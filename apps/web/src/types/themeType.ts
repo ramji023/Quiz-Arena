@@ -1,15 +1,10 @@
 export interface ThemeData {
   id: string;
   name: string;
-  colors: {
-    primaryText: string;
-    secondaryText: string;
-    bg:string;
-    primaryBackground: string;
-    secondaryBackground: string;
-  };
+  textColor: Record<string, string>;
+  background: Record<string, string>;
+  borders: Record<string, string>;
   backgroundImage: string;
   overlayEffect: string;
-  optionColors: string[];
-  fonts ?: any
+  optionColor: Record<number, { from?: string; to?: string; color?: string }>;
 }

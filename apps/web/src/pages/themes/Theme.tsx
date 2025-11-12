@@ -11,7 +11,7 @@ export default function Theme() {
     { name: "Tara", score: 640, rank: 235 },
   ];
 
-  const jungle = THEMES.find((t) => t.id === "desert-mirage")!;
+  const jungle = THEMES.find((t) => t.id === "jungle-quest")!;
   const questionData = {
     question: "Which animal is known as the King of the Jungle?",
     options: ["Elephant", "Lion", "Tiger", "Leopard"],

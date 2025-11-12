@@ -1,6 +1,6 @@
 import { ThemeData } from "../../types/themeType";
 
-export const THEMES = [
+export const THEMES:ThemeData[] = [
   {
     id: "jungle-quest",
     name: "🌿 Jungle Quest",
@@ -46,14 +46,14 @@ export const THEMES = [
     },
     backgroundImage: "./themes/15027.jpg",
     overlayEffect: "fireflies",
+    // colors: {
+    //   primaryText: "yellow",
+    //   secondaryText: "white",
+    //   bg: "black",
+    //   primaryBackground: "green",
+    //   secondaryBackground: "emerald",
+    // },
   },
-  // colors: {
-  //   primaryText: "yellow",
-  //   secondaryText: "white",
-  //   bg: "black",
-  //   primaryBackground: "green",
-  //   secondaryBackground: "emerald",
-  // },
   {
     id: "desert-mirage",
     name: "🏜️ Desert Mirage",
@@ -101,14 +101,6 @@ export const THEMES = [
         color: "#1c1917", // stone (base tone, approx stone-500)
       },
     },
-
-    // optionColors: [
-    //   "from-orange-600 to-amber-400",
-    //   "from-red-700 to-orange-500",
-    //   "from-amber-700 to-yellow-500",
-    //   "from-stone-700 to-amber-600",
-    //   "stone",
-    // ],
     // colors: {
     //   primaryText: "stone",
     //   secondaryText: "white",
@@ -120,21 +112,57 @@ export const THEMES = [
   {
     id: "ocean-depths",
     name: "🌊 Ocean Depths",
-    colors: {
-      primaryText: "cyan",
-      secondaryText: "sky",
-      bg: "blue",
-      primaryBackground: "blue",
-      secondaryBackground: "sky",
+    textColor: {
+      "li-text-100": "#cffafe", // leaderboard row
+      "button-text-200": "#67e8f9", // back button
+      "primary-300": "#22d3ee", // primary stone color
+    },
+    background: {
+      "bg-black/20": "rgba(0, 0, 0, 0.2)", // main black background
+      "bg-li-100/10": "rgba(224, 242, 254, 0.1)", //  leaderboard row
+      "bg-li-400/40": "rgba(56, 189, 248, 0.4)",
+      "bg-button-800/60": "rgba(7, 89, 133, 0.6)",
+      "bg-button-900/40": "rgba(12, 74, 110, 0.4)",
+      "from-leaderboard-900/70": "rgba(12, 74, 110, 0.7)", // sky
+      "to-leaderboard-800/70": "rgba(30, 64, 175, 0.7)", // blue
+    },
+    borders: {
+      "border-li-300": "rgba(147, 197, 253, 1)",
+      "border-button-400": "rgba(96, 165, 250, 1)",
+      "border-li-400/30": "rgba(96, 165, 250,1)",
+      "border-button-400/60": "rgba(96, 165, 250, 1)",
+      "border-leaderboard-500/50": "rgba(59, 130, 246, 0.5)",
     },
     backgroundImage: "./themes/ocean.jpg",
     overlayEffect: "waveShimmer",
-    optionColors: [
-      "from-cyan-500 to-blue-400", // bright aqua shimmer
-      "from-teal-600 to-cyan-500", // deep teal to cyan
-      "from-blue-600 to-indigo-500", // deep ocean blue
-      "from-emerald-600 to-teal-500", // rocky coastal green
-      "cyan",
-    ],
+    optionColor: {
+      0: {
+        from: "#06b6d4", // cyan-500
+        to: "#60a5fa", // blue-400
+      },
+      1: {
+        from: "#0d9488", // teal-600
+        to: "#06b6d4", // cyan-500
+      },
+      2: {
+        from: "#2563eb", // blue-600
+        to: "#6366f1", // indigo-500
+      },
+      3: {
+        from: "#047857", // emerald-600
+        to: "#14b8a6", // teal-500
+      },
+      4: {
+        color: "#22d3ee", // cyan (base tone, approx cyan-500)
+      },
+    },
+    // colors: {
+    //   primaryText: "cyan",
+    //   secondaryText: "sky",
+    //   bg: "blue",
+    //   primaryBackground: "blue",
+    //   secondaryBackground: "sky",
+    // },
   },
+  
 ];

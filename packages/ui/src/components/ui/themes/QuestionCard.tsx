@@ -32,9 +32,9 @@ export default function QuestionCard({
           const colorSet =
             optionColors[index % Object.keys(optionColors).length];
 
-          const background = colorSet.yellow
-            ? colorSet.yellow
-            : `linear-gradient(to bottom right, ${colorSet.from}, ${colorSet.to})`;
+          const background = colorSet?.color
+            ? colorSet.color
+            : `linear-gradient(to bottom right, ${colorSet?.from}, ${colorSet?.to})`;
 
           return (
             <button
@@ -43,7 +43,7 @@ export default function QuestionCard({
               style={{
                 background,
                 border: isSelected
-                  ? `4px solid ${optionColors[4].color}`
+                  ? `4px solid ${optionColors[4]?.color}`
                   : "4px solid transparent",
                 transform: isSelected ? "scale(1.05)" : "scale(1)",
                 transition: "all 0.3s ease",
