@@ -4,6 +4,9 @@ import { ThemeData } from "../../types/themeType";
 import Fireflies from "@repo/ui/components/ui/themes/jungle/Fireflies";
 import HeatWaves from "@repo/ui/components/ui/themes/desert/Heatwaves";
 import Bioluminescence from "@repo/ui/components/ui/themes/ocean/WaveShimmer";
+import MatrixRain from "@repo/ui/components/ui/themes/tech/TechEffect";
+import CosmicStars from "@repo/ui/components/ui/themes/cosmic/Cosmic";
+import LavaFlow from "@repo/ui/components/ui/themes/volcano/LavaFlow";
 import { ArrowLeft } from "lucide-react";
 
 export default function ThemeWrapper({
@@ -12,7 +15,7 @@ export default function ThemeWrapper({
   players,
 }: {
   children: ReactNode;
-  themeData: any;
+  themeData: ThemeData;
   players: { name: string; score: number; rank: number }[];
 }) {
   return (
@@ -32,7 +35,13 @@ export default function ThemeWrapper({
         <HeatWaves count={8} speed={2} intensity={0.5} />
       )}
       {themeData.overlayEffect === "waveShimmer" && <Bioluminescence />}
-
+      {themeData.overlayEffect === "matrix-rain" && (
+        <MatrixRain count={20} speed={1} intensity={0.6} />
+      )}
+      {themeData.overlayEffect === "cosmic-stars" && <CosmicStars />}
+      {themeData.overlayEffect === "lava-flow" && (
+        <LavaFlow count={100} speed={1} intensity={1} />
+      )}
       {/* back button  */}
       <motion.button
         className={`absolute top-3 left-3 flex items-center gap-2 px-4 py-2 
@@ -56,7 +65,6 @@ export default function ThemeWrapper({
         <ArrowLeft size={20} />
         <span className="hidden md:inline-block">Back</span>
       </motion.button>
-
       {/* Leaderboard Floating Panel */}
       <motion.div
         className={`absolute top-3 right-3 w-50 rounded p-2 shadow backdrop-blur-md z-20`}
@@ -116,14 +124,13 @@ export default function ThemeWrapper({
           })}
         </ul>
       </motion.div>
-
       {/* Main Layout */}
       <motion.div
         className={`relative z-10 flex flex-col items-center justify-center gap-8 min-h-screen p-6`}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-        style={{ backgroundColor: themeData.background["bg-black/20"]}}
+        style={{ backgroundColor: themeData.background["bg-black/20"] }}
       >
         {/* Theme Title */}
         <motion.h1
@@ -131,7 +138,7 @@ export default function ThemeWrapper({
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.8, type: "spring", stiffness: 100 }}
-          style={{color:themeData.textColor["primary-300"] }}
+          style={{ color: themeData.textColor["primary-300"] }}
         >
           {themeData.name}
         </motion.h1>

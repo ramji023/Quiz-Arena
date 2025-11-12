@@ -1,6 +1,6 @@
 import { ThemeData } from "../../types/themeType";
 
-export const THEMES:ThemeData[] = [
+export const THEMES: ThemeData[] = [
   {
     id: "jungle-quest",
     name: "🌿 Jungle Quest",
@@ -44,7 +44,7 @@ export const THEMES:ThemeData[] = [
       },
       4: { color: "#facc15" },
     },
-    backgroundImage: "./themes/15027.jpg",
+    backgroundImage: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1762925116/15027_vnjzyt.jpg",
     overlayEffect: "fireflies",
     // colors: {
     //   primaryText: "yellow",
@@ -78,7 +78,7 @@ export const THEMES:ThemeData[] = [
       "border-button-400/60": "rgba(217, 119, 6, 1)",
       "border-leaderboard-500/50": "rgba(217, 119, 6, 0.5)",
     },
-    backgroundImage: "./themes/desert.jpg",
+    backgroundImage: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1762925089/desert_opqpyv.jpg",
     overlayEffect: "heatwaves",
     optionColor: {
       0: {
@@ -119,7 +119,7 @@ export const THEMES:ThemeData[] = [
     },
     background: {
       "bg-black/20": "rgba(0, 0, 0, 0.2)", // main black background
-      "bg-li-100/10": "rgba(224, 242, 254, 0.1)", //  leaderboard row
+      "bg-li-100/10": "rgba(224, 242, 254, 0.1)", //  leaderboard row  -->sky
       "bg-li-400/40": "rgba(56, 189, 248, 0.4)",
       "bg-button-800/60": "rgba(7, 89, 133, 0.6)",
       "bg-button-900/40": "rgba(12, 74, 110, 0.4)",
@@ -133,7 +133,7 @@ export const THEMES:ThemeData[] = [
       "border-button-400/60": "rgba(96, 165, 250, 1)",
       "border-leaderboard-500/50": "rgba(59, 130, 246, 0.5)",
     },
-    backgroundImage: "./themes/ocean.jpg",
+    backgroundImage: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1762925056/ocean_kpvwde.jpg",
     overlayEffect: "waveShimmer",
     optionColor: {
       0: {
@@ -164,5 +164,142 @@ export const THEMES:ThemeData[] = [
     //   secondaryBackground: "sky",
     // },
   },
-  
+  {
+    id: "neural-network",
+    name: "🔮 Neural Network",
+    textColor: {
+      "li-text-100": "#e0e7ff", // indigo-100 - leaderboard row
+      "button-text-200": "#c7d2fe", // indigo-200 - back button
+      "primary-300": "#a5b4fc", // indigo-300 - primary color
+    },
+    background: {
+      "bg-black/20": "rgba(0, 0, 0, 0.2)", // main overlay
+      "bg-li-100/10": "rgba(224, 231, 255, 0.1)", // leaderboard row
+      "bg-li-400/40": "rgba(129, 140, 248, 0.4)",
+      "bg-button-800/60": "rgba(55, 48, 163, 0.6)", // indigo-800
+      "bg-button-900/40": "rgba(49, 46, 129, 0.4)", // indigo-900
+      "from-leaderboard-900/70": "rgba(49, 46, 129, 0.7)", // indigo-900
+      "to-leaderboard-800/70": "rgba(67, 56, 202, 0.7)", // indigo-700
+    },
+    borders: {
+      "border-li-300": "#a5b4fc", // indigo-300
+      "border-button-400": "#818cf8", // indigo-400
+      "border-li-400/30": "rgba(129, 140, 248, 0.3)",
+      "border-button-400/60": "rgba(129, 140, 248, 0.6)",
+      "border-leaderboard-500/50": "rgba(99, 102, 241, 0.5)", // indigo-500
+    },
+    optionColor: {
+      0: {
+        from: "#6366f1", // indigo-500
+        to: "#8b5cf6", // violet-500
+      },
+      1: {
+        from: "#3b82f6", // blue-500
+        to: "#06b6d4", // cyan-500
+      },
+      2: {
+        from: "#8b5cf6", // violet-500
+        to: "#d946ef", // fuchsia-500
+      },
+      3: {
+        from: "#0ea5e9", // sky-500
+        to: "#6366f1", // indigo-500
+      },
+      4: { color: "#818cf8" }, // indigo-400
+    },
+    backgroundImage: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1762925027/tech_asrkrz.jpg",
+    overlayEffect: "matrix-rain",
+  },
+  {
+    id: "cosmic-explorer",
+    name: "🚀 Cosmic Explorer",
+    textColor: {
+      "li-text-100": "#e0f2fe",
+      "button-text-200": "#67e8f9",
+      "primary-300": "#06b6d4",
+    },
+    background: {
+      "bg-black/20": "rgba(3, 7, 18, 0.2)",
+      "bg-li-100/10": "rgba(224, 242, 254, 0.1)",
+      "bg-li-400/40": "rgba(6, 182, 212, 0.4)",
+      "bg-button-800/60": "rgba(194, 65, 12, 0.6)",
+      "bg-button-900/40": "rgba(124, 45, 18, 0.4)",
+      "from-leaderboard-900/70": "rgba(12, 74, 110, 0.7)",
+      "to-leaderboard-800/70": "rgba(7, 89, 133, 0.7)",
+    },
+    borders: {
+      "border-li-300": "#67e8f9",
+      "border-button-400": "#06b6d4",
+      "border-li-400/30": "rgba(6, 182, 212, 0.3)",
+      "border-button-400/60": "rgba(6, 182, 212, 0.6)",
+      "border-leaderboard-500/50": "rgba(14, 165, 233, 0.5)",
+    },
+    optionColor: {
+      0: {
+        from: "#0e7490",
+        to: "#06b6d4",
+      },
+      1: {
+        from: "#ea580c",
+        to: "#fb923c",
+      },
+      2: {
+        from: "#0369a1",
+        to: "#0ea5e9",
+      },
+      3: {
+        from: "#fbbf24",
+        to: "#fcd34d",
+      },
+      4: { color: "#67e8f9" },
+    },
+    backgroundImage: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1762924977/cosmic_ucnior.jpg",
+    overlayEffect: "cosmic-stars",
+  },
+  {
+    id: "volcano-fury",
+    name: "🌋 Volcano Fury",
+    textColor: {
+      "li-text-100": "#fef3c7", // soft lava light
+      "button-text-200": "#fdba74", // orange highlight
+      "primary-300": "#f97316", // bright lava orange
+    },
+    background: {
+      "bg-black/20": "rgba(0, 0, 0, 0.2)", // dark volcanic rock base
+      "bg-li-100/10": "rgba(254, 243, 199, 0.1)", // soft ember glow
+      "bg-li-400/40": "rgba(249, 115, 22, 0.4)", // glowing orange
+      "bg-button-800/60": "rgba(124, 45, 18, 0.6)", // deep molten tone
+      "bg-button-900/40": "rgba(67, 20, 7, 0.4)", // dark lava shadows
+      "from-leaderboard-900/70": "rgba(30, 27, 27, 0.7)", // smoke-dark gradient start
+      "to-leaderboard-800/70": "rgba(69, 10, 10, 0.7)", // ember-red gradient end
+    },
+    borders: {
+      "border-li-300": "#fb923c", // lava orange
+      "border-button-400": "#f97316", // fiery orange
+      "border-li-400/30": "rgba(249, 115, 22, 0.3)",
+      "border-button-400/60": "rgba(249, 115, 22, 0.6)",
+      "border-leaderboard-500/50": "rgba(234, 88, 12, 0.5)",
+    },
+    optionColor: {
+      0: {
+        from: "#b91c1c", // deep red magma
+        to: "#ef4444", // bright lava red
+      },
+      1: {
+        from: "#c2410c", // orange molten tone
+        to: "#f97316", // bright lava orange
+      },
+      2: {
+        from: "#7c2d12", // dark ember brown
+        to: "#ea580c", // glowing orange
+      },
+      3: {
+        from: "#facc15", // yellow molten edge
+        to: "#fde047", // golden bright lava
+      },
+      4: { color: "#fb923c" }, // orange accent
+    },
+    backgroundImage: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1762924865/volcano_vs9fou.jpg",
+    overlayEffect: "lava-flow",
+  },
 ];
