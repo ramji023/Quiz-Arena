@@ -2,15 +2,22 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 import { MoveLeft, Triangle, Star, User, ListChecks } from "lucide-react";
 import { useGetQuiz } from "../../queries/reactQueries";
+import { useQuizStore } from "../../stores/quizStore";
+import { type Quiz } from "../../types/quizForm";
 
 export default function Quiz() {
   const navigate = useNavigate();
+  const setQuiz = useQuizStore((s) => s.setQuiz);
   const quizId = useParams().quizId;
   console.log(quizId);
   const { data, isLoading, error } = useGetQuiz(quizId);
   if (!quizId) return <div>Quiz id is not provided</div>;
 
   if (data) {
+    function setSelectedQuiz(data: Quiz) {
+      setQuiz(data);
+      navigate("/home/themes");
+    }
     return (
       <div className="mx-20">
         {/* Header with Back + Play buttons */}
@@ -21,7 +28,7 @@ export default function Quiz() {
 
           <button
             onClick={() => {
-              navigate("/home/themes", { state: data });
+              setSelectedQuiz(data);
             }}
             className="flex gap-2 items-center cursor-pointer justify-center bg-pink text-white px-4 py-2 rounded-md font-medium hover:bg-pink-600 transition"
           >

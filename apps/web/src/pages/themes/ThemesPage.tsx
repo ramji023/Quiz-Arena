@@ -1,14 +1,33 @@
+import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@repo/ui/components/ui/Button";
 import { Plus } from "lucide-react";
-import { ThemeCard } from "@repo/ui/components/ui/ThemeCard";
+import { ThemeCard } from "./ThemeCard";
 import { THEMES } from "./themesData";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useQuizStore } from "../../stores/quizStore";
+import { useEffect, useState } from "react";
+import Popup from "./Popup";
 export default function ThemesPage() {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  //write navigateion function
   function navigation(id: string) {
     navigate(`/theme/${id}`);
   }
+
+  useEffect(() => {
+    if (location.state !== undefined && location.state === true) {
+      setOpen(true);
+    }
+  }, []);
+  const setThemeId = useQuizStore((s) => s.setThemeId);
+
+  const [open, setOpen] = useState(true);
+  function setId(id: string) {
+    setThemeId(id);
+    setOpen(true);
+  }
+
   return (
     <>
       <div className="text-primary">
@@ -23,11 +42,17 @@ export default function ThemesPage() {
         <div className="p-6 flex gap-6 flex-wrap gap-y-6 gap-x-10">
           {THEMES.map((theme, index) => (
             <div key={index}>
-              <ThemeCard theme={theme} navigation={navigation} />
+              <ThemeCard
+                theme={theme}
+                navigation={navigation}
+                setTheme={setId}
+              />
             </div>
           ))}
         </div>
+        {open && <Popup />}
       </div>
     </>
   );
 }
+

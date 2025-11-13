@@ -1,5 +1,5 @@
-import { motion } from "motion/react";
-import { ReactNode } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { ReactNode, useEffect, useState } from "react";
 import { ThemeData } from "../../types/themeType";
 import Fireflies from "@repo/ui/components/ui/themes/jungle/Fireflies";
 import HeatWaves from "@repo/ui/components/ui/themes/desert/Heatwaves";
@@ -8,6 +8,8 @@ import MatrixRain from "@repo/ui/components/ui/themes/tech/TechEffect";
 import CosmicStars from "@repo/ui/components/ui/themes/cosmic/Cosmic";
 import LavaFlow from "@repo/ui/components/ui/themes/volcano/LavaFlow";
 import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useQuizStore } from "../../stores/quizStore";
 
 export default function ThemeWrapper({
   children,
@@ -18,6 +20,17 @@ export default function ThemeWrapper({
   themeData: ThemeData;
   players: { name: string; score: number; rank: number }[];
 }) {
+  const [isSelect, setIsSelect] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsSelect(true);
+    }, 3000);
+
+    return () => {
+      return clearTimeout(timer);
+    };
+  }, []);
+
   return (
     <motion.div
       className="relative min-h-screen bg-cover bg-center text-center overflow-hidden"
@@ -44,6 +57,7 @@ export default function ThemeWrapper({
       {themeData.overlayEffect === "lava-flow" && (
         <LavaFlow count={100} speed={1} intensity={1} />
       )}
+
       {/* back button  */}
       <motion.button
         className={`absolute top-3 left-3 flex items-center gap-2 px-4 py-2 
@@ -155,6 +169,88 @@ export default function ThemeWrapper({
           {children}
         </motion.div>
       </motion.div>
+
+      {/* pop up model  */}
+      {isSelect && <PopUp id={themeData.id} />}
     </motion.div>
+  );
+}
+
+// pop up model to select popup model
+function PopUp({ id }: { id: string }) {
+  const navigate = useNavigate();
+  const setThemeId = useQuizStore((s) => s.setThemeId);
+  return (
+    <AnimatePresence>
+      <>
+        {/* Background overlay */}
+        <motion.div
+          className="fixed inset-0 z-40"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        />
+
+        {/* Modal container */}
+        <motion.div
+          className="fixed inset-0 flex items-center justify-center z-50"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 200, damping: 15 }}
+        >
+          <div className="relative bg-primary-shadow rounded-2xl p-10 text-center shadow-[0_0_40px_rgba(255,255,0,0.3)] max-w-sm w-full">
+            {/* Game-style title text */}
+            <h2 className="text-2xl font-extrabold text-pink mb-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]">
+              Do you want to select?
+            </h2>
+
+            {/* Options */}
+            <div className="flex justify-center gap-10 mt-6">
+              {/* YES button */}
+              <motion.button
+                onClick={() => {
+                  setThemeId(id);
+                  navigate("/home/themes",{state:true});
+                }}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                className="flex flex-col items-center justify-center w-24 h-24 bg-green-600 hover:bg-green-500 rounded-full shadow-[0_0_25px_rgba(0,255,0,0.5)] text-white text-xl font-bold"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="white"
+                  className="w-14 h-14 drop-shadow-[0_0_10px_rgba(255,255,255,0.7)]"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9 16.2l-3.5-3.6L4 14.1l5 5L20 8.1 18.6 6.7z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </motion.button>
+
+              {/* NO button */}
+              <motion.button
+                onClick={() => navigate(-1)}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                className="flex flex-col items-center justify-center w-24 h-24 bg-red-600 hover:bg-red-500 rounded-full shadow-[0_0_25px_rgba(255,0,0,0.5)] text-white text-xl font-bold"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="white"
+                  className="w-14 h-14 drop-shadow-[0_0_10px_rgba(255,255,255,0.7)]"
+                >
+                  <path d="M18.3 5.7a1 1 0 0 0-1.4 0L12 10.6 7.1 5.7a1 1 0 0 0-1.4 1.4L10.6 12l-4.9 4.9a1 1 0 1 0 1.4 1.4L12 13.4l4.9 4.9a1 1 0 0 0 1.4-1.4L13.4 12l4.9-4.9a1 1 0 0 0 0-1.4z" />
+                </svg>
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+      </>
+    </AnimatePresence>
   );
 }
