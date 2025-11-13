@@ -1,7 +1,14 @@
 import { Button } from "@repo/ui/components/ui/Button";
 import { Plus } from "lucide-react";
 import { ThemeCard } from "@repo/ui/components/ui/ThemeCard";
+import { THEMES } from "./themesData";
+import { useNavigate } from "react-router-dom";
 export default function ThemesPage() {
+  const navigate = useNavigate();
+
+  function navigation(id: string) {
+    navigate(`/theme/${id}`);
+  }
   return (
     <>
       <div className="text-primary">
@@ -13,8 +20,12 @@ export default function ThemesPage() {
           </Button>
         </div>
         {/* second section  */}
-        <div className="p-6">
-          <ThemeCard />
+        <div className="p-6 flex gap-6 flex-wrap gap-y-6 gap-x-10">
+          {THEMES.map((theme, index) => (
+            <div key={index}>
+              <ThemeCard theme={theme} navigation={navigation} />
+            </div>
+          ))}
         </div>
       </div>
     </>

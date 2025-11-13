@@ -24,8 +24,10 @@ export default function ThemeWrapper({
       style={{
         backgroundImage: `url(${themeData.backgroundImage})`,
         color: themeData.textColor["primary-300"],
+        transformOrigin: "center center",
+        willChange: "transform, opacity",
       }}
-      initial={{ opacity: 0, scale: 1.05 }}
+      initial={{ opacity: 0, scale: 1.0 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1.2, ease: "easeOut" }}
     >

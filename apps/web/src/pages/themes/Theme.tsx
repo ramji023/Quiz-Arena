@@ -1,21 +1,25 @@
+import { useParams } from "react-router-dom";
 import { THEMES } from "./themesData";
 import ThemeWrapper from "./ThemeWrapper";
 import QuestionCard from "@repo/ui/components/ui/themes/QuestionCard";
+const players = [
+  { name: "Aarav", score: 1200, rank: 1 },
+  { name: "Meera", score: 950, rank: 2 },
+  { name: "Ravi", score: 870, rank: 3 },
+  { name: "Kiran", score: 760, rank: 4 },
+  { name: "Tara", score: 640, rank: 235 },
+];
+const questionData = {
+  question: "Which animal is known as the King of the Jungle?",
+  options: ["Elephant", "Lion", "Tiger", "Leopard"],
+};
 
 export default function Theme() {
-  const players = [
-    { name: "Aarav", score: 1200, rank: 1 },
-    { name: "Meera", score: 950, rank: 2 },
-    { name: "Ravi", score: 870, rank: 3 },
-    { name: "Kiran", score: 760, rank: 4 },
-    { name: "Tara", score: 640, rank: 235 },
-  ];
+  const themeID = useParams().themeID;
+  if (!themeID) return <div>something went wrong</div>;
 
-  const jungle = THEMES.find((t) => t.id === "volcano-fury")!;
-  const questionData = {
-    question: "Which animal is known as the King of the Jungle?",
-    options: ["Elephant", "Lion", "Tiger", "Leopard"],
-  };
+  const jungle = THEMES.find((t) => t.id === themeID);
+  if (!jungle) return <div>Theme id is not valid</div>;
 
   return (
     <ThemeWrapper themeData={jungle} players={players}>

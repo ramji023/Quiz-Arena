@@ -46,6 +46,7 @@ export const THEMES: ThemeData[] = [
     },
     backgroundImage: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1762925116/15027_vnjzyt.jpg",
     overlayEffect: "fireflies",
+    preview:"https://res.cloudinary.com/dqr7qcgch/image/upload/v1763005692/ee70a7e5-6544-48f3-93b6-11ebeefb64cc.png"
     // colors: {
     //   primaryText: "yellow",
     //   secondaryText: "white",
@@ -101,6 +102,7 @@ export const THEMES: ThemeData[] = [
         color: "#1c1917", // stone (base tone, approx stone-500)
       },
     },
+    preview:"https://res.cloudinary.com/dqr7qcgch/image/upload/v1763006176/9e317a7f-187a-4bb1-8b34-83c801e8ba8b.png"
     // colors: {
     //   primaryText: "stone",
     //   secondaryText: "white",
@@ -156,6 +158,7 @@ export const THEMES: ThemeData[] = [
         color: "#22d3ee", // cyan (base tone, approx cyan-500)
       },
     },
+    preview:"https://res.cloudinary.com/dqr7qcgch/image/upload/v1763006305/5bf4e37f-340e-4c5c-b196-9af741162ab2.png"
     // colors: {
     //   primaryText: "cyan",
     //   secondaryText: "sky",
@@ -208,6 +211,7 @@ export const THEMES: ThemeData[] = [
       4: { color: "#818cf8" }, // indigo-400
     },
     backgroundImage: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1762925027/tech_asrkrz.jpg",
+    preview:"https://res.cloudinary.com/dqr7qcgch/image/upload/v1763006383/2b4b843b-f0de-41d2-afb9-87fe24881a4b.png",
     overlayEffect: "matrix-rain",
   },
   {
@@ -254,6 +258,7 @@ export const THEMES: ThemeData[] = [
       4: { color: "#67e8f9" },
     },
     backgroundImage: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1762924977/cosmic_ucnior.jpg",
+    preview:"https://res.cloudinary.com/dqr7qcgch/image/upload/v1763006456/ca241832-5d84-46ac-be88-bfa997e54b13.png",
     overlayEffect: "cosmic-stars",
   },
   {
@@ -300,6 +305,7 @@ export const THEMES: ThemeData[] = [
       4: { color: "#fb923c" }, // orange accent
     },
     backgroundImage: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1762924865/volcano_vs9fou.jpg",
+    preview:"https://res.cloudinary.com/dqr7qcgch/image/upload/v1763006513/f298eddd-4026-465f-8dac-39c54b393442.png",
     overlayEffect: "lava-flow",
   },
 ];

@@ -7,4 +7,5 @@ export interface ThemeData {
   backgroundImage: string;
   overlayEffect: string;
   optionColor: Record<number, { from?: string; to?: string; color?: string }>;
+  preview:string;
 }

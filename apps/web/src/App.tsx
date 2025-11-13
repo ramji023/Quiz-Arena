@@ -31,7 +31,7 @@ export default function App() {
               <Route path="quiz/:quizId" element={<Quiz />} />
               <Route path="themes" element={<ThemesPage />} />
             </Route>
-            <Route path="theme" element={<Theme />} />
+            <Route path="theme/:themeID" element={<Theme />} />
           </Route>
         </Routes>
       </BrowserRouter>
