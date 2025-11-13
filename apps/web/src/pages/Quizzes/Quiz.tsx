@@ -1,43 +1,14 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 import { MoveLeft, Triangle, Star, User, ListChecks } from "lucide-react";
 import { useGetQuiz } from "../../queries/reactQueries";
 
 export default function Quiz() {
+  const navigate = useNavigate();
   const quizId = useParams().quizId;
   console.log(quizId);
   const { data, isLoading, error } = useGetQuiz(quizId);
   if (!quizId) return <div>Quiz id is not provided</div>;
-  const quizData = {
-    title: "JavaScript Basics Quiz",
-    description: "Test your fundamental knowledge of JavaScript concepts.",
-    createdBy: "Ram",
-    rating: 4.5,
-    questions: [
-      {
-        question: "What is the output of `typeof null`?",
-        options: ["object", "null", "undefined", "number"],
-        correctAnswer: "object",
-      },
-      {
-        question: "Which keyword is used to declare a constant in JavaScript?",
-        options: ["var", "let", "const", "static"],
-        correctAnswer: "const",
-      },
-      {
-        question: "Which method converts JSON data into a JavaScript object?",
-        options: [
-          "JSON.stringify()",
-          "JSON.parse()",
-          "parse.JSON()",
-          "toObject()",
-        ],
-        correctAnswer: "JSON.parse()",
-      },
-    ],
-  };
-
-  const totalQuestions = quizData.questions.length;
 
   if (data) {
     return (
@@ -48,7 +19,12 @@ export default function Quiz() {
             <MoveLeft size={30} strokeWidth={2.5} />
           </div>
 
-          <button className="flex gap-2 items-center cursor-pointer justify-center bg-pink text-white px-4 py-2 rounded-md font-medium hover:bg-pink-600 transition">
+          <button
+            onClick={() => {
+              navigate("/home/themes", { state: data });
+            }}
+            className="flex gap-2 items-center cursor-pointer justify-center bg-pink text-white px-4 py-2 rounded-md font-medium hover:bg-pink-600 transition"
+          >
             Play
             <Triangle className="rotate-90" size={15} />
           </button>
