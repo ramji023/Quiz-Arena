@@ -1,5 +1,6 @@
 import User from "./User";
 import { v4 as uuidv4 } from "uuid";
+import { ERROR } from "./events";
 export default class Game {
   gameId: string;
   host: User;
@@ -14,5 +15,21 @@ export default class Game {
     this.quizData = {};
     this.countDown = "05";
     this.players = new Map();
+  }
+
+  // add player in Game object
+  addPlayer(player: User) {
+    //first check if user is already join the game or not
+    const existedPlayer = this.players.get(player.id);
+    if (existedPlayer) {
+      existedPlayer.socket.send(
+        JSON.stringify({
+          type: ERROR,
+          message: "You already joined this game",
+        })
+      ); // if player is already join the game
+    } else {
+      this.players.set(player.id, player);  // if not joined then add 
+    }
   }
 }

@@ -11,7 +11,7 @@ export default class GameManager {
   }
 
   // add host or player
-  addPlayer(type: "host" | "player", name: string, ws: WebSocket) {
+  addPlayer(type: "host" | "player", name: string, ws: WebSocket, game?: Game) {
     // do something
     // create new user (if user is host)
     if (type === "host") {
@@ -22,16 +22,22 @@ export default class GameManager {
       this.games.set(game.gameId, game); // store game in global gameManager games property
     }
     //create new user (if user is player)
-    if (type === "player") {
+    if (type === "player" && game) {
+      const user = new User(ws, name, type);
+      this.users.set(user.id, user);
+      // add player to game object
+      game.addPlayer(user);
     }
-    // add player to that game
-    // if server got message from client
-    ws.on("message", (data) => {
-      this.handleMessage(ws, data.toString());
-    });
   }
 
-  private handleMessage(ws: WebSocket, data: string) {
+  // check if that gameId exist or not
+  checkGameId(id: string) {
+    const game = this.games.get(id);
+    if (game) return game;
+  }
+
+  //write function to  handle server messages
+  handleMessage(ws: WebSocket, data: string) {
     const parsedMessage = JSON.parse(data); // parsed the client message
   }
 }

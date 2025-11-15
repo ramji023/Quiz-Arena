@@ -7,7 +7,7 @@ import GameManager from "./GameManager";
 const wss = new WebSocket.Server({ port: 3001 });
 
 // create new instance of game manager
-const newGame = new GameManager();
+const newGameManager = new GameManager();
 wss.on("connection", (ws, req) => {
   const parsedUrl = url.parse(req.url as string, true).query;
   try {
@@ -18,9 +18,28 @@ wss.on("connection", (ws, req) => {
         process.env.ACCESS_TOKEN_KEY as string
       ) as jwt.JwtPayload;
       console.log("decoded user data : ", decodedToken);
-      ws.send("Authentication Successfull");
-      newGame.addPlayer("host", decodedToken.email.split("@")[0],ws);
+      ws.send("host Authentication Successfull");
+      newGameManager.addPlayer("host", decodedToken.email.split("@")[0], ws);
+    } else if (parsedUrl.roomId && parsedUrl.fullName) {
+      ws.send("Player joined the room successfully");
+      // check if that room id is  exist or not
+      const result = newGameManager.checkGameId(parsedUrl.roomId as string);
+      if (!result) {
+        ws.close(1008, "Game id is Invalid");
+      }
+      // create player and add in that game
+      newGameManager.addPlayer(
+        "player",
+        parsedUrl.fullName as string,
+        ws,
+        result
+      );
     }
+
+    // if client send message to server
+    ws.on("message", (data) => {
+      newGameManager.handleMessage(ws, data.toString());
+    });
   } catch (err) {
     ws.close(1008, "Inavlid Token");
   }
