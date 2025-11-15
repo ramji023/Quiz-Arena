@@ -12,6 +12,7 @@ import Quiz from "./pages/Quizzes/Quiz";
 import Theme from "./pages/themes/Theme";
 import ThemesPage from "./pages/themes/ThemesPage";
 import Game from "./pages/game/Game";
+import PlayerJoin from "./pages/game/PlayerJoin";
 export default function App() {
   return (
     <>
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="theme/:themeID" element={<Theme />} />
             <Route path="game" element={<Game/>} />
           </Route>
+          <Route path="join" element={<PlayerJoin/>} />
         </Routes>
       </BrowserRouter>
     </>

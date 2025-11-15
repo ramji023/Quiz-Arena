@@ -104,8 +104,8 @@ export default function Lobby({
               }}
               className="fixed top-0 left-0 z-10 max-w-full"
             >
-              <div className="text-md font-medium text-foreground bg-cyan-600 text-white rounded px-2 py-1 flex justify-center items-center gap-2">
-                <div className="text-white">
+              <div className="text-md font-medium text-foreground bg-primary text-secondary rounded px-2 py-1 flex justify-center items-center gap-2">
+                <div className="text-secondary">
                   <CarttonIcon />
                 </div>
                 <h1 className="font-bold"> {user.name}</h1>
@@ -126,7 +126,7 @@ export default function Lobby({
         {isCopied && (
           <div className="bg-white px-2 py-1 flex justify-center items-center rounded">
             <CircleCheck fill="green" />
-            <h1 className="text-gray-500 ">
+            <h1 className="text-gray-700 ">
               You have copied room pin successfully
             </h1>
           </div>

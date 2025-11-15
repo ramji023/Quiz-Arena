@@ -6,7 +6,7 @@ export default function CarttonIcon() {
         width="24"
         height="24"
         viewBox="0 0 24 24"
-        fill="white"
+        fill="#f3efda"
         className="icon icon-tabler icons-tabler-filled icon-tabler-brand-discord"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
