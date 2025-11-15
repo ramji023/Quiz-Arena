@@ -8,7 +8,7 @@ import MatrixRain from "@repo/ui/components/ui/themes/tech/TechEffect";
 import CosmicStars from "@repo/ui/components/ui/themes/cosmic/Cosmic";
 import LavaFlow from "@repo/ui/components/ui/themes/volcano/LavaFlow";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useQuizStore } from "../../stores/quizStore";
 
 export default function ThemeWrapper({
@@ -18,17 +18,20 @@ export default function ThemeWrapper({
 }: {
   children: ReactNode;
   themeData: ThemeData;
-  players: { name: string; score: number; rank: number }[];
+  players?: { name: string; score: number; rank: number }[];
 }) {
+  const location = useLocation();
+  const [shouldOpen, setShouldOpen] = useState(location.state);
   const [isSelect, setIsSelect] = useState(false);
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsSelect(true);
-    }, 3000);
-
-    return () => {
-      return clearTimeout(timer);
-    };
+    if (shouldOpen) {
+      const timer = setTimeout(() => {
+        setIsSelect(true);
+      }, 3000);
+      return () => {
+        return clearTimeout(timer);
+      };
+    }
   }, []);
 
   return (
@@ -81,65 +84,68 @@ export default function ThemeWrapper({
         <ArrowLeft size={20} />
         <span className="hidden md:inline-block">Back</span>
       </motion.button>
+
       {/* Leaderboard Floating Panel */}
-      <motion.div
-        className={`absolute top-3 right-3 w-50 rounded p-2 shadow backdrop-blur-md z-20`}
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2, duration: 0.6, ease: "easeOut" }}
-        style={{
-          backgroundImage: `linear-gradient(to bottom, 
+      {players && (
+        <motion.div
+          className={`absolute top-3 right-3 w-50 rounded p-2 shadow backdrop-blur-md z-20`}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.6, ease: "easeOut" }}
+          style={{
+            backgroundImage: `linear-gradient(to bottom, 
       ${themeData.background["from-leaderboard-900/70"]}, 
       ${themeData.background["to-leaderboard-800/70"]}
     )`,
-          border: `1px solid ${themeData.borders["border-leaderboard-500/50"]}`,
-        }}
-      >
-        <h2 className={`text-lg font-bold mb-3 text-center drop-shadow-md`}>
-          🏆 Leaderboard
-        </h2>
-        <ul className="space-y-1">
-          {players.slice(0, 5).map((player, index) => {
-            const isTopPlayer = index === 0;
+            border: `1px solid ${themeData.borders["border-leaderboard-500/50"]}`,
+          }}
+        >
+          <h2 className={`text-lg font-bold mb-3 text-center drop-shadow-md`}>
+            🏆 Leaderboard
+          </h2>
+          <ul className="space-y-1">
+            {players?.slice(0, 5).map((player, index) => {
+              const isTopPlayer = index === 0;
 
-            return (
-              <li
-                key={index}
-                className="flex justify-between items-center px-3 py-1 rounded border font-semibold transition-all duration-300"
-                style={{
-                  borderColor: isTopPlayer
-                    ? themeData.borders["border-li-300"]
-                    : themeData.borders["border-li-400/30"],
-
-                  backgroundColor: isTopPlayer
-                    ? themeData.background["bg-li-400/40"]
-                    : themeData.background["bg-li-100/10"],
-
-                  color: themeData.textColor["li-text-100"],
-                }}
-              >
-                <span
+              return (
+                <li
+                  key={index}
+                  className="flex justify-between items-center px-3 py-1 rounded border font-semibold transition-all duration-300"
                   style={{
-                    color: themeData.textColor["primary-300"],
-                    fontSize: "0.875rem",
+                    borderColor: isTopPlayer
+                      ? themeData.borders["border-li-300"]
+                      : themeData.borders["border-li-400/30"],
+
+                    backgroundColor: isTopPlayer
+                      ? themeData.background["bg-li-400/40"]
+                      : themeData.background["bg-li-100/10"],
+
+                    color: themeData.textColor["li-text-100"],
                   }}
                 >
-                  {player.rank}
-                </span>
-                <span className="truncate text-base">{player.name}</span>
-                <span
-                  style={{
-                    fontSize: "0.875rem",
-                    opacity: 0.8,
-                  }}
-                >
-                  {player.score}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      </motion.div>
+                  <span
+                    style={{
+                      color: themeData.textColor["primary-300"],
+                      fontSize: "0.875rem",
+                    }}
+                  >
+                    {player.rank}
+                  </span>
+                  <span className="truncate text-base">{player.name}</span>
+                  <span
+                    style={{
+                      fontSize: "0.875rem",
+                      opacity: 0.8,
+                    }}
+                  >
+                    {player.score}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </motion.div>
+      )}
       {/* Main Layout */}
       <motion.div
         className={`relative z-10 flex flex-col items-center justify-center gap-8 min-h-screen p-6`}
@@ -211,7 +217,7 @@ function PopUp({ id }: { id: string }) {
               <motion.button
                 onClick={() => {
                   setThemeId(id);
-                  navigate("/home/themes",{state:true});
+                  navigate("/home/themes", { state: true });
                 }}
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}

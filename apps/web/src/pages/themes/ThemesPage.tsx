@@ -12,7 +12,7 @@ export default function ThemesPage() {
   const location = useLocation();
   //write navigateion function
   function navigation(id: string) {
-    navigate(`/theme/${id}`);
+    navigate(`/theme/${id}`, { state: true });
   }
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function ThemesPage() {
   }, []);
   const setThemeId = useQuizStore((s) => s.setThemeId);
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   function setId(id: string) {
     setThemeId(id);
     setOpen(true);
@@ -55,4 +55,3 @@ export default function ThemesPage() {
     </>
   );
 }
-

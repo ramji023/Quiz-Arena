@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../stores/authStore";
+import useSocketStore from "../stores/socketStore";
 
 const useWebsocket = () => {
   const [shouldConnect, setShouldConnect] = useState(false);
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const setSocketInstance = useSocketStore((s)=>s.setSocketInstance)
   const token = useAuthStore.getState().token;
   useEffect(() => {
     if (!shouldConnect) return;
     const ws = new WebSocket(`ws://localhost:3001?token=${token}`);
 
     ws.onopen = () => {
-      setSocket(ws);
+       setSocketInstance(ws)
       console.log("connected with websocket server");
     };
 
@@ -24,7 +25,7 @@ const useWebsocket = () => {
     };
   }, [shouldConnect]);
 
-  return { socket, setShouldConnect };
+  return {setShouldConnect };
 };
 
 export default useWebsocket;

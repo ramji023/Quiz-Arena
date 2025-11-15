@@ -1,12 +1,14 @@
 import { Button } from "@repo/ui/components/ui/Button";
 import { motion, AnimatePresence } from "motion/react";
 import useWebsocket from "../../hooks/useWebsocket";
+import { useNavigate } from "react-router-dom";
 //write popup for consent
 export default function Popup() {
-  const { socket, setShouldConnect } = useWebsocket();
-
+  const navigate = useNavigate();
+  const { setShouldConnect } = useWebsocket();
   function sendWsRequest() {
     setShouldConnect(true);
+    navigate("/game");
   }
   return (
     <>
