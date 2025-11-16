@@ -20,6 +20,8 @@ export default class GameManager {
       // initialize new game
       const game = new Game(user); // start a new game
       this.games.set(game.gameId, game); // store game in global gameManager games property
+      console.log("host user :", user);
+      console.log("host game : ", game);
     }
     //create new user (if user is player)
     if (type === "player" && game) {
@@ -27,6 +29,8 @@ export default class GameManager {
       this.users.set(user.id, user);
       // add player to game object
       game.addPlayer(user);
+      console.log("player user :", user);
+      console.log("player game : ", game);
     }
   }
 

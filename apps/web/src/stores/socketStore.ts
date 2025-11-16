@@ -12,6 +12,12 @@ const useSocketStore = create<SocketStore>((set, get) => ({
 
   setSocketInstance: (socket) => {
     get().socketRef.current = socket;
+    // add message listener here
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data); // parse the json data
+
+      console.log("server message : ", message);
+    };
   },
 }));
 

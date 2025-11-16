@@ -1,6 +1,7 @@
 import User from "./User";
 import { v4 as uuidv4 } from "uuid";
 import { ERROR } from "./events";
+import { sendJson } from "./utils/helperFn";
 export default class Game {
   gameId: string;
   host: User;
@@ -23,13 +24,10 @@ export default class Game {
     const existedPlayer = this.players.get(player.id);
     if (existedPlayer) {
       existedPlayer.socket.send(
-        JSON.stringify({
-          type: ERROR,
-          message: "You already joined this game",
-        })
+        sendJson(ERROR, "You already joined this game")
       ); // if player is already join the game
     } else {
-      this.players.set(player.id, player);  // if not joined then add 
+      this.players.set(player.id, player); // if not joined then add
     }
   }
 }
