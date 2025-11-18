@@ -39,15 +39,17 @@ export default class Game {
           score: player.score,
         });
       }
-      player.socket.send(
-        sendJson(SEND_PLAYER, "player auth passed", {
-          userId: player.id,
-          fullName: player.fullName,
-          gameId: this.gameId,
-          themeId: this.themeId,
-          players: players,
-        })
-      );
+      const response = sendJson(SEND_PLAYER, "player auth passed", {
+        userId: player.id,
+        fullName: player.fullName,
+        gameId: this.gameId,
+        themeId: this.themeId,
+        players: players,
+      });
+      this.players.forEach((player) => {
+        player.socket.send(response);
+        this.host.socket.send(response);
+      });
       players = [];
     }
   }
