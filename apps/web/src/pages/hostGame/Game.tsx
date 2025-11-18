@@ -3,11 +3,12 @@ import Lobby from "./Lobby";
 import { THEMES } from "../themes/themesData";
 import { useQuizStore } from "../../stores/quizStore";
 import useSocketStore from "../../stores/socketStore";
+import { useEffect } from "react";
 export default function Game() {
-  const socketRef = useSocketStore((s) => s.socketRef); //store user web socket instance
-  const quizData = useQuizStore((s) => s.quiz); // store quiz data
   const themeId = useQuizStore((s) => s.themeId);
+  const role = useSocketStore((s) => s.role);
   const theme = THEMES.find((t) => t.id === themeId);
+  const userJoined = useSocketStore((s) => s.usersJoined);
   if (!theme)
     return (
       <>
@@ -15,14 +16,17 @@ export default function Game() {
       </>
     );
 
-  const usersJoined = [
-    { id: "XH7G02", name: "Ram" },
-    { id: "J93KS5", name: "Player 2" },
-  ];
+  useEffect(() => {
+    // just clear the socket instance if game component unmount
+    return () => {
+      useSocketStore.getState().clearSocket();
+    };
+  }, []);
+
   return (
     <>
       <ThemeWrapper themeData={theme}>
-        <Lobby users={usersJoined} />
+        <Lobby players={userJoined} role={role} />
       </ThemeWrapper>
     </>
   );

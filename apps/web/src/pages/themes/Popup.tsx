@@ -3,11 +3,15 @@ import { motion, AnimatePresence } from "motion/react";
 import useWebsocket from "../../hooks/useWebsocket";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
+import { useQuizStore } from "../../stores/quizStore";
 //write popup for consent
 export default function Popup() {
   const navigate = useNavigate();
   const token = useAuthStore.getState().token;
-  const { setShouldConnect } = useWebsocket(`ws://localhost:3001?token=${token}`);
+  const themeId = useQuizStore((s) => s.themeId);
+  const { setShouldConnect } = useWebsocket(
+    `ws://localhost:3001?token=${token}&themeId=${themeId}`
+  );
   function sendWsRequest() {
     setShouldConnect(true);
     navigate("/game");

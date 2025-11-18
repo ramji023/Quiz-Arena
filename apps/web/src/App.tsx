@@ -11,8 +11,9 @@ import AiQuiz from "./pages/QuizCreation/AiQuiz";
 import Quiz from "./pages/Quizzes/Quiz";
 import Theme from "./pages/themes/Theme";
 import ThemesPage from "./pages/themes/ThemesPage";
-import Game from "./pages/game/Game";
-import PlayerJoin from "./pages/game/PlayerJoin";
+import Game from "./pages/hostGame/Game";
+import PlayerJoin from "./pages/playerGame/PlayerJoin";
+import PlayerGame from "./pages/playerGame/PlayerGame";
 export default function App() {
   return (
     <>
@@ -34,9 +35,10 @@ export default function App() {
               <Route path="themes" element={<ThemesPage />} />
             </Route>
             <Route path="theme/:themeID" element={<Theme />} />
-            <Route path="game" element={<Game/>} />
+            <Route path="game" element={<Game />} />
           </Route>
-          <Route path="join" element={<PlayerJoin/>} />
+          <Route path="join" element={<PlayerJoin />} />
+          <Route path="play" element={<PlayerGame />} />
         </Routes>
       </BrowserRouter>
     </>

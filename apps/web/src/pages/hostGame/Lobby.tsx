@@ -3,21 +3,19 @@ import { useEffect, useState } from "react";
 import CarttonIcon from "@repo/ui/components/icons/CarttonIcon";
 import { Button } from "@repo/ui/components/ui/Button";
 import { CircleCheck } from "lucide-react";
-interface User {
-  id: string;
-  name: string;
-  color?: string;
-}
+import useSocketStore from "../../stores/socketStore";
+import { PlayerType } from "../../stores/socketStore";
 
 export default function Lobby({
-  roomId = "24359476734865468734",
-  users,
-  color = "bg-primary",
+  players,
+  role,
 }: {
-  roomId: string;
-  users: User[];
-  color: string;
+  players: PlayerType[];
+  role: string;
 }) {
+  // when server send gameId
+  const gameId = useSocketStore((s) => s.gameId);
+
   const [positions, setPositions] = useState<
     Record<string, { x: number; y: number }>
   >({});
@@ -37,22 +35,22 @@ export default function Lobby({
     };
 
     // Initialize positions for all users
-    users.forEach((user: User) => moveRandomly(user.id));
+    players.forEach((user: PlayerType) => moveRandomly(user.id));
 
     // Move each user every 3-5 seconds (random interval for variety)
-    const intervals = users.map((user) => {
+    const intervals = players.map((user) => {
       const interval = 3000 + Math.random() * 2000; // 3-5 seconds
       return setInterval(() => moveRandomly(user.id), interval);
     });
 
     return () => intervals.forEach((interval) => clearInterval(interval));
-  }, [users]);
+  }, [players]);
 
   const [isCopied, setIsCopied] = useState(false);
   // function to copy game pin
   const copyPin = () => {
     navigator.clipboard
-      .writeText(roomId)
+      .writeText(gameId as string)
       .then(() => setIsCopied(true))
       .catch((err) => console.error("Failed to copy:", err));
   };
@@ -66,29 +64,48 @@ export default function Lobby({
       return () => clearTimeout(timer);
     }
   }, [isCopied]);
+  if (!gameId) return <div>Game ID is not provided</div>;
+  console.log("game id on Lobby component : ", gameId);
   return (
     <>
-      <div className="w-full h-full relative flex flex-col items-center justify-center gap-6 p-6 select-none">
+      <div className="w-full h-full relative flex flex-col items-center justify-center gap-10 p-6 select-none">
         {/* Room Pin */}
-        <div
-          onClick={copyPin}
-          className="border-dashed border-black rounded border-2 bg-white px-2 py-1 cursor-pointer text-black text-start"
-        >
-          <div>
-            <span className="text-sm text-gray-700">Room Pin</span>
+        {role === "host" ? (
+          <div
+            onClick={copyPin}
+            className="border-dashed border-black rounded border-2 bg-white px-2 py-1 cursor-pointer text-black text-start"
+          >
+            <div>
+              <span className="text-sm text-gray-700">Room Pin</span>
+            </div>
+            <div>
+              <span className="text-black text-4xl font-semibold">
+                {gameId}
+              </span>
+            </div>
           </div>
-          <div>
-            <span className="text-black text-4xl font-semibold">{roomId}</span>
+        ) : (
+          // placeholder to take up space
+          <div className="opacity-0">
+            <div>
+              <span className="text-sm text-gray-700">Room Pin</span>
+            </div>
+            <div>
+              <span className="text-black text-4xl font-semibold">
+                {gameId}
+              </span>
+            </div>
           </div>
-        </div>
-
+        )}
         {/* Waiting */}
         <div className="border rounded border-gray-700 mt-3 px-3 py-2 bg-white text-base text-black font-semibold">
-          Waiting for Players...
+          {role === "host"
+            ? "Waiting for players..."
+            : "Waiting to start..."}
         </div>
 
         {/* Floating players */}
-        {users.map((user, index) => {
+        {players.map((user, index) => {
           const position = positions[user.id] || { x: 0, y: 0 };
 
           return (
@@ -108,18 +125,20 @@ export default function Lobby({
                 <div className="text-secondary">
                   <CarttonIcon />
                 </div>
-                <h1 className="font-bold"> {user.name}</h1>
+                <h1 className="font-bold"> {user.fullName}</h1>
               </div>
             </motion.div>
           );
         })}
 
         {/* submit button  */}
-        <div className="shadow-4xl mb-0 mt-10">
-          <Button variant="primary" onClick={() => {}}>
-            <span className="font-bold">Start</span>
-          </Button>
-        </div>
+        {role === "host" && (
+          <div className="shadow-4xl mb-0 mt-10">
+            <Button variant="primary" onClick={() => {}}>
+              <span className="font-bold">Start</span>
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="absolute bottom-5 right-0 mr-5 select-none">

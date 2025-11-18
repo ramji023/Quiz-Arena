@@ -2,11 +2,13 @@ import { Button } from "@repo/ui/components/ui/Button";
 import { useForm } from "react-hook-form";
 import useWebsocket from "../../hooks/useWebsocket";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 interface FormState {
   username: string;
   gamePin: string;
 }
 export default function PlayerJoin() {
+  const navigate = useNavigate();
   const { register, handleSubmit } = useForm<FormState>({
     defaultValues: {
       username: "",
@@ -21,6 +23,7 @@ export default function PlayerJoin() {
     const url = `ws://localhost:3001?roomId=${data.gamePin}&fullName=${data.username}`;
     setWsUrl(url);
     setShouldConnect(true);
+    navigate("/play");
   }
 
   return (

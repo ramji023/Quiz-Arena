@@ -6,6 +6,7 @@ const useWebsocket = (url: string) => {
   const setSocketInstance = useSocketStore((s) => s.setSocketInstance);
   useEffect(() => {
     if (!shouldConnect) return;
+    console.log("websocket url : ",url)
     const ws = new WebSocket(url);
     ws.onopen = () => {
       setSocketInstance(ws);
