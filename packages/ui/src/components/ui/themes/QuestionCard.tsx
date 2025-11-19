@@ -1,11 +1,19 @@
 import { useState } from "react";
-
+interface QuestionType {
+  questionId: string;
+  question: string;
+  points: number;
+  options: {
+    text: string;
+    isCorrect: boolean;
+  }[];
+}
 export default function QuestionCard({
   questionData,
   onAnswer,
   optionColors,
 }: {
-  questionData: { question: string; options: string[] };
+  questionData: QuestionType;
   onAnswer: (option: string) => void;
   optionColors: Record<number, { from?: string; to?: string; color?: string }>;
 }) {
@@ -28,7 +36,7 @@ export default function QuestionCard({
       {/* Options */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-w-2xl">
         {questionData.options.map((option, index) => {
-          const isSelected = selected === option;
+          const isSelected = selected === option.text;
           const colorSet =
             optionColors[index % Object.keys(optionColors).length];
 
@@ -39,7 +47,7 @@ export default function QuestionCard({
           return (
             <button
               key={index}
-              onClick={() => handleSelect(option)}
+              onClick={() => handleSelect(option.text)}
               style={{
                 background,
                 border: isSelected
@@ -66,7 +74,7 @@ export default function QuestionCard({
                 if (!isSelected) e.currentTarget.style.opacity = "0.9";
               }}
             >
-              <span className="drop-shadow-md">{option}</span>
+              <span className="drop-shadow-md">{option.text}</span>
 
               {/* Overlay shimmer layer */}
               <div

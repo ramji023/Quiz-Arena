@@ -9,7 +9,7 @@ api.interceptors.request.use(
   (config) => {
     config.withCredentials = true;
     const token = useAuthStore.getState().token;
-    console.log("token in request interceptor : ",token)
+    // console.log("token in request interceptor : ",token)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

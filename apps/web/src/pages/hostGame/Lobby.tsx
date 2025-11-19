@@ -5,9 +5,10 @@ import { Button } from "@repo/ui/components/ui/Button";
 import { CircleCheck } from "lucide-react";
 import useSocketStore from "../../stores/socketStore";
 import { PlayerType } from "../../stores/socketStore";
+import { useQuizStore } from "../../stores/quizStore";
 
 export default function Lobby({
-  players,
+  players = [],
   role,
 }: {
   players: PlayerType[];
@@ -64,8 +65,30 @@ export default function Lobby({
       return () => clearTimeout(timer);
     }
   }, [isCopied]);
+
+  // if user click to start button then send quiz data to websocket server
+  function sendQuizDataToServer() {
+    const quizData = useQuizStore.getState().quiz;
+    const socket = useSocketStore.getState().socketRef.current;
+    const quizz = { title: quizData?.title, questions: quizData?.questions };
+    // console.log("QUizz data : ", quizz);
+    if (socket) {
+      socket.send(
+        JSON.stringify({
+          type: "send-quiz",
+          data: {
+            gameId: useSocketStore.getState().gameId,
+            userId: useSocketStore.getState().id,
+            quiz: quizz,
+          },
+          message: "Quiz data send to server successfully",
+        })
+      );
+    }
+  }
+
   if (!gameId) return <div>Game ID is not provided</div>;
-  console.log("game id on Lobby component : ", gameId);
+  // console.log("game id on Lobby component : ", gameId);
   return (
     <>
       <div className="w-full h-full relative flex flex-col items-center justify-center gap-10 p-6 select-none">
@@ -99,9 +122,7 @@ export default function Lobby({
         )}
         {/* Waiting */}
         <div className="border rounded border-gray-700 mt-3 px-3 py-2 bg-white text-base text-black font-semibold">
-          {role === "host"
-            ? "Waiting for players..."
-            : "Waiting to start..."}
+          {role === "host" ? "Waiting for players..." : "Waiting to start..."}
         </div>
 
         {/* Floating players */}
@@ -134,7 +155,12 @@ export default function Lobby({
         {/* submit button  */}
         {role === "host" && (
           <div className="shadow-4xl mb-0 mt-10">
-            <Button variant="primary" onClick={() => {}}>
+            <Button
+              variant="primary"
+              onClick={() => {
+                sendQuizDataToServer();
+              }}
+            >
               <span className="font-bold">Start</span>
             </Button>
           </div>

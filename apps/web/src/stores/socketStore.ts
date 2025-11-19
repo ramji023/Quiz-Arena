@@ -1,9 +1,20 @@
 import { create } from "zustand";
+import { useQuizStore } from "./quizStore";
 
 export interface PlayerType {
   id: string;
   fullName: string;
   score: number;
+}
+
+export interface QuestionType {
+  questionId: string;
+  question: string;
+  points: number;
+  options: {
+    text: string;
+    isCorrect: boolean;
+  }[];
 }
 
 interface SocketStore {
@@ -13,7 +24,9 @@ interface SocketStore {
   fullName: string | null;
   gameId: string | null;
   themeId: string | null;
-  usersJoined: PlayerType[];
+  playerJoined: PlayerType[];
+  question: QuestionType | null;
+  gameStatus: "waiting" | "ready" | "start" | "end";
   setSocketInstance: (socket: WebSocket) => void;
   clearSocket: () => void;
 }
@@ -27,7 +40,9 @@ const useSocketStore = create<SocketStore>((set, get) => ({
   fullName: null, // store player name
   gameId: null,
   themeId: null,
-  usersJoined: [], // store all the players
+  playerJoined: [], // store all the players
+  question: null,
+  gameStatus: "waiting",
   setSocketInstance: (socket) => {
     get().socketRef.current = socket;
 
@@ -35,7 +50,7 @@ const useSocketStore = create<SocketStore>((set, get) => ({
     socket.onmessage = (event) => {
       const parsedData = JSON.parse(event.data); // parse the json data
 
-      console.log("server message : ", parsedData);
+      // console.log("server message : ", parsedData);
       switch (parsedData.type) {
         //when host start game
         case "game-pin":
@@ -44,19 +59,37 @@ const useSocketStore = create<SocketStore>((set, get) => ({
             id: parsedData.data.userId,
             role: "host",
           });
-          console.log("gameID", parsedData.data.gamePin);
+          // console.log("gameID", parsedData.data.gamePin);
           break;
 
-        // when player join join
-        case "send-player":
+        // when player join quiz
+        case "player-join":
           set({
             id: parsedData.data.userId,
             gameId: parsedData.data.gameId,
             themeId: parsedData.data.themeId,
             fullName: parsedData.data.fullName,
-            usersJoined: [...parsedData.data.players],
           });
-          console.log("joined user data : ", get().usersJoined);
+          break;
+
+        // get all the joined user data
+        case "joined-player":
+          set({ playerJoined: parsedData.data.playerJoined });
+          break;
+
+        // got messsage to start the quiz after 5 seconds
+        case "quiz-ready":
+          set({ gameStatus: "ready" });
+          useQuizStore.getState().resetQuiz();
+          break;
+
+        //  got current question data and current player score
+        case "send-question":
+          set({
+            gameStatus: "start",
+            question: parsedData.data.question,
+            playerJoined: parsedData.data.players,
+          });
           break;
       }
     };

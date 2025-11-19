@@ -4,13 +4,14 @@ import useSocketStore from "../../stores/socketStore";
 import Lobby from "../hostGame/Lobby";
 import { THEMES } from "../themes/themesData";
 import ThemeWrapper from "../themes/ThemeWrapper";
+import Countdown from "../clock/CountDown";
 
 export default function PlayerGame() {
   const themeId = useSocketStore((s) => s.themeId);
   const theme = THEMES.find((t) => t.id === themeId);
-  const userJoined = useSocketStore((s) => s.usersJoined);
+  const userJoined = useSocketStore((s) => s.playerJoined);
   const role = useSocketStore((s) => s.role);
-
+  const gameStatus = useSocketStore((s) => s.gameStatus);
   useEffect(() => {
     // just clear the socket instance if playerGame component unmount
     return () => {
@@ -28,7 +29,10 @@ export default function PlayerGame() {
   return (
     <>
       <ThemeWrapper themeData={theme}>
-        <Lobby players={userJoined} role={role} />
+        {gameStatus === "waiting" && <Lobby players={userJoined} role={role} />}
+        {gameStatus === "ready" && (
+          <Countdown/>
+        )}
       </ThemeWrapper>
     </>
   );

@@ -10,7 +10,12 @@ import LavaFlow from "@repo/ui/components/ui/themes/volcano/LavaFlow";
 import { ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuizStore } from "../../stores/quizStore";
-
+interface Player {
+  id: string;
+  fullName: string;
+  score: number;
+  rank: number;
+}
 export default function ThemeWrapper({
   children,
   themeData,
@@ -18,9 +23,10 @@ export default function ThemeWrapper({
 }: {
   children: ReactNode;
   themeData: ThemeData;
-  players?: { name: string; score: number; rank: number }[];
+  players?: { id: string; fullName: string; score: number }[];
 }) {
   const location = useLocation();
+  const [playerData, setPlayerData] = useState<Player[] | null>(null);
   const [shouldOpen, setShouldOpen] = useState(location.state);
   const [isSelect, setIsSelect] = useState(false);
   useEffect(() => {
@@ -34,6 +40,15 @@ export default function ThemeWrapper({
     }
   }, []);
 
+  // when player data changes
+  useEffect(() => {
+    if (players) {
+      const playerArray: Player[] = players
+        .sort((a, b) => b.score - a.score)
+        .map((player, index) => ({ ...player, rank: index + 1 }));
+      setPlayerData(playerArray);
+    }
+  }, [playerData]);
   return (
     <motion.div
       className="relative min-h-screen bg-cover bg-center text-center overflow-hidden"
@@ -86,7 +101,7 @@ export default function ThemeWrapper({
       </motion.button>
 
       {/* Leaderboard Floating Panel */}
-      {players && (
+      {playerData && (
         <motion.div
           className={`absolute top-3 right-3 w-50 rounded p-2 shadow backdrop-blur-md z-20`}
           initial={{ opacity: 0, y: -20 }}
@@ -104,7 +119,7 @@ export default function ThemeWrapper({
             🏆 Leaderboard
           </h2>
           <ul className="space-y-1">
-            {players?.slice(0, 5).map((player, index) => {
+            {playerData?.slice(0, 5).map((player, index) => {
               const isTopPlayer = index === 0;
 
               return (
@@ -131,7 +146,7 @@ export default function ThemeWrapper({
                   >
                     {player.rank}
                   </span>
-                  <span className="truncate text-base">{player.name}</span>
+                  <span className="truncate text-base">{player.fullName}</span>
                   <span
                     style={{
                       fontSize: "0.875rem",
