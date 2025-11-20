@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnswerFeedback } from "./Popup";
 interface QuestionType {
   questionId: string;
   question: string;
@@ -9,19 +10,29 @@ interface QuestionType {
   }[];
 }
 export default function QuestionCard({
+  role,
   questionData,
   onAnswer,
   optionColors,
+  answerResult,
 }: {
+  role: "host" | "player";
   questionData: QuestionType;
-  onAnswer: (option: string) => void;
+  onAnswer: (option: { text: string; isCorrect: boolean }, id: string) => void;
   optionColors: Record<number, { from?: string; to?: string; color?: string }>;
+  answerResult?: null | "correct" | "wrong";
 }) {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<{
+    text: string;
+    isCorrect: boolean;
+  } | null>(null);
 
-  const handleSelect = (option: string) => {
+  const handleSelect = (
+    option: { text: string; isCorrect: boolean },
+    questionId: string
+  ) => {
     setSelected(option);
-    onAnswer(option);
+    onAnswer(option, questionId);
   };
 
   return (
@@ -36,7 +47,7 @@ export default function QuestionCard({
       {/* Options */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-w-2xl">
         {questionData.options.map((option, index) => {
-          const isSelected = selected === option.text;
+          const isSelected = selected?.text === option.text;
           const colorSet =
             optionColors[index % Object.keys(optionColors).length];
 
@@ -46,8 +57,9 @@ export default function QuestionCard({
 
           return (
             <button
+              disabled={role === "host" ? true : false}
               key={index}
-              onClick={() => handleSelect(option.text)}
+              onClick={() => handleSelect(option, questionData.questionId)}
               style={{
                 background,
                 border: isSelected
@@ -64,7 +76,7 @@ export default function QuestionCard({
                   ? "0 0 20px rgba(255, 255, 100, 0.6)"
                   : "none",
                 opacity: isSelected ? 1 : 0.9,
-                cursor: "pointer",
+                cursor: role === "host" ? "none" : "pointer",
                 position: "relative",
               }}
               onMouseEnter={(e) => {
@@ -85,6 +97,9 @@ export default function QuestionCard({
           );
         })}
       </div>
+      {/* show question result  */}
+      {answerResult && <AnswerFeedback result={answerResult} />}
     </div>
+    
   );
 }

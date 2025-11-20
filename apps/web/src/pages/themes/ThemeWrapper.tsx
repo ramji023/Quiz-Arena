@@ -10,6 +10,8 @@ import LavaFlow from "@repo/ui/components/ui/themes/volcano/LavaFlow";
 import { ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuizStore } from "../../stores/quizStore";
+import useSocketStore from "../../stores/socketStore";
+import Timer from "../clock/Timer";
 interface Player {
   id: string;
   fullName: string;
@@ -20,13 +22,18 @@ export default function ThemeWrapper({
   children,
   themeData,
   players,
+  questionId,
+  answered
 }: {
   children: ReactNode;
   themeData: ThemeData;
-  players?: { id: string; fullName: string; score: number }[];
+  players: { id: string; fullName: string; score: number }[] | null;
+  questionId: string | null;
+  answered:boolean;
 }) {
   const location = useLocation();
   const [playerData, setPlayerData] = useState<Player[] | null>(null);
+  const [yourScore, setYourScore] = useState<Player | null>(null);
   const [shouldOpen, setShouldOpen] = useState(location.state);
   const [isSelect, setIsSelect] = useState(false);
   useEffect(() => {
@@ -46,9 +53,22 @@ export default function ThemeWrapper({
       const playerArray: Player[] = players
         .sort((a, b) => b.score - a.score)
         .map((player, index) => ({ ...player, rank: index + 1 }));
-      setPlayerData(playerArray);
+      const playersScore = playerArray.filter(
+        (player) => player.id !== useSocketStore.getState().id
+      );
+      const yourScoreData = playerArray.find(
+        (player) => player.id === useSocketStore.getState().id
+      );
+      setPlayerData(playersScore);
+      if (yourScoreData) {
+        setYourScore(yourScoreData);
+      }
     }
-  }, [playerData]);
+  }, [players]);
+
+  const topPlayers = playerData?.slice(0, 4) || [];
+  const leaderboardDisplay = [...topPlayers, ...(yourScore ? [yourScore] : [])];
+
   return (
     <motion.div
       className="relative min-h-screen bg-cover bg-center text-center overflow-hidden"
@@ -119,21 +139,26 @@ export default function ThemeWrapper({
             🏆 Leaderboard
           </h2>
           <ul className="space-y-1">
-            {playerData?.slice(0, 5).map((player, index) => {
+            {leaderboardDisplay.map((player, index) => {
               const isTopPlayer = index === 0;
+              const isYou = yourScore && player.id === yourScore.id;
 
               return (
                 <li
-                  key={index}
+                  key={player.id}
                   className="flex justify-between items-center px-3 py-1 rounded border font-semibold transition-all duration-300"
                   style={{
-                    borderColor: isTopPlayer
-                      ? themeData.borders["border-li-300"]
-                      : themeData.borders["border-li-400/30"],
+                    borderColor: isYou
+                      ? themeData.borders["border-you-300"]
+                      : isTopPlayer
+                        ? themeData.borders["border-li-300"]
+                        : themeData.borders["border-li-400/30"],
 
-                    backgroundColor: isTopPlayer
-                      ? themeData.background["bg-li-400/40"]
-                      : themeData.background["bg-li-100/10"],
+                    backgroundColor: isYou
+                      ? themeData.background["bg-you-400/50"]
+                      : isTopPlayer
+                        ? themeData.background["bg-li-400/40"]
+                        : themeData.background["bg-li-100/10"],
 
                     color: themeData.textColor["li-text-100"],
                   }}
@@ -146,13 +171,12 @@ export default function ThemeWrapper({
                   >
                     {player.rank}
                   </span>
-                  <span className="truncate text-base">{player.fullName}</span>
-                  <span
-                    style={{
-                      fontSize: "0.875rem",
-                      opacity: 0.8,
-                    }}
-                  >
+
+                  <span className="truncate text-base">
+                    {isYou ? "⭐You" : player.fullName}
+                  </span>
+
+                  <span style={{ fontSize: "0.875rem", opacity: 0.8 }}>
                     {player.score}
                   </span>
                 </li>
@@ -193,6 +217,12 @@ export default function ThemeWrapper({
 
       {/* pop up model  */}
       {isSelect && <PopUp id={themeData.id} />}
+
+      {players && questionId && (
+        <div className=" fixed bottom-6 right-6 z-50">
+          <Timer id={questionId} answered={answered}/>
+        </div>
+      )}
     </motion.div>
   );
 }

@@ -3,6 +3,6 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src"],
+  "include": ["src", "../../packages/ui/src/components/ui/themes/Popup.tsx"],
   "exclude": ["node_modules", "dist"]
 }

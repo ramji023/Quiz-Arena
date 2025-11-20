@@ -5,14 +5,14 @@ export default class User {
   socket: WebSocket;
   fullName: string;
   type: "host" | "player";
-  score ?: number;
+  score?: number;
   // if first time user join game
   constructor(socket: WebSocket, fullName: string, type: "host" | "player") {
     this.socket = socket;
     this.fullName = fullName;
     this.id = uuidv4();
     this.type = type;
-    if(type==="player"){
+    if (type === "player") {
       this.score = 0;
     }
   }

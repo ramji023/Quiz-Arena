@@ -18,7 +18,7 @@ wss.on("connection", (ws, req) => {
         parsedUrl.token as string,
         process.env.ACCESS_TOKEN_KEY as string
       ) as jwt.JwtPayload;
-      console.log("decoded user data : ", decodedToken);
+      // console.log("decoded user data : ", decodedToken);
       // ws.send("host Authentication Successfull");
       newGameManager.addPlayer(
         "host",

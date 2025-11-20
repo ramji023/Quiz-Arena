@@ -5,6 +5,8 @@ export const PLAYER_JOIN = "player-join";
 export const JOINED_PLAYER = "joined-player";
 export const QUIZ_READY = "quiz-ready"
 export const QUESTION_SENT = "send-question"
+export const ANSWER_CHECKED = "answer-checked"
+export const PLAYERS_SCORE = "players-score";
 
 // client send to  server
 export const GET_QUIZ = "send-quiz";

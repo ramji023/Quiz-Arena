@@ -11,6 +11,7 @@ export default class Game {
   currentQuestionIndex: number | null;
   countDown: string;
   players: Map<string, User>;
+  questionTimer : NodeJS.Timeout | null;
 
   //when host initialize a game
   constructor(host: User, themeId: string) {
@@ -18,9 +19,10 @@ export default class Game {
     this.host = host;
     this.quizData = null;
     this.currentQuestionIndex = 0;
-    this.countDown = "05";
+    this.countDown = "10";
     this.players = new Map();
     this.themeId = themeId;
+    this.questionTimer = null;
   }
 
   // add player in Game object

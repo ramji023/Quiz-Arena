@@ -35,13 +35,18 @@ export default function Game() {
   };
   return (
     <>
-      <ThemeWrapper themeData={theme}>
+      <ThemeWrapper
+        themeData={theme}
+        players={gameStatus === "start" ? userJoined : null}
+        questionId={question?.questionId ?? null}
+      >
         {gameStatus === "waiting" && <Lobby players={userJoined} role={role} />}
         {gameStatus === "ready" && <Countdown />}
         {gameStatus === "start" && question && (
           <QuestionCard
+            role={role}
             questionData={question}
-            onAnswer={(option: string) => console.log("Selected:", option)}
+            onAnswer={onAnswer}
             optionColors={theme.optionColor}
           />
         )}

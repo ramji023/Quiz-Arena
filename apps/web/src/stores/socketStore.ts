@@ -27,6 +27,7 @@ interface SocketStore {
   playerJoined: PlayerType[];
   question: QuestionType | null;
   gameStatus: "waiting" | "ready" | "start" | "end";
+  answerResult: null | "correct" | "wrong";
   setSocketInstance: (socket: WebSocket) => void;
   clearSocket: () => void;
 }
@@ -43,6 +44,7 @@ const useSocketStore = create<SocketStore>((set, get) => ({
   playerJoined: [], // store all the players
   question: null,
   gameStatus: "waiting",
+  answerResult: null,
   setSocketInstance: (socket) => {
     get().socketRef.current = socket;
 
@@ -89,7 +91,20 @@ const useSocketStore = create<SocketStore>((set, get) => ({
             gameStatus: "start",
             question: parsedData.data.question,
             playerJoined: parsedData.data.players,
+            answerResult: null,
           });
+          break;
+
+        // got status of selected option
+        case "answer-checked":
+          set({
+            answerResult: parsedData.data.selectedOption ? "correct" : "wrong",
+          });
+          break;
+
+        // get updated player score
+        case "players-score":
+          set({ playerJoined: parsedData.data.players });
           break;
       }
     };
