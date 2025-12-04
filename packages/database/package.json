@@ -15,10 +15,13 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^24.8.1",
-    "prisma": "^6.17.1"
+    "@types/pg": "^8.15.6",
+    "prisma": "^7.1.0"
   },
   "dependencies": {
-    "@prisma/client": "6.17.1",
-    "@repo/typescript-config": "workspace:*"
+    "@prisma/adapter-pg": "^7.1.0",
+    "@prisma/client": "7.1.0",
+    "@repo/typescript-config": "workspace:*",
+    "pg": "^8.16.3"
   }
 }
