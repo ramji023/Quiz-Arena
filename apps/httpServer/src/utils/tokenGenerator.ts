@@ -5,11 +5,6 @@ export default function generateToken(payload: {
   email: string;
 }) {
   try {
-    // console.log(process.env.ACCESS_TOKEN_KEY)
-    // console.log(process.env.ACCESS_TOKEN_EXPIRATION)
-    // console.log(process.env.REFRESH_TOKEN_KEY)
-    // console.log(process.env.REFRESH_TOKEN_EXPIRATION)
-
     const accessToken = jwt.sign(
       payload,
       process.env.ACCESS_TOKEN_KEY as string,
