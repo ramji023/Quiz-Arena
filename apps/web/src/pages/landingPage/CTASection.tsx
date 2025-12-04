@@ -30,8 +30,14 @@ export default function CTASection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Button variant="primary"> Start Your First Quiz</Button>
-          <Button variant="other"> Explore Public Quizzes</Button>
+          <Button variant="primary" onClick={() => {}}>
+            {" "}
+            Start Your First Quiz
+          </Button>
+          <Button variant="other" onClick={() => {}}>
+            {" "}
+            Explore Public Quizzes
+          </Button>
         </motion.div>
       </div>
     </section>

@@ -2,19 +2,27 @@ import { useParams } from "react-router-dom";
 import { THEMES } from "./themesData";
 import ThemeWrapper from "./ThemeWrapper";
 import QuestionCard from "@repo/ui/components/ui/themes/QuestionCard";
+import useSocketStore from "../../stores/socketStore";
 const players = [
-  { name: "Aarav", score: 1200, rank: 1 },
-  { name: "Meera", score: 950, rank: 2 },
-  { name: "Ravi", score: 870, rank: 3 },
-  { name: "Kiran", score: 760, rank: 4 },
-  { name: "Tara", score: 640, rank: 235 },
+  { id: "1", fullName: "Aarav", score: 1200 },
+  { id: "2", fullName: "Meera", score: 950 },
+  { id: "3", fullName: "Ravi", score: 870 },
+  { id: "4", fullName: "Kiran", score: 760 },
+  { id: "5", fullName: "Tara", score: 640 },
 ];
 const questionData = {
+  questionId: "1",
+  points: 10,
   question: "Which animal is known as the King of the Jungle?",
-  options: ["Elephant", "Lion", "Tiger", "Leopard"],
+  options: [
+    { text: "Elephant", isCorrect: true },
+    { text: "Lion", isCorrect: false },
+    { text: "Tiger", isCorrect: true },
+    { text: "Leopord", isCorrect: true },
+  ],
 };
-
 export default function Theme() {
+  const role = useSocketStore((s) => s.role);
   const themeID = useParams().themeID;
   if (!themeID) return <div>something went wrong</div>;
 
@@ -22,10 +30,13 @@ export default function Theme() {
   if (!jungle) return <div>Theme id is not valid</div>;
 
   return (
-    <ThemeWrapper themeData={jungle} players={players}>
+    <ThemeWrapper themeData={jungle} players={players} questionId={questionData.questionId}>
       <QuestionCard
+        role={role}
         questionData={questionData}
-        onAnswer={(option: string) => console.log("Selected:", option)}
+        onAnswer={(option: { text: string; isCorrect: boolean }, id: string) =>
+          console.log("Selected:", option)
+        }
         optionColors={jungle.optionColor}
       />
     </ThemeWrapper>

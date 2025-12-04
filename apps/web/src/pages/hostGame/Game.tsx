@@ -30,7 +30,10 @@ export default function Game() {
     );
 
   // when player click to any options
-  const onAnswer = (option: string) => {
+  const onAnswer = (
+    option: { text: string; isCorrect: boolean },
+    id: string
+  ) => {
     console.log("Selected:", option);
   };
   return (

@@ -1,0 +1,17 @@
+FROM node:20-alpine
+
+WORKDIR /usr/src/httpServer
+
+
+COPY ./packages/typescript-config ./packages/typescript-config
+COPY ./package.json ./package.json
+COPY ./pnpm-lock.yaml ./pnpm-lock.yaml
+COPY ./pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY  ./turbo.json ./turbo.json
+COPY ./apps/web ./apps/web
+
+RUN npm install -g pnpm
+RUN pnpm install
+RUN pnpm run build
+
+CMD ["pnpm","run","start:webSocket"]

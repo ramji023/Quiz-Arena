@@ -23,15 +23,17 @@ export default function MatrixRain({
   >([]);
 
   useEffect(() => {
-    const matrixChars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
-    
+    const matrixChars =
+      "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+
     const newColumns = Array.from({ length: count }, (_, i) => ({
       id: i,
       left: `${Math.random() * 100}%`,
       delay: Math.random() * 5,
-      duration: 8 + Math.random() * 4 / speed,
-      chars: Array.from({ length: 15 }, () => 
-        matrixChars[Math.floor(Math.random() * matrixChars.length)]
+      duration: 8 + (Math.random() * 4) / speed,
+      chars: Array.from(
+        { length: 15 },
+        () => matrixChars[Math.floor(Math.random() * matrixChars.length)] ?? ""
       ),
     }));
 
@@ -64,7 +66,7 @@ export default function MatrixRain({
               key={idx}
               className="text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"
               style={{
-                opacity: 1 - (idx * 0.06),
+                opacity: 1 - idx * 0.06,
               }}
               animate={{
                 color: [

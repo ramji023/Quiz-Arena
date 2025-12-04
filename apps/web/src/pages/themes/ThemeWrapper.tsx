@@ -29,7 +29,7 @@ export default function ThemeWrapper({
   themeData: ThemeData;
   players: { id: string; fullName: string; score: number }[] | null;
   questionId: string | null;
-  answered:boolean;
+  answered ?:boolean;
 }) {
   const location = useLocation();
   const [playerData, setPlayerData] = useState<Player[] | null>(null);
@@ -218,7 +218,7 @@ export default function ThemeWrapper({
       {/* pop up model  */}
       {isSelect && <PopUp id={themeData.id} />}
 
-      {players && questionId && (
+      {players && questionId && answered && (
         <div className=" fixed bottom-6 right-6 z-50">
           <Timer id={questionId} answered={answered}/>
         </div>
