@@ -9,7 +9,8 @@
     "check-types": "turbo run check-types",
     "start:web": "cd apps/web && pnpm run preview --port 3001 --host 0.0.0.0",
     "db:generate": "cd packages/database && pnpm dlx prisma generate",
-    "start:http": "cd packages/database && pnpm dlx prisma migrate deploy --config ./src/prisma.config.ts && cd ../../ && cd apps/httpServer && node dist/index.js"
+    "start:http": "cd packages/database && pnpm dlx prisma migrate deploy --config ./src/prisma.config.ts && cd ../../ && cd apps/httpServer && node dist/index.js",
+    "start:webSocket": "cd apps/webSocketServer && node dist/server.js"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

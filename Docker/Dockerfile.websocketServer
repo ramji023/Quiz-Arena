@@ -1,14 +1,14 @@
 FROM node:20-alpine
 
-WORKDIR /usr/src/httpServer
+WORKDIR /usr/src/websocket
 
-
+COPY ./packages/eslint-config ./packages/eslint-config
 COPY ./packages/typescript-config ./packages/typescript-config
 COPY ./package.json ./package.json
 COPY ./pnpm-lock.yaml ./pnpm-lock.yaml
 COPY ./pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY  ./turbo.json ./turbo.json
-COPY ./apps/web ./apps/web
+COPY ./apps/webSocketServer ./apps/webSocketServer
 
 RUN npm install -g pnpm
 RUN pnpm install
