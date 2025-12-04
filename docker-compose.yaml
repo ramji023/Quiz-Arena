@@ -1,0 +1,70 @@
+services:
+  # postgreSQL database
+  database:
+    image: postgres:15
+    container_name: quiz_arena_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_net
+
+  # http-server
+  httpserver:
+    build:
+      context: .
+      dockerfile: ./Docker/Dockerfile.httpServer
+    container_name: quiz_arena_http_server
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      ACCESS_TOKEN_KEY: ${ACCESS_TOKEN_KEY}
+      ACCESS_TOKEN_EXPIRATION: ${ACCESS_TOKEN_EXPIRATION}
+      REFRESH_TOKEN_KEY: ${REFRESH_TOKEN_KEY}
+      REFRESH_TOKEN_EXPIRATION: ${REFRESH_TOKEN_EXPIRATION}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    networks:
+      - app_net
+
+  # websocket-server
+  websocketserver:
+    build:
+      context: .
+      dockerfile: ./Docker/Dockerfile.websocketServer
+    container_name: quiz_arena_web_socket_server
+    environment:
+      ACCESS_TOKEN_KEY: ${ACCESS_TOKEN_KEY}
+      ACCESS_TOKEN_EXPIRATION: ${ACCESS_TOKEN_EXPIRATION}
+    ports:
+      - "3002:3002"
+    depends_on:
+      - httpserver
+    networks:
+      - app_net
+
+  # react frontend
+  web:
+    build:
+      context: .
+      dockerfile: ./Docker/Dockerfile.frontend
+    container_name: quiz_arena_frontend
+    ports:
+      - "3001:3001"
+    networks:
+      - app_net
+
+# shared Network
+networks:
+  app_net:
+
+# persistent Storage
+volumes:
+  postgres_data:
