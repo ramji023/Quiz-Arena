@@ -48,4 +48,4 @@ jobs:
           context: .
           file: ./Docker/Dockerfile.frontend
           push: true
-          tags: ramjimishra024/spoona-frontend:${{ github.sha }}
+          tags: ramjimishra024/quizarena-frontend:${{ github.sha }}
