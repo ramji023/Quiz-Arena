@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuizStore } from "../../stores/quizStore";
+// import { useQuizStore } from "../../stores/quizStore";
 import useSocketStore from "../../stores/socketStore";
 import Lobby from "../hostGame/Lobby";
 import { THEMES } from "../themes/themesData";

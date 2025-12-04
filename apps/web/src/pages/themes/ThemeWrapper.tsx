@@ -45,7 +45,7 @@ export default function ThemeWrapper({
         return clearTimeout(timer);
       };
     }
-  }, []);
+  }, [shouldOpen]); // before linting []
 
   // when player data changes
   useEffect(() => {

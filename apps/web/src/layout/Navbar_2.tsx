@@ -1,4 +1,3 @@
-import { Logo } from "@repo/ui/components/Logo";
 import Logo_2 from "./Logo_2";
 import { useAuthStore } from "../stores/authStore";
 import { useNavigate } from "react-router-dom";

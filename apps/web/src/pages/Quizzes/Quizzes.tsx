@@ -1,4 +1,3 @@
-import { Button } from "@repo/ui/components/ui/Button";
 import QuizCard from "@repo/ui/components/ui/QuizCard";
 export const quizzes = [
   {
@@ -99,7 +98,7 @@ export default function Quizzes() {
           {/* if there is quiz available  */}
           <div className="flex items-center flex-wrap p-6 gap-y-5 gap-x-10">
             {data.map((quiz, index) => (
-              <QuizCard quiz={quiz} navigation={navigation}/>
+              <QuizCard key={index} quiz={quiz} navigation={navigation}/>
             ))}
           </div>
         </div>

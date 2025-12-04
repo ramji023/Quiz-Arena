@@ -53,7 +53,7 @@ export default function HowItWorks() {
         {/* card section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step, index) => (
-            <Card step={step} index={index} />
+            <Card key={index} step={step} index={index} />
           ))}
         </div>
       </div>

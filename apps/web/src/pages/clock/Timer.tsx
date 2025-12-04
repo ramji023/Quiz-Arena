@@ -20,14 +20,14 @@ export default function Timer({ duration = 10, id, answered }: CountdownProps) {
     setTime(duration);
     controls.set({ strokeDashoffset: circumference });
 
-    let interval: NodeJS.Timeout;
+    // let interval: NodeJS.Timeout;
 
     controls.start({
       strokeDashoffset: 0,
       transition: { duration, ease: "linear" },
     });
 
-    interval = setInterval(() => {
+    const interval: NodeJS.Timeout = setInterval(() => {
       setTime((t) => {
         if (t <= 1) {
           clearInterval(interval);
@@ -38,7 +38,7 @@ export default function Timer({ duration = 10, id, answered }: CountdownProps) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [id]);
+  }, [id,circleSize,radius,circumference,controls,duration]);  // before linting [id]
 
   useEffect(() => {
     if (!answered) return;

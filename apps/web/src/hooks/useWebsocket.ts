@@ -21,7 +21,7 @@ const useWebsocket = (url: string) => {
         alert("Session expired or invalid token. Please log in again.");
       }
     };
-  }, [shouldConnect]);
+  }, [shouldConnect,setSocketInstance,url]);     // [shouldConnect]
 
   return { setShouldConnect };
 };

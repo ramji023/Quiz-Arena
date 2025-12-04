@@ -1,5 +1,5 @@
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { useAuthStore } from "../../stores/authStore";
+import { useNavigate, useParams } from "react-router-dom";
+// import { useAuthStore } from "../../stores/authStore";
 import { MoveLeft, Triangle, Star, User, ListChecks } from "lucide-react";
 import { useGetQuiz } from "../../queries/reactQueries";
 import { useQuizStore } from "../../stores/quizStore";
@@ -10,7 +10,7 @@ export default function Quiz() {
   const setQuiz = useQuizStore((s) => s.setQuiz);
   const quizId = useParams().quizId;
   console.log(quizId);
-  const { data, isLoading, error } = useGetQuiz(quizId);
+  const { data } = useGetQuiz(quizId);
   if (!quizId) return <div>Quiz id is not provided</div>;
 
   if (data) {

@@ -126,7 +126,7 @@ export default function Lobby({
         </div>
 
         {/* Floating players */}
-        {players.map((user, index) => {
+        {players.map((user) => {
           const position = positions[user.id] || { x: 0, y: 0 };
 
           return (

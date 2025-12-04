@@ -4,7 +4,7 @@ import { Plus, Save } from "lucide-react";
 import { QuestionBox } from "./QuestionBox";
 import { useEffect } from "react";
 import { QuizFormState } from "../../types/quizForm";
-import { useForm, useFieldArray, useWatch } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import AutoSave from "./AutoSave";
 import { useAuthStore } from "../../stores/authStore";
 import { useMutation } from "@tanstack/react-query";

@@ -49,7 +49,7 @@ export default function AiQuiz() {
     quizBuilderMutation.mutate(data);
   };
 
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   return (
     <AnimatePresence>
       <>

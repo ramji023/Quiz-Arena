@@ -30,13 +30,21 @@ export default function Theme() {
   if (!jungle) return <div>Theme id is not valid</div>;
 
   return (
-    <ThemeWrapper themeData={jungle} players={players} questionId={questionData.questionId}>
+    <ThemeWrapper
+      themeData={jungle}
+      players={players}
+      questionId={questionData.questionId}
+    >
       <QuestionCard
         role={role}
         questionData={questionData}
-        onAnswer={(option: { text: string; isCorrect: boolean }, id: string) =>
-          console.log("Selected:", option)
-        }
+        onAnswer={(
+          option: { text: string; isCorrect: boolean },
+          id: string
+        ) => {
+          console.log("Selected:", option);
+          console.log(id);
+        }}
         optionColors={jungle.optionColor}
       />
     </ThemeWrapper>

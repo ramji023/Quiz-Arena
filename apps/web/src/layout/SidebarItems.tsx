@@ -51,7 +51,7 @@ export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
       navigate("/");
     },
     onError: (error) => {
-      console.log("something went wrong while logging out");
+      console.log("something went wrong while logging out",error);
     },
   });
 

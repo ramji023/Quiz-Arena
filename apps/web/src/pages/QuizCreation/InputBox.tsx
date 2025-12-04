@@ -22,3 +22,5 @@ export const InputBox = React.forwardRef<HTMLInputElement, InputProp>(
     );
   }
 );
+
+InputBox.displayName="InputBox" 

@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "motion/react";
+
 import { Button } from "@repo/ui/components/ui/Button";
 import { Plus } from "lucide-react";
 import { ThemeCard } from "./ThemeCard";
@@ -19,7 +19,7 @@ export default function ThemesPage() {
     if (location.state !== undefined && location.state === true) {
       setOpen(true);
     }
-  }, []);
+  }, [location.state]); // befre linting []
   const setThemeId = useQuizStore((s) => s.setThemeId);
 
   const [open, setOpen] = useState(false);

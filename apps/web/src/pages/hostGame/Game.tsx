@@ -35,6 +35,7 @@ export default function Game() {
     id: string
   ) => {
     console.log("Selected:", option);
+    console.log(id)
   };
   return (
     <>
