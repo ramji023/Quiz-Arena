@@ -8,8 +8,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "start:web": "cd apps/web && pnpm run preview --port 3001 --host 0.0.0.0",
-    "db:migrate": "cd packages/database && pnpm dlx prisma generate && cd ../../",
-    "start:http": "cd apps/httpServer && node dist/index.js"
+    "db:generate": "cd packages/database && pnpm dlx prisma generate",
+    "start:http": "cd packages/database && pnpm dlx prisma migrate deploy --config ./src/prisma.config.ts && cd ../../ && cd apps/httpServer && node dist/index.js"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
