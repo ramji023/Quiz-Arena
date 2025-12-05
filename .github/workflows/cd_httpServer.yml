@@ -29,7 +29,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          pnpm dlx prisma generate
+          pnpm prisma generate
           pnpm dlx prisma migrate deploy --config ./src/prisma.config.ts
 
       - name: Docker login
