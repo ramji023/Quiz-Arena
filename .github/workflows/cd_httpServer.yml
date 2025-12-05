@@ -1,0 +1,47 @@
+name: Deploy http server
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node js and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install -g pnpm
+
+      - name: Run prisma migrations
+        working-directory: ./packages/database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          pnpm dlx prisma generate
+          pnpm dlx prisma migrate deploy --config ./src/prisma.config.ts
+
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Docker/Dockerfile.httpServer
+          push: true
+          tags: ramjimishra024/quizarena-httpserver:${{ github.sha }}
