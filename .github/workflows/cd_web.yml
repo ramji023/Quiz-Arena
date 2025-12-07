@@ -8,7 +8,7 @@ on:
       - main
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -23,10 +23,13 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
+        working-directory: ./apps/web
         run: pnpm install
 
       - name: Check lint errors
+        working-directory: ./apps/web
         run: pnpm run lint
 
       - name: Build the app
+        working-directory: ./apps/web
         run: pnpm run build
