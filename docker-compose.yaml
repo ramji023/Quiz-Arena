@@ -50,17 +50,6 @@ services:
     networks:
       - app_net
 
-  # react frontend
-  web:
-    build:
-      context: .
-      dockerfile: ./Docker/Dockerfile.frontend
-    container_name: quiz_arena_frontend
-    ports:
-      - "3001:3001"
-    networks:
-      - app_net
-
 # shared Network
 networks:
   app_net:
