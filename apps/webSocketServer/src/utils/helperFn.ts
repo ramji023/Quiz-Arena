@@ -1,6 +1,6 @@
-import { QUESTION_SENT } from "../events";
+import { QUESTION_SENT, QUIZ_COMPLETED } from "../events";
 import Game from "../Game";
-import { QuestionType, Quiz, QuizData, type PlayersData } from "../types";
+import { Quiz, QuizData, type PlayersData } from "../types";
 import User from "../User";
 import { v4 as uuidv4 } from "uuid";
 
@@ -40,8 +40,15 @@ export function sendNextQuestion(game: Game) {
     const question = game.quizData.questions[game.currentQuestionIndex];
     // console.log("question data : ", question);
     // if question is undefined it mean quiz is over
-    if (!question) {
+    if (!question && game.questionTimer !== null) {
       // delete timer id
+      clearTimeout(game.questionTimer);
+      // send quiz complete status and final score
+      const data = sendJson(QUIZ_COMPLETED, "Quiz has been completed", {
+        players: simplifyPlayer(game.players),
+      });
+      console.log(data);
+      game.broadcasting(data);
       return;
     }
     // if that questionIndex exist in quizData.questions

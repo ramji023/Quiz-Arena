@@ -153,7 +153,6 @@ export default function AiQuiz() {
 }
 
 import { Bot } from "lucide-react";
-import { useState } from "react";
 
 function ProcessingLoader() {
   return (

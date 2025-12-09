@@ -106,6 +106,11 @@ const useSocketStore = create<SocketStore>((set, get) => ({
         case "players-score":
           set({ playerJoined: parsedData.data.players });
           break;
+
+        // when quiz has been completed
+        case "quiz-completed":
+          set({ playerJoined: parsedData.data.players, gameStatus: "end" });
+          break;
       }
     };
   },

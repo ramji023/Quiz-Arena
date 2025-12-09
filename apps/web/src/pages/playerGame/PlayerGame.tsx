@@ -6,6 +6,7 @@ import { THEMES } from "../themes/themesData";
 import ThemeWrapper from "../themes/ThemeWrapper";
 import Countdown from "../clock/CountDown";
 import QuestionCard from "@repo/ui/components/ui/themes/QuestionCard";
+import LeaderBoard from "./LeaderBoard";
 
 export default function PlayerGame() {
   const socketRef = useSocketStore((s) => s.socketRef);
@@ -31,7 +32,7 @@ export default function PlayerGame() {
     }
   }, [question]);
 
-  if (!theme)
+  if (!theme || !themeId)
     return (
       <>
         <div>Something went wrong while joining quiz</div>
@@ -80,6 +81,7 @@ export default function PlayerGame() {
             answerResult={answerResult}
           />
         )}
+        {gameStatus === "end" && <LeaderBoard themeId={themeId}/>}
       </ThemeWrapper>
     </>
   );

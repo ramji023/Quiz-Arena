@@ -23,15 +23,16 @@ export default function ThemeWrapper({
   themeData,
   players,
   questionId,
-  answered
+  answered,
 }: {
   children: ReactNode;
   themeData: ThemeData;
   players: { id: string; fullName: string; score: number }[] | null;
   questionId: string | null;
-  answered ?:boolean;
+  answered?: boolean;
 }) {
   const location = useLocation();
+  const gameStatus = useSocketStore((s) => s.gameStatus);
   const [playerData, setPlayerData] = useState<Player[] | null>(null);
   const [yourScore, setYourScore] = useState<Player | null>(null);
   const [shouldOpen, setShouldOpen] = useState(location.state);
@@ -121,7 +122,7 @@ export default function ThemeWrapper({
       </motion.button>
 
       {/* Leaderboard Floating Panel */}
-      {playerData && (
+      {gameStatus !== "end" && playerData && (
         <motion.div
           className={`absolute top-3 right-3 w-50 rounded p-2 shadow backdrop-blur-md z-20`}
           initial={{ opacity: 0, y: -20 }}
@@ -218,9 +219,9 @@ export default function ThemeWrapper({
       {/* pop up model  */}
       {isSelect && <PopUp id={themeData.id} />}
 
-      {players && questionId && answered && (
+      {players && questionId && answered !== undefined && (
         <div className=" fixed bottom-6 right-6 z-50">
-          <Timer id={questionId} answered={answered}/>
+          <Timer id={questionId} answered={answered} />
         </div>
       )}
     </motion.div>

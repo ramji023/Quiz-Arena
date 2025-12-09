@@ -7,6 +7,8 @@ export const QUIZ_READY = "quiz-ready"
 export const QUESTION_SENT = "send-question"
 export const ANSWER_CHECKED = "answer-checked"
 export const PLAYERS_SCORE = "players-score";
+export const QUIZ_COMPLETED = "quiz-completed"
+
 
 // client send to  server
 export const GET_QUIZ = "send-quiz";

@@ -14,14 +14,6 @@ export function AnswerFeedback({ result }: { result: "correct" | "wrong" }) {
         z-50 pointer-events-none
       "
     >
-      {/* Blur glow behind
-      <div
-        className={`
-          absolute w-40 h-40 rounded-full blur-2xl opacity-40
-          ${isCorrect ? "bg-green-400" : "bg-red-400"}
-        `}
-      /> */}
-
       {/* Icon container */}
       <div
         className={`

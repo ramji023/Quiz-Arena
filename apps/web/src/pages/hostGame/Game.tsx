@@ -6,6 +6,7 @@ import { useQuizStore } from "../../stores/quizStore";
 import useSocketStore from "../../stores/socketStore";
 import { useEffect } from "react";
 import QuestionCard from "@repo/ui/components/ui/themes/QuestionCard";
+import LeaderBoard from "../playerGame/LeaderBoard";
 export default function Game() {
   const themeId = useQuizStore((s) => s.themeId);
   const role = useSocketStore((s) => s.role);
@@ -20,7 +21,7 @@ export default function Game() {
     };
   }, []);
   console.log("theme data after clicking to start button", theme);
-  if (!theme)
+  if (!theme || !themeId)
     return (
       <>
         <div>
@@ -35,7 +36,7 @@ export default function Game() {
     id: string
   ) => {
     console.log("Selected:", option);
-    console.log(id)
+    console.log(id);
   };
   return (
     <>
@@ -54,6 +55,7 @@ export default function Game() {
             optionColors={theme.optionColor}
           />
         )}
+        {gameStatus === "end" && <LeaderBoard themeId={themeId} />}
       </ThemeWrapper>
     </>
   );
