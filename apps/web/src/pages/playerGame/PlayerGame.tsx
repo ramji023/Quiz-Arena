@@ -7,7 +7,8 @@ import ThemeWrapper from "../themes/ThemeWrapper";
 import Countdown from "../clock/CountDown";
 import QuestionCard from "@repo/ui/components/ui/themes/QuestionCard";
 import LeaderBoard from "./LeaderBoard";
-
+import audio from "../../utils/audioManager";
+import { sounds } from "../../utils/sounds";
 export default function PlayerGame() {
   const socketRef = useSocketStore((s) => s.socketRef);
   const themeId = useSocketStore((s) => s.themeId);
@@ -19,6 +20,8 @@ export default function PlayerGame() {
   const answerResult = useSocketStore((s) => s.answerResult);
   const [answered, setAnswered] = useState(false); // set answered true when player select option so stop the timer
   useEffect(() => {
+    // preload all the sound effect
+    Object.values(sounds).forEach((url) => audio.preload(url));
     // just clear the socket instance if playerGame component unmount
     return () => {
       useSocketStore.getState().clearSocket();
@@ -39,12 +42,24 @@ export default function PlayerGame() {
       </>
     );
 
+  // play success sound
+  function playSuccessSound (){
+     audio.play(sounds["successTone"]!,1000)
+  } 
+  // play failure sound
+  function playFailureSound(){
+     audio.play(sounds["failureTone"]!,1000)
+  } 
+
+
   // when player click to any options
   const onAnswer = (
     option: { text: string; isCorrect: boolean },
     id: string
   ) => {
     console.log("Selected:", option);
+    audio.play(sounds["selectOption"]!, 100);
+    console.log("option select play");
     setAnswered(true);
     if (socketRef.current) {
       socketRef.current.send(
@@ -79,9 +94,10 @@ export default function PlayerGame() {
             onAnswer={onAnswer}
             optionColors={theme.optionColor}
             answerResult={answerResult}
+            sounds={{success:playSuccessSound,failure:playFailureSound}}
           />
         )}
-        {gameStatus === "end" && <LeaderBoard themeId={themeId}/>}
+        {gameStatus === "end" && <LeaderBoard themeId={themeId} />}
       </ThemeWrapper>
     </>
   );

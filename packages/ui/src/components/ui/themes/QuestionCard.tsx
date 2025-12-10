@@ -15,12 +15,14 @@ export default function QuestionCard({
   onAnswer,
   optionColors,
   answerResult,
+  sounds
 }: {
   role: "host" | "player";
   questionData: QuestionType;
   onAnswer: (option: { text: string; isCorrect: boolean }, id: string) => void;
   optionColors: Record<number, { from?: string; to?: string; color?: string }>;
   answerResult?: null | "correct" | "wrong";
+  sounds?:{success:()=>void,failure:()=>void}
 }) {
   const [selected, setSelected] = useState<{
     text: string;
@@ -98,7 +100,7 @@ export default function QuestionCard({
         })}
       </div>
       {/* show question result  */}
-      {answerResult && <AnswerFeedback result={answerResult} />}
+      {answerResult && sounds && <AnswerFeedback result={answerResult} sound={sounds} />}
     </div>
     
   );

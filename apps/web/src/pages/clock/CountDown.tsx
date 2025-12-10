@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import useSocketStore from "../../stores/socketStore";
-
+import audio from "../../utils/audioManager";
+import { sounds } from "../../utils/sounds";
 const Countdown = ({ start = 5 }: { start?: number }) => {
   const [count, setCount] = useState(start);
   const [hasSentStart, setHasSentStart] = useState(false);
@@ -21,6 +22,7 @@ const Countdown = ({ start = 5 }: { start?: number }) => {
           })
         );
       }
+      audio.play(sounds["enterGame"]!, 1000);
       setHasSentStart(true);
     }
 

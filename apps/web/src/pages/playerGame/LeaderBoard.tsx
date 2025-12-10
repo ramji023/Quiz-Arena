@@ -1,6 +1,8 @@
 import { motion } from "motion/react";
 import useSocketStore from "../../stores/socketStore";
 import { THEMES } from "../themes/themesData";
+import audio from "../../utils/audioManager";
+import { sounds } from "../../utils/sounds";
 interface Player {
   id: string;
   fullName: string;
@@ -8,10 +10,9 @@ interface Player {
   rank: number;
 }
 // leaderboard component
-export default function LeaderBoard({themeId}:{themeId:string}) {
+export default function LeaderBoard({ themeId }: { themeId: string }) {
   const theme = THEMES.find((t) => t.id === themeId);
   const userJoined = useSocketStore((s) => s.playerJoined);
-//   console.log(userJoined)
   const gameStatus = useSocketStore((s) => s.gameStatus);
   if (!theme)
     return (
@@ -36,9 +37,7 @@ export default function LeaderBoard({themeId}:{themeId:string}) {
     ...playersScore,
   ];
 
-//   console.log(playersScore);
-//   console.log(yourScoreData);
-//   console.log(leaderboardDisplay);
+  audio.play(sounds["gameComplete"]!, 3000);
   return (
     <>
       <div className="flex justify-center items-center">
@@ -47,7 +46,7 @@ export default function LeaderBoard({themeId}:{themeId:string}) {
             className={`className="flex flex-col items-center justify-center font-jungle px-6 py-10 text-center select-none w-[30%]`}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.6, ease: "easeOut" }}
+            transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
             style={{
               backgroundImage: `linear-gradient(to bottom, 
       ${theme.background["from-leaderboard-900/70"]}, 
@@ -56,9 +55,9 @@ export default function LeaderBoard({themeId}:{themeId:string}) {
               border: `1px solid ${theme.borders["border-leaderboard-500/50"]}`,
             }}
           >
-            <h2 className={`text-lg font-bold mb-3 text-center drop-shadow-md`}>
-              🏆 Leaderboard
-            </h2>
+            <h1 className="text-xl text-center drop-shadow-md font-bold mb-4 text-white">
+              🎉 Quiz Completed!
+            </h1>
             <ul className="space-y-1">
               {leaderboardDisplay.map((player, index) => {
                 const isTopPlayer = index === 0;

@@ -6,7 +6,8 @@ import { CircleCheck } from "lucide-react";
 import useSocketStore from "../../stores/socketStore";
 import { PlayerType } from "../../stores/socketStore";
 import { useQuizStore } from "../../stores/quizStore";
-
+import audio from "../../utils/audioManager";
+import { sounds } from "../../utils/sounds";
 export default function Lobby({
   players = [],
   role,
@@ -158,6 +159,7 @@ export default function Lobby({
             <Button
               variant="primary"
               onClick={() => {
+                audio.play(sounds["gameStart"]!, 1000);
                 sendQuizDataToServer();
               }}
             >

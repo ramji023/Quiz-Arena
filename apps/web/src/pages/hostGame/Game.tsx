@@ -7,6 +7,8 @@ import useSocketStore from "../../stores/socketStore";
 import { useEffect } from "react";
 import QuestionCard from "@repo/ui/components/ui/themes/QuestionCard";
 import LeaderBoard from "../playerGame/LeaderBoard";
+import { sounds } from "../../utils/sounds";
+import audio from "../../utils/audioManager";
 export default function Game() {
   const themeId = useQuizStore((s) => s.themeId);
   const role = useSocketStore((s) => s.role);
@@ -15,6 +17,8 @@ export default function Game() {
   const gameStatus = useSocketStore((s) => s.gameStatus);
   const question = useSocketStore((s) => s.question);
   useEffect(() => {
+    // preload all the sound effect
+    Object.values(sounds).forEach((url) => audio.preload(url));
     // just clear the socket instance if game component unmount
     return () => {
       useSocketStore.getState().clearSocket();

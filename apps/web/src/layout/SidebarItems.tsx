@@ -6,7 +6,7 @@ import {
   Ellipsis,
   LogOut,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { api } from "../utils/axiosInterceptor";
 import { useAuthStore } from "../stores/authStore";
 const SidebarIcons = [
@@ -18,17 +18,17 @@ const SidebarIcons = [
   {
     item: "Quizzes",
     icon: ListChecks,
-    route: "",
+    route: "/quizzes",
   },
   {
     item: "Saved",
     icon: Package,
-    route: "",
+    route: "/saved",
   },
   {
     item: "History",
     icon: Ellipsis,
-    route: "",
+    route: "/history",
   },
 ];
 export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
@@ -51,7 +51,7 @@ export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
       navigate("/");
     },
     onError: (error) => {
-      console.log("something went wrong while logging out",error);
+      console.log("something went wrong while logging out", error);
     },
   });
 
@@ -63,15 +63,16 @@ export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
             <>
               {SidebarIcons.map((items, index) => (
                 <div key={index}>
-                  <div
-                    onClick={() => {
-                      navigate(items.route);
-                    }}
-                    className="flex items-center  justify-center cursor-pointer text-secondary py-2 rounded-lg hover:bg-primary-shadow my-2 mx-3"
+                  <NavLink
+                    to={items.route}
+                    className={({ isActive }) =>
+                      `${isActive ? "bg-primary-shadow" : "text-secondary"} 
+     flex items-center justify-center cursor-pointer py-2 rounded-lg hover:bg-primary-shadow my-2 mx-3`
+                    }
                   >
                     <items.icon className="w-6 h-6" />
                     <span className="text-lg px-5">{items.item}</span>
-                  </div>
+                  </NavLink>
                 </div>
               ))}
             </>
@@ -79,9 +80,15 @@ export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
             <>
               {SidebarIcons.map((items, index) => (
                 <div key={index}>
-                  <div className="flex items-center justify-center cursor-pointer text-secondary py-2 rounded-lg hover:bg-primary-shadow my-2 mx-3">
+                  <NavLink
+                    to={items.route}
+                    className={({ isActive }) =>
+                      `${isActive ? "bg-primary-shadow" : "text-secondary"} 
+     flex items-center justify-center cursor-pointer py-2 rounded-lg hover:bg-primary-shadow my-2 mx-3`
+                    }
+                  >
                     <items.icon className="w-6 h-6" />
-                  </div>
+                  </NavLink>
                 </div>
               ))}
             </>

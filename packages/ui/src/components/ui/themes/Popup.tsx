@@ -1,7 +1,13 @@
 import { motion } from "motion/react";
 import { Correct, Wrong } from "../CheckIcon";
 
-export function AnswerFeedback({ result }: { result: "correct" | "wrong" }) {
+export function AnswerFeedback({
+  result,
+  sound,
+}: {
+  result: "correct" | "wrong";
+  sound: { success: () => void; failure: () => void };
+}) {
   const isCorrect = result === "correct";
   return (
     <motion.div
@@ -21,7 +27,17 @@ export function AnswerFeedback({ result }: { result: "correct" | "wrong" }) {
           flex items-center justify-center shadow-8xl
         `}
       >
-        {isCorrect ? <Correct /> : <Wrong />}
+        {isCorrect ? (
+          <>
+            <Correct />
+            {sound.success()}
+          </>
+        ) : (
+          <>
+            <Wrong />
+            {sound.failure()}
+          </>
+        )}
       </div>
     </motion.div>
   );
