@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod"; // import z class from zod
 
 const optionValidation = z.object({
   text: z.string().min(1, "Option text is required"),
@@ -11,6 +11,7 @@ const questionValidation = z.object({
   points: z.number("Option point is required"),
 });
 
+// wrote z object to check quiz data if client send quiz data to create new Quiz
 export const quizFormValidation = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
@@ -18,4 +19,4 @@ export const quizFormValidation = z.object({
   quiz: z.array(questionValidation),
 });
 
-export type QuizFormState = z.infer<typeof quizFormValidation>;
+export type QuizFormState = z.infer<typeof quizFormValidation>; // export the type of quizFormValidation

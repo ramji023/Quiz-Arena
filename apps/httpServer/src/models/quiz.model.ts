@@ -1,10 +1,12 @@
-import { prisma } from "@repo/database";
-import { QuizFormState } from "../validations/quizForm.validation";
+import { prisma } from "@repo/database"; // import prisma client instance from @repo/database package
+import { QuizFormState } from "../validations/quizForm.validation"; // import QuizFormState zod schema type from quiz form validation file
 
+// define type of QuizFormType by extending QuizFormState with userId field
 type QuizFormType = QuizFormState & {
   userId: string;
 };
-//create quiz
+
+//create quiz in quiz table
 export async function createNewQuiz(quiz: QuizFormType) {
   try {
     return await prisma.quiz.create({
@@ -39,7 +41,7 @@ export async function createNewQuiz(quiz: QuizFormType) {
     throw err;
   }
 }
-//find quiz by id
+//find quiz by quizId
 export async function findQuizById(quizId: string) {
   try {
     return await prisma.quiz.findUnique({
@@ -74,7 +76,7 @@ export async function findQuizById(quizId: string) {
   }
 }
 
-//get all quizzes
+//get all quizzes from quiz table
 export async function getAllQuizs() {
   try {
     return await prisma.quiz.findMany({
@@ -94,5 +96,5 @@ export async function getAllQuizs() {
     throw err;
   }
 }
-//delete quiz
+//delete quiz from quiz table
 export function deleteQuiz() {}

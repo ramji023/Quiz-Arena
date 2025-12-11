@@ -1,42 +1,50 @@
 import dotenv from "dotenv";
+// load environment variables
 dotenv.config();
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+// create instance of express app
 const app = express();
 
+// enable cors for selected origin and allow credentials
 app.use(
   cors({
     origin: "http://localhost:5173",
     credentials: true,
   })
 );
+
+// parse json bodies with a size limit of 10kb
 app.use(express.json({ limit: "10kb" }));
+// parse url-encoded bodies
 app.use(express.urlencoded({ extended: true }));
+// parse cookies from client requests
 app.use(cookieParser());
 
-// check database connection
+// make sure prisma is connected
 import { prisma } from "@repo/database";
 async function testPrismaConnection() {
   try {
     await prisma.$queryRaw`SELECT 1;`;
-    console.log("Prisma connected successfully");
+    console.log("prisma connected successfully");
   } catch (error) {
-    console.error("Prisma connection failed:", error);
+    console.error("prisma connection failed:", error);
   }
 }
-testPrismaConnection()
+testPrismaConnection();
 
-
-//route for admin
+// user-related routes like login, logout, signup etc
 import userRoutes from "./routes/user.route";
-app.use("/api/v1/user", userRoutes); // user operations like signup, signin
+app.use("/api/v1/user", userRoutes);
 
-//route for quizes
+// quiz related routes like create,get,save and delete quizzes
 import quizRoutes from "./routes/quiz.route";
 app.use("/api/v1/quiz", quizRoutes);
 
-// middleware to handle error
+// application error handler
 import errorMiddleware from "./middleware/error.middleware";
 app.use(errorMiddleware); // handle application error
+
+// start server on 3000
 app.listen(3000);

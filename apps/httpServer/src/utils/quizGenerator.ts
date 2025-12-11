@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+// wrote function to create quiz using googleGenAi
 export default async function quizGenerator({
   topic,
   difficulty,
@@ -48,5 +49,5 @@ Return only valid JSON.
     },
   });
 
-  return response.text;
+  return response.text;  // return the response
 }
