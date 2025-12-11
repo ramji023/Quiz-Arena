@@ -52,5 +52,6 @@ wss.on("connection", (ws, req) => {
   }
   ws.on("close", () => {
     console.log("someone is left the connection");
+    newGameManager.removePlayer(ws)
   });
 });

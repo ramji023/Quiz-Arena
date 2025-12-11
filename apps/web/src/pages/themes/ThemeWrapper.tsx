@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useQuizStore } from "../../stores/quizStore";
 import useSocketStore from "../../stores/socketStore";
 import Timer from "../clock/Timer";
+import Notification from "./Notification";
 interface Player {
   id: string;
   fullName: string;
@@ -24,13 +25,18 @@ export default function ThemeWrapper({
   players,
   questionId,
   answered,
+  notification,
+  role,
 }: {
   children: ReactNode;
   themeData: ThemeData;
   players: { id: string; fullName: string; score: number }[] | null;
   questionId: string | null;
   answered?: boolean;
+  notification: string | null;
+  role: "host" | "player";
 }) {
+  const navigate = useNavigate();
   const location = useLocation();
   const gameStatus = useSocketStore((s) => s.gameStatus);
   const [playerData, setPlayerData] = useState<Player[] | null>(null);
@@ -70,6 +76,16 @@ export default function ThemeWrapper({
   const topPlayers = playerData?.slice(0, 4) || [];
   const leaderboardDisplay = [...topPlayers, ...(yourScore ? [yourScore] : [])];
 
+  // when player or host click to back button
+  function handleBackButton() {
+    console.log("Back button pressed : ", role);
+    if (role === "player") {
+      navigate("/join");
+    }
+    if (role === "host") {
+      navigate("/home");
+    }
+  }
   return (
     <motion.div
       className="relative min-h-screen bg-cover bg-center text-center overflow-hidden"
@@ -103,7 +119,7 @@ export default function ThemeWrapper({
                  rounded-full border-2   
                  font-semibold text-sm shadow-md 
                  hover:bg-[var(--hover-bg)] hover:border-[var(--hover-border)] hover:scale-105  
-                 transition-all duration-300 backdrop-blur-sm`}
+                 transition-all duration-300 backdrop-blur-sm cursor-pointer z-50`}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 1, duration: 0.5, ease: "easeOut" }}
@@ -114,8 +130,10 @@ export default function ThemeWrapper({
             backgroundColor: themeData.background["bg-button-900/40"],
             "--hover-bg": themeData.background["bg-button-800/60"],
             "--hover-border": themeData.borders["border-button-400"],
+            pointerEvents: "auto",
           } as React.CSSProperties
         }
+        onClick={handleBackButton}
       >
         <ArrowLeft size={20} />
         <span className="hidden md:inline-block">Back</span>
@@ -224,6 +242,9 @@ export default function ThemeWrapper({
           <Timer id={questionId} answered={answered} />
         </div>
       )}
+
+      {/* notification div  */}
+      {notification && <Notification msg={notification} />}
     </motion.div>
   );
 }

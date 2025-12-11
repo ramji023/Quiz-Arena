@@ -28,6 +28,7 @@ interface SocketStore {
   question: QuestionType | null;
   gameStatus: "waiting" | "ready" | "start" | "end";
   answerResult: null | "correct" | "wrong";
+  notification: string | null;
   setSocketInstance: (socket: WebSocket) => void;
   clearSocket: () => void;
 }
@@ -45,6 +46,7 @@ const useSocketStore = create<SocketStore>((set, get) => ({
   question: null,
   gameStatus: "waiting",
   answerResult: null,
+  notification: null,
   setSocketInstance: (socket) => {
     get().socketRef.current = socket;
 
@@ -81,14 +83,14 @@ const useSocketStore = create<SocketStore>((set, get) => ({
 
         // got messsage to start the quiz after 5 seconds
         case "quiz-ready":
-          set({ gameStatus: "ready" });
+          set({ gameStatus: "ready" as "ready" });
           useQuizStore.getState().resetQuiz();
           break;
 
         //  got current question data and current player score
         case "send-question":
           set({
-            gameStatus: "start",
+            gameStatus: "start" as "start",
             question: parsedData.data.question,
             playerJoined: parsedData.data.players,
             answerResult: null,
@@ -109,7 +111,21 @@ const useSocketStore = create<SocketStore>((set, get) => ({
 
         // when quiz has been completed
         case "quiz-completed":
-          set({ playerJoined: parsedData.data.players, gameStatus: "end" });
+          set({
+            playerJoined: parsedData.data.players,
+            gameStatus: "end" as "end",
+          });
+          break;
+
+        // when any player left the game
+        case "player_left":
+          // console.log("notification json data : ",parsedData)
+          set({ notification: parsedData.message });
+          break;
+
+        // when host left the game
+        case "host_left":
+          set({ notification: parsedData.message });
           break;
       }
     };
@@ -119,7 +135,19 @@ const useSocketStore = create<SocketStore>((set, get) => ({
     if (get().socketRef.current) {
       get().socketRef.current?.close();
     }
-    set({ socketRef: { current: null }, gameId: null });
+    set({
+      socketRef: { current: null },
+      id: null,
+      fullName: null,
+      themeId: null,
+      playerJoined: [],
+      question: null,
+      gameStatus: "waiting",
+      answerResult: null,
+      notification: null,
+      gameId: null,
+    });
+    useQuizStore.setState({quiz:null,themeId:null})
   },
 }));
 

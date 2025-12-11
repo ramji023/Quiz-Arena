@@ -16,6 +16,7 @@ export default function Game() {
   const userJoined = useSocketStore((s) => s.playerJoined);
   const gameStatus = useSocketStore((s) => s.gameStatus);
   const question = useSocketStore((s) => s.question);
+  const notification = useSocketStore((s) => s.notification);
   useEffect(() => {
     // preload all the sound effect
     Object.values(sounds).forEach((url) => audio.preload(url));
@@ -42,12 +43,18 @@ export default function Game() {
     console.log("Selected:", option);
     console.log(id);
   };
+
+ 
+  console.log(notification)
+ 
   return (
     <>
       <ThemeWrapper
         themeData={theme}
         players={gameStatus === "start" ? userJoined : null}
         questionId={question?.questionId ?? null}
+        notification={notification}
+        role={role}
       >
         {gameStatus === "waiting" && <Lobby players={userJoined} role={role} />}
         {gameStatus === "ready" && <Countdown />}

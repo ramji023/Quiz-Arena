@@ -11,6 +11,8 @@ import {
 import {
   ANSWER_CHECKED,
   GAME_PIN,
+  HOST_LEFT,
+  PLAYER_LEFT,
   PLAYERS_SCORE,
   QUESTION_SENT,
   QUIZ_READY,
@@ -176,6 +178,41 @@ export default class GameManager {
                 message: "here is your selected option status",
               })
             );
+          }
+        }
+      }
+    }
+  }
+
+  // write function to remove the player
+  removePlayer(ws: WebSocket) {
+    let user: User | null = null;
+
+    // find that user
+    for (const value of this.users.values()) {
+      if (value.socket === ws) {
+        user = value;
+        break;
+      }
+    }
+
+    if (user !== null) {
+      for (const game of this.games.values()) {
+        // if left user is host
+        if (game.host.socket === user.socket) {
+          const data = sendJson(HOST_LEFT, "Game host left the game");
+          game.broadcasting(data); // broadcast this message to everyone
+          // remove that game from gameManager
+          this.games.delete(game.gameId);
+        } else if (game.players.get(user.id)) {
+          // if left user is player
+          const player = game.players.get(user.id);
+          if (player) {
+            const data = sendJson(
+              PLAYER_LEFT,
+              `Player ${player.fullName} left the game`
+            );
+            game.broadcasting(data); // broadcast this to all game players and host
           }
         }
       }

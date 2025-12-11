@@ -11,4 +11,6 @@ export const sounds: Record<string, string> = {
     "https://res.cloudinary.com/dqr7qcgch/video/upload/v1765343817/fail-msg_ah0wmi.mp3",
   gameComplete:
     "https://res.cloudinary.com/dqr7qcgch/video/upload/v1765343818/quiz-complete_nmgaho.mp3",
+  notification:
+    "https://res.cloudinary.com/dqr7qcgch/video/upload/v1765453978/notification_sound_vlne7m.mp3",
 };
