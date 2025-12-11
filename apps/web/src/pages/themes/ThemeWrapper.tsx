@@ -33,8 +33,8 @@ export default function ThemeWrapper({
   players: { id: string; fullName: string; score: number }[] | null;
   questionId: string | null;
   answered?: boolean;
-  notification: string | null;
-  role: "host" | "player";
+  notification?: string | null;
+  role?: "host" | "player";
 }) {
   const navigate = useNavigate();
   const location = useLocation();
