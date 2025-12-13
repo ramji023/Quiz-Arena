@@ -1,5 +1,6 @@
 import { QUESTION_SENT, QUIZ_COMPLETED } from "../events";
 import Game from "../Game";
+import { createPlayer } from "../models/game";
 import { Quiz, QuizData, type PlayersData } from "../types";
 import User from "../User";
 import { v4 as uuidv4 } from "uuid";
@@ -28,19 +29,20 @@ export function simplifyPlayer(player: Map<string, User>) {
 // just add a id to every question
 export function addIdToQuestion(quiz: QuizData) {
   return {
+    id: quiz.id,
     title: quiz.title,
     questions: quiz.questions.map((q) => ({ questionId: uuidv4(), ...q })),
   };
 }
 
 // send next question to client
-export function sendNextQuestion(game: Game) {
+export async function sendNextQuestion(game: Game) {
   if (!game.quizData) return;
   if (game.quizData !== null && game.currentQuestionIndex !== null) {
     const question = game.quizData.questions[game.currentQuestionIndex];
     // console.log("question data : ", question);
     // if question is undefined it mean quiz is over
-    if (!question && game.questionTimer !== null) {
+    if (!question && game.questionTimer !== null && game.hostedQuizId) {
       // delete timer id
       clearTimeout(game.questionTimer);
       // send quiz complete status and final score
@@ -48,7 +50,17 @@ export function sendNextQuestion(game: Game) {
         players: simplifyPlayer(game.players),
       });
       console.log(data);
-      game.broadcasting(data);
+      game.broadcasting(data); // broadcast message to everyone
+      // now save player data into database
+      const jsonData = {
+        hostId: game.hostedQuizId,
+        players: Array.from(game.players.values()).map((p) => ({
+          playerId: p.id,
+          name: p.fullName,
+          score: p.score as number,
+        })),
+      };
+      await savePlayerScoresToDB(jsonData);
       return;
     }
     // if that questionIndex exist in quizData.questions
@@ -101,3 +113,22 @@ export function findQuestion(quiz: Quiz, id: string) {
 //   // check if selected option is  true
 //   if(question.options)
 // }
+
+type playerData = {
+  hostId: string;
+  players: {
+    playerId: string;
+    name: string;
+    score: number;
+  }[];
+};
+// save player scores to database
+async function savePlayerScoresToDB(playersData: playerData) {
+  try {
+    playersData.players.map((p) =>
+      createPlayer({ hostId: playersData.hostId, player: p })
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}

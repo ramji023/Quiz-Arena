@@ -71,7 +71,7 @@ export default function Lobby({
   function sendQuizDataToServer() {
     const quizData = useQuizStore.getState().quiz;
     const socket = useSocketStore.getState().socketRef.current;
-    const quizz = { title: quizData?.title, questions: quizData?.questions };
+    const quizz = {id:quizData?.id, title: quizData?.title, questions: quizData?.questions };
     // console.log("QUizz data : ", quizz);
     if (socket) {
       socket.send(

@@ -1,6 +1,6 @@
-import Game from "./Game";
-import WebSocket from "ws";
-import User from "./User";
+import Game from "./Game"; // import Game class
+import WebSocket from "ws"; // import WebSocket library
+import User from "./User"; // import User class
 import {
   addIdToQuestion,
   findQuestion,
@@ -14,34 +14,33 @@ import {
   HOST_LEFT,
   PLAYER_LEFT,
   PLAYERS_SCORE,
-  QUESTION_SENT,
   QUIZ_READY,
-} from "./events";
-export default class GameManager {
-  games: Map<string, Game>;
-  users: Map<string, User>;
+} from "./events"; // import events types
+import { createHostedQuizEntry } from "./models/game";
 
+// GameManager class to manage all games and users
+export default class GameManager {
+  games: Map<string, Game>; // games map to store all active games
+  users: Map<string, User>; // users map to store all connected users
+
+  // write constructor to initialize the games and users map
   constructor() {
     this.users = new Map();
     this.games = new Map();
   }
 
-  // Overload
-  addPlayer(type: "host", name: string, ws: WebSocket, themeId: string): void;
-  addPlayer(type: "player", name: string, ws: WebSocket, game: Game): void;
-
-  // add host or player
-  addPlayer(
-    type: "host" | "player",
+  // add host in game
+  addHost(
+    type: "host",
+    hostId: string,
     name: string,
     ws: WebSocket,
-    themeIdOrGame: string | Game
+    themeId: string
   ) {
     // do something
     // create new user (if user is host)
-    if (type === "host" && typeof themeIdOrGame === "string") {
-      const themeId = themeIdOrGame;
-      const user = new User(ws, name, type); // create new user
+    if (type === "host" && typeof themeId === "string") {
+      const user = new User(ws, name, type, hostId); // create new user
       this.users.set(user.id, user); // store in global gameManager users property
       // initialize new game
       const game = new Game(user, themeId); // start a new game
@@ -56,32 +55,35 @@ export default class GameManager {
       );
       // console.log("host end point");
     }
+  }
+
+  // add player in game
+  addPlayer(type: "player", name: string, ws: WebSocket, game: Game) {
     //create new user (if user is player)
-    if (type === "player" && themeIdOrGame instanceof Game) {
-      const game = themeIdOrGame;
+    if (type === "player" && game instanceof Game) {
       const user = new User(ws, name, type);
       this.users.set(user.id, user);
+      console.log("player user :", user);
       // add player to game object
       game.addPlayer(user);
-      // console.log("player user :", user);
       // console.log("player game : ", game);
     }
   }
 
-  // check if that gameId exist or not
+  // check if that gameId exist or not if yes then return Game object
   checkGameId(id: string) {
     const game = this.games.get(id);
     if (game) return game;
   }
 
-  // check  if user exist or not
+  // check  if user exist or not if exist then return User object
   checkUserId(id: string) {
     const user = this.users.get(id);
     if (user) return user;
   }
 
-  //write function to  handle server messages
-  handleMessage(ws: WebSocket, data: string) {
+  //write function to  handle server messages (if client send message)
+  async handleMessage(ws: WebSocket, data: string) {
     const parsedMessage = JSON.parse(data); // parsed the client message
     console.log("parsed message from client side : ", parsedMessage);
 
@@ -98,6 +100,16 @@ export default class GameManager {
         game.quizData = addIdToQuestion(parsedMessage.data.quiz);
         const data = sendJson(QUIZ_READY, "quizz is ready");
         game.broadcasting(data);
+
+        // call the database and save hostedQuiz data in hostedQuizzes table
+        const result = await createHostedQuizEntry({
+          quiz_id: parsedMessage.data.quiz.id,
+          hostId: user.id,
+        });
+        if (result) {
+          game.hostedQuizId = result.id;
+        }
+        console.log("result after performing query ", result);
       }
     }
 

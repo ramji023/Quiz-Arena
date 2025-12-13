@@ -8,23 +8,26 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String
-  email    String @unique
-  password String
-  quizzes  Quiz[]
+  id            String          @id @default(uuid())
+  username      String
+  email         String          @unique
+  password      String
+  quizzes       Quiz[]
+  hostedQuizzes HostedQuizzes[]
 }
 
 model Quiz {
-  id          String     @id @default(uuid())
-  title       String
-  description String
-  difficulty  Difficulty @default(easy)
-  questions   Question[]
-  createdBy   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id            String          @id @default(uuid())
+  title         String
+  description   String
+  difficulty    Difficulty      @default(easy)
+  players       Int             @default(0)
+  questions     Question[]
+  createdBy     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  hostedQuizzes HostedQuizzes[]
 }
 
 model Question {
@@ -44,6 +47,28 @@ model Option {
   isCorrect  Boolean
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
+}
+
+model HostedQuizzes {
+  id           String       @id @default(uuid())
+  quiz_id      Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId       String
+  start_date   DateTime     @default(now())
+  hostedBy     User         @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  hostId       String
+  totalPlayers Int          @default(0)
+  players      QuizPlayer[]
+}
+
+model QuizPlayer {
+  id           String        @id @default(uuid())
+  host_quiz    HostedQuizzes @relation(fields: [host_quiz_id], references: [id], onDelete: Cascade)
+  host_quiz_id String
+  playerId     String
+  fullName     String
+  score        Int
+                            
+  @@unique([host_quiz_id, playerId])
 }
 
 enum Difficulty {

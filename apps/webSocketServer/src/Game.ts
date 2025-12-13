@@ -12,7 +12,7 @@ export default class Game {
   countDown: string;
   players: Map<string, User>;
   questionTimer : NodeJS.Timeout | null;
-
+  hostedQuizId : string | null;
   //when host initialize a game
   constructor(host: User, themeId: string) {
     this.gameId = uuidv4();
@@ -23,6 +23,7 @@ export default class Game {
     this.players = new Map();
     this.themeId = themeId;
     this.questionTimer = null;
+    this.hostedQuizId = null;
   }
 
   // add player in Game object
@@ -42,6 +43,7 @@ export default class Game {
         gameId: this.gameId,
         themeId: this.themeId,
       });
+      console.log(response)
       // send data if new player added in game
       player.socket.send(response);
 

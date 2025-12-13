@@ -76,7 +76,7 @@ export async function createAiQuiz(req: Request, res: Response) {
 // controller function to get all quizzes
 export async function getAllQuiz(req: Request, res: Response) {
   const response = await getAllQuizs(); // call getAllQuizzs model function to fetch all quizzes from database
-  console.log("all quizzes data : ", response); // log all quizzes data fetched from database
+  // console.log("all quizzes data : ", response); // log all quizzes data fetched from database
   // send success response to the client with fetched quizzes data
   return res.json({ data: response, message: "Fetch all the Quizzes" });
 }

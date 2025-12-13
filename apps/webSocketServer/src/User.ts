@@ -7,12 +7,19 @@ export default class User {
   type: "host" | "player";
   score?: number;
   // if first time user join game
-  constructor(socket: WebSocket, fullName: string, type: "host" | "player") {
+  constructor(
+    socket: WebSocket,
+    fullName: string,
+    type: "host" | "player",
+    hostId?: string
+  ) {
     this.socket = socket;
     this.fullName = fullName;
-    this.id = uuidv4();
     this.type = type;
-    if (type === "player") {
+    if (type === "host") {
+      this.id = hostId as string;
+    } else {
+      this.id = uuidv4();
       this.score = 0;
     }
   }
