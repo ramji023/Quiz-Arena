@@ -14,6 +14,8 @@ export default class Game {
   questionTimer : NodeJS.Timeout | null;
   hostedQuizId : string | null;
   gameStatus :  "waiting" | "ready" | "start" | "end"
+  hostDisconnected: boolean;
+  hostReconnectTimeout: NodeJS.Timeout | null;
   //when host initialize a game
   constructor(host: User, themeId: string) {
     this.gameId = uuidv4();
@@ -26,12 +28,15 @@ export default class Game {
     this.questionTimer = null;
     this.hostedQuizId = null;
     this.gameStatus = "waiting";
+    this.hostDisconnected = false;
+    this.hostReconnectTimeout = null;
   }
 
   // add player in Game object
   addPlayer(player: User) {
     //first check if user is already join the game or not
     const existedPlayer = this.players.get(player.id);
+    console.log("existed player : ", existedPlayer);
     if (existedPlayer) {
       existedPlayer.socket.send(
         sendJson(ERROR, "You already joined this game")
@@ -48,7 +53,7 @@ export default class Game {
         duration : this.tik_tik,
         gameStatus : this.gameStatus
       });
-      // console.log(response)
+      console.log("response send to player :" ,response)
       // send data if new player added in game
       player.socket.send(response);
 

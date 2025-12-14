@@ -12,9 +12,11 @@ import {
   ANSWER_CHECKED,
   GAME_PIN,
   HOST_LEFT,
+  HOST_RECONNECT_FAILED,
   PLAYER_LEFT,
   PLAYERS_SCORE,
   QUIZ_READY,
+  RECONNECT_HOST,
   RECONNECT_MSG,
   RECONNECT_PLAYER,
 } from "./events"; // import events types
@@ -56,7 +58,7 @@ export default class GameManager {
           gamePin: game.gameId,
           gameStatus: game.gameStatus,
           tik_tik: game.tik_tik,
-          fullName : user.fullName
+          fullName: user.fullName,
         })
       );
       // console.log("host end point");
@@ -68,6 +70,7 @@ export default class GameManager {
     //create new user (if user is player)
     if (type === "player" && game instanceof Game) {
       const user = new User(ws, name, type);
+      console.log("new player data : ", user.fullName);
       this.users.set(user.id, user);
       // console.log("player user :", user);
       // add player to game object
@@ -221,10 +224,23 @@ export default class GameManager {
       for (const game of this.games.values()) {
         // if left user is host
         if (game.host.socket === user.socket) {
-          const data = sendJson(HOST_LEFT, "Game host left the game");
+          game.hostDisconnected = true;
+          const data = sendJson(
+            HOST_LEFT,
+            "Host left the game. Waiting for host to reconnect..."
+          );
           game.broadcasting(data); // broadcast this message to everyone
-          // remove that game from gameManager
-          this.games.delete(game.gameId);
+          // set timeout to delete game after 15 seconds if host doesn't reconnect
+          game.hostReconnectTimeout = setTimeout(() => {
+            if (game.hostDisconnected) {
+              const data = sendJson(
+                HOST_RECONNECT_FAILED,
+                "Host left the game."
+              );
+              game.broadcasting(data); // broadcast this message to everyone
+              this.games.delete(game.gameId);
+            }
+          }, 15000);
         } else if (game.players.get(user.id)) {
           // if left user is player
           const player = game.players.get(user.id);
@@ -283,6 +299,55 @@ export default class GameManager {
       }
       // then create json object with current status
       // fire the reconnect event
+    }
+  }
+
+  // host try to reconnect with server
+  reConnectHost(
+    type: "host",
+    roomId: string,
+    fullName: string,
+    userId: string,
+    socket: WebSocket
+  ) {
+    const game = this.games.get(roomId);
+    const user = this.users.get(userId);
+
+    console.log("game check : ", game?.gameId);
+    console.log("user check : ", user?.type, "and", user?.fullName);
+    // if game is valid
+    // if user is valid
+    // if given type match with User type
+    // check socket instance
+    // check fullName
+    if (game && user && user.type === type && user.fullName === fullName) {
+      if (game.host.id === user.id) {
+        // clear the reconnect timeout since host is back
+        if (game.hostReconnectTimeout) {
+          clearTimeout(game.hostReconnectTimeout);
+          game.hostReconnectTimeout = null;
+        }
+        game.hostDisconnected = false;
+        user.socket = socket; // replace with new socket
+        const data = sendJson(RECONNECT_HOST, "host joined the game", {
+          id: user.id,
+          role: user.type,
+          fullName: user.fullName,
+          gameId: game.gameId,
+          themeId: game.themeId,
+          player_joined: simplifyPlayer(game.players),
+          tik_tik: game.tik_tik,
+          gameStatus: game.gameStatus,
+        });
+        user.socket.send(data);
+        console.log("data sent to host on reconnect : ", data);
+        // now broadcast the reconnect msg to everyone
+        const msg = sendJson(
+          RECONNECT_MSG,
+          `Host ${user.fullName} reconnect to the game`
+        );
+        game.broadcasting(msg);
+      }
     }
   }
 }

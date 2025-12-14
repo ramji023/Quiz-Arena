@@ -12,7 +12,8 @@ export const HOST_LEFT = "host_left";
 export const PLAYER_LEFT ="player_left"
 export const RECONNECT_PLAYER = "PLAYER_RECONNECT"
 export const RECONNECT_MSG = "reconnect-msg"
-
+export const RECONNECT_HOST = "HOST_RECONNECT"
+export const HOST_RECONNECT_FAILED = "host_reconnect_failed"
 
 // client send to  server
 export const GET_QUIZ = "send-quiz";

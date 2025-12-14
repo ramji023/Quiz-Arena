@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import { useQuizStore } from "../../stores/quizStore";
 import useSocketStore from "../../stores/socketStore";
 import Lobby from "../hostGame/Lobby";
 import { THEMES } from "../themes/themesData";
@@ -10,7 +9,10 @@ import LeaderBoard from "./LeaderBoard";
 import audio from "../../utils/audioManager";
 import { sounds } from "../../utils/sounds";
 import { useNavigate } from "react-router-dom";
+
 export default function PlayerGame() {
+  // console.log(" PlayerGame: RENDER");
+  
   const navigate = useNavigate();
   const isConnected = useSocketStore((s) => s.isConnected);
   const socketRef = useSocketStore((s) => s.socketRef);
@@ -23,9 +25,12 @@ export default function PlayerGame() {
   const question = useSocketStore((s) => s.question);
   const answerResult = useSocketStore((s) => s.answerResult);
   const notification = useSocketStore((s) => s.notification);
-  const [answered, setAnswered] = useState(false); // set answered true when player select option so stop the timer
-  console.log("rendering player game component");
+  const [answered, setAnswered] = useState(false);
+
   useEffect(() => {
+    // console.log(" PlayerGame: Main effect running");
+    // console.log(" PlayerGame: State check", { isConnected, gameStatus });
+    
     // Check if there's an active game on mount (after refresh)
     if (
       !isConnected &&
@@ -33,48 +38,50 @@ export default function PlayerGame() {
         gameStatus === "ready" ||
         gameStatus === "start")
     ) {
-      console.log("isConnected status : ", isConnected);
+      // console.log(" PlayerGame: Not connected but has game status, navigating to /join");
       navigate("/join");
       return;
     }
 
+    // console.log(" PlayerGame: Preloading sounds");
     // preload all the sound effect
     Object.values(sounds).forEach((url) => audio.preload(url));
-    // just clear the socket instance if playerGame component unmount
+    
     return () => {
-      console.log("Player game component unmount")
+      // console.log(" PlayerGame: Main effect CLEANUP - disconnecting socket");
       useSocketStore.getState().disconnectSocket();
     };
-  }, [isConnected, gameStatus, navigate]);
+  }, [navigate]);
 
   // when new question come from server just stop the timer state
   useEffect(() => {
     if (question) {
+      // console.log(" PlayerGame: New question received, resetting answered state");
       setAnswered(false);
     }
   }, [question]);
 
-  useEffect(() => {
-    if (notification) {
-      if (notification === "Game host left the game") {
-        setTimeout(() => {
-          navigate("/join");
-        }, 3000);
-      }
-    }
-  }, [notification]);
+  // // Component unmount logging
+  // useEffect(() => {
+  //   return () => {
+  //     console.log("🔴 PlayerGame: COMPONENT UNMOUNTING");
+  //   };
+  // }, []);
 
-  if (!theme || !themeId || !duration)
+  if (!theme || !themeId || !duration) {
+    // console.log("⚠️ PlayerGame: Missing theme/themeId/duration");
     return (
       <>
         <div>Something went wrong while joining quiz</div>
       </>
     );
+  }
 
   // play success sound
   function playSuccessSound() {
     audio.play(sounds["successTone"]!, 1000);
   }
+  
   // play failure sound
   function playFailureSound() {
     audio.play(sounds["failureTone"]!, 1000);
@@ -87,7 +94,6 @@ export default function PlayerGame() {
   ) => {
     console.log("Selected:", option);
     audio.play(sounds["selectOption"]!, 100);
-    console.log("option select play");
     setAnswered(true);
     if (socketRef.current) {
       socketRef.current.send(

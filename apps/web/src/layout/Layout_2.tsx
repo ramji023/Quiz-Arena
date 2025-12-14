@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar_2 from "./Navbar_2";
 import Sidebar from "./Sidebar";
@@ -6,7 +6,7 @@ import { Menu, ChevronLeft } from "lucide-react";
 
 export default function Layout_2() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
+  
   return (
     <div className="flex h-screen overflow-hidden  font-poppins">
       {/* Sidebar */}

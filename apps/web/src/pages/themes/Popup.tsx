@@ -9,11 +9,14 @@ import useSocketStore from "../../stores/socketStore";
 //write popup for consent
 export default function Popup() {
   const isConnected = useSocketStore((s) => s.isConnected);
+  const gameStatus = useSocketStore((s) => s.gameStatus);
+  const tik_tik = useSocketStore((s) => s.tik_tik);
   const navigate = useNavigate();
   const token = useAuthStore.getState().token;
   const themeId = useQuizStore((s) => s.themeId);
   const [wsUrl, setWsUrl] = useState<string>("");
   const { setShouldConnect } = useWebsocket(wsUrl);
+  console.log("Popup rendered");
   function sendWsRequest() {
     setWsUrl(`ws://localhost:3001?token=${token}&themeId=${themeId}`);
   }
@@ -24,11 +27,13 @@ export default function Popup() {
   }, [wsUrl]);
 
   useEffect(() => {
-    if (isConnected && wsUrl) {
-      console.log(wsUrl);
-      navigate("/play");
+    if (isConnected && wsUrl && gameStatus && tik_tik) {
+      // console.log(" Connected and have game data, navigating to /game");
+      navigate("/game");
     }
-  }, [isConnected, wsUrl]);
+  }, [isConnected, wsUrl, gameStatus, tik_tik, navigate]);
+
+
   return (
     <>
       <AnimatePresence>

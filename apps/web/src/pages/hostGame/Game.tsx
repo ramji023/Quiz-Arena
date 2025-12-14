@@ -40,10 +40,11 @@ export default function Game() {
       console.log("Host game component unmount");
       useSocketStore.getState().disconnectSocket();
     };
-  }, [isConnected, gameStatus, navigate]);
+  }, [navigate]);
 
   console.log("theme data after clicking to start button", theme);
-  if (!theme || !themeId || !duration)
+  if (!theme || !themeId || !duration) {
+    console.error("if there is any error" ,theme, themeId, duration);
     return (
       <>
         <div>
@@ -51,6 +52,7 @@ export default function Game() {
         </div>
       </>
     );
+  }
 
   // when player click to any options
   const onAnswer = (
@@ -60,8 +62,6 @@ export default function Game() {
     console.log("Selected:", option);
     console.log(id);
   };
-
-  console.log(notification);
 
   return (
     <>

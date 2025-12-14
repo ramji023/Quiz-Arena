@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@repo/ui/components/ui/Button";
 import useSocketStore from "../../stores/socketStore";
+import { useAuthStore } from "../../stores/authStore";
+import { useQuizStore } from "../../stores/quizStore";
 
 export default function ReconnectBox({
   closeBox,
@@ -10,10 +12,16 @@ export default function ReconnectBox({
   setwsURl: (str: string) => void;
 }) {
   console.log("rendering reconnect box");
+  const token = useAuthStore((s) => s.token);
   const fullName = useSocketStore((s) => s.fullName);
   const gameId = useSocketStore((s) => s.gameId);
   const userId = useSocketStore((s) => s.id);
-  const url = `ws://localhost:3001?roomId=${gameId}&fullName=${fullName}&userId=${userId}&isReconnect=${true}`;
+  const role = useSocketStore((s) => s.role);
+  const themeId = useQuizStore((s) => s.themeId);
+  const url =
+    role === "player"
+      ? `ws://localhost:3001?roomId=${gameId}&fullName=${fullName}&userId=${userId}&isReconnect=${true}`
+      : `ws://localhost:3001?token=${token}&themeId=${themeId}&roomId=${gameId}&fullName=${fullName}&userId=${userId}&isReconnect=${true}`;
   // const { setShouldConnect } = useWebsocket(url);
 
   const [timeLeft, setTimeLeft] = useState(10);
@@ -21,7 +29,7 @@ export default function ReconnectBox({
   useEffect(() => {
     if (timeLeft <= 0) {
       closeBox();
-       useSocketStore.getState().resetSession(); // clear player socket data
+      useSocketStore.getState().resetSession(); // clear player socket data
     }
 
     const timer = setInterval(() => {
@@ -41,9 +49,6 @@ export default function ReconnectBox({
     console.log("Reconnect clicked");
     setwsURl(url);
     closeBox();
-    // // again make request to the websocket server
-    // setShouldConnect(true);
-    // navigate("/play");
   };
 
   return (
