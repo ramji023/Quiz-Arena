@@ -9,21 +9,23 @@ export default class Game {
   host: User;
   quizData: Quiz | null;
   currentQuestionIndex: number | null;
-  countDown: string;
+  tik_tik: number;
   players: Map<string, User>;
   questionTimer : NodeJS.Timeout | null;
   hostedQuizId : string | null;
+  gameStatus :  "waiting" | "ready" | "start" | "end"
   //when host initialize a game
   constructor(host: User, themeId: string) {
     this.gameId = uuidv4();
     this.host = host;
     this.quizData = null;
     this.currentQuestionIndex = 0;
-    this.countDown = "10";
+    this.tik_tik = 10;
     this.players = new Map();
     this.themeId = themeId;
     this.questionTimer = null;
     this.hostedQuizId = null;
+    this.gameStatus = "waiting";
   }
 
   // add player in Game object
@@ -39,11 +41,14 @@ export default class Game {
       //send player data to that player
       const response = sendJson(PLAYER_JOIN, "player auth passed", {
         userId: player.id,
+        role:player.type,
         fullName: player.fullName,
         gameId: this.gameId,
         themeId: this.themeId,
+        duration : this.tik_tik,
+        gameStatus : this.gameStatus
       });
-      console.log(response)
+      // console.log(response)
       // send data if new player added in game
       player.socket.send(response);
 

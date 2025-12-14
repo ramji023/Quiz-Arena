@@ -27,6 +27,7 @@ export default function ThemeWrapper({
   answered,
   notification,
   role,
+  duration
 }: {
   children: ReactNode;
   themeData: ThemeData;
@@ -35,6 +36,7 @@ export default function ThemeWrapper({
   answered?: boolean;
   notification?: string | null;
   role?: "host" | "player";
+  duration : number
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -239,7 +241,7 @@ export default function ThemeWrapper({
 
       {players && questionId && answered !== undefined && (
         <div className=" fixed bottom-6 right-6 z-50">
-          <Timer id={questionId} answered={answered} />
+          <Timer id={questionId} answered={answered} duration={duration}/>
         </div>
       )}
 

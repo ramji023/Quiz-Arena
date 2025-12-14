@@ -46,10 +46,12 @@ export async function sendNextQuestion(game: Game) {
       // delete timer id
       clearTimeout(game.questionTimer);
       // send quiz complete status and final score
+      // change game status
+      game.gameStatus = "end"
       const data = sendJson(QUIZ_COMPLETED, "Quiz has been completed", {
-        players: simplifyPlayer(game.players),
+        players: simplifyPlayer(game.players),gameStatus : game.gameStatus
       });
-      console.log(data);
+      // console.log(data);
       game.broadcasting(data); // broadcast message to everyone
       // now save player data into database
       const jsonData = {
@@ -66,10 +68,15 @@ export async function sendNextQuestion(game: Game) {
     // if that questionIndex exist in quizData.questions
     if (question) {
       // console.log("question data : ", question);
+      game.gameStatus = "start";
       const data = sendJson(
         QUESTION_SENT,
         `here is your ${game.currentQuestionIndex} question`,
-        { question: question, players: simplifyPlayer(game.players) }
+        {
+          gameStatus: game.gameStatus,
+          question: question,
+          players: simplifyPlayer(game.players),
+        }
       );
       // console.log(data);
       game.broadcasting(data);
@@ -77,12 +84,9 @@ export async function sendNextQuestion(game: Game) {
       game.currentQuestionIndex += 1;
 
       // call next question
-      game.questionTimer = setTimeout(
-        () => {
-          sendNextQuestion(game);
-        },
-        parseInt(game.countDown) * 1000
-      );
+      game.questionTimer = setTimeout(() => {
+        sendNextQuestion(game);
+      }, game.tik_tik * 1000);
     }
   }
 }
@@ -90,9 +94,9 @@ export async function sendNextQuestion(game: Game) {
 // find  question data by given questionId
 export function findQuestion(quiz: Quiz, id: string) {
   const questionData = quiz.questions.find((q) => q.questionId === id);
-  console.log("quiz data : ", quiz);
-  console.log("given question id : ", id);
-  console.log("question data on findQuestion function", questionData);
+  // console .log("quiz data : ", quiz);
+  // console.log("given question id : ", id);
+  // console.log("question data on findQuestion function", questionData);
   return questionData;
 }
 

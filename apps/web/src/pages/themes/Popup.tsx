@@ -4,18 +4,31 @@ import useWebsocket from "../../hooks/useWebsocket";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 import { useQuizStore } from "../../stores/quizStore";
+import { useEffect, useState } from "react";
+import useSocketStore from "../../stores/socketStore";
 //write popup for consent
 export default function Popup() {
+  const isConnected = useSocketStore((s) => s.isConnected);
   const navigate = useNavigate();
   const token = useAuthStore.getState().token;
   const themeId = useQuizStore((s) => s.themeId);
-  const { setShouldConnect } = useWebsocket(
-    `ws://localhost:3001?token=${token}&themeId=${themeId}`
-  );
+  const [wsUrl, setWsUrl] = useState<string>("");
+  const { setShouldConnect } = useWebsocket(wsUrl);
   function sendWsRequest() {
-    setShouldConnect(true);
-    navigate("/game");
+    setWsUrl(`ws://localhost:3001?token=${token}&themeId=${themeId}`);
   }
+  useEffect(() => {
+    if (wsUrl !== "") {
+      setShouldConnect(true);
+    }
+  }, [wsUrl]);
+
+  useEffect(() => {
+    if (isConnected && wsUrl) {
+      console.log(wsUrl);
+      navigate("/play");
+    }
+  }, [isConnected, wsUrl]);
   return (
     <>
       <AnimatePresence>

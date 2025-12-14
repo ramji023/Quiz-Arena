@@ -15,6 +15,8 @@ import {
   PLAYER_LEFT,
   PLAYERS_SCORE,
   QUIZ_READY,
+  RECONNECT_MSG,
+  RECONNECT_PLAYER,
 } from "./events"; // import events types
 import { createHostedQuizEntry } from "./models/game";
 
@@ -50,7 +52,11 @@ export default class GameManager {
       ws.send(
         sendJson(GAME_PIN, "Host has been successfully created", {
           userId: user.id,
+          role: user.type,
           gamePin: game.gameId,
+          gameStatus: game.gameStatus,
+          tik_tik: game.tik_tik,
+          fullName : user.fullName
         })
       );
       // console.log("host end point");
@@ -63,7 +69,7 @@ export default class GameManager {
     if (type === "player" && game instanceof Game) {
       const user = new User(ws, name, type);
       this.users.set(user.id, user);
-      console.log("player user :", user);
+      // console.log("player user :", user);
       // add player to game object
       game.addPlayer(user);
       // console.log("player game : ", game);
@@ -98,7 +104,10 @@ export default class GameManager {
         // store quiz data into game
         // console.log("quiz data from client side : ", parsedMessage.data.quiz);
         game.quizData = addIdToQuestion(parsedMessage.data.quiz);
-        const data = sendJson(QUIZ_READY, "quizz is ready");
+        game.gameStatus = "ready";
+        const data = sendJson(QUIZ_READY, "quizz is ready", {
+          gameStatus: game.gameStatus,
+        });
         game.broadcasting(data);
 
         // call the database and save hostedQuiz data in hostedQuizzes table
@@ -109,7 +118,7 @@ export default class GameManager {
         if (result) {
           game.hostedQuizId = result.id;
         }
-        console.log("result after performing query ", result);
+        // console.log("result after performing query ", result);
       }
     }
 
@@ -130,30 +139,30 @@ export default class GameManager {
     // if player client send selected answer to websocket server
     if (parsedMessage.type === "send-response") {
       // do something
-      console.log("store into send-response event");
+      // console.log("store into send-response event");
       const user = this.checkUserId(parsedMessage.data.userId);
       const game = this.checkGameId(parsedMessage.data.gameId);
       if (user && game && game.quizData && user.score !== undefined) {
-        console.log("store into send-response condition");
+        // console.log("store into send-response condition");
         // find question by questionId
         const validQuestion = findQuestion(
           game.quizData,
           parsedMessage.data.questionId
         );
-        console.log(
-          "valid question data on send-response event : ",
-          validQuestion
-        );
+        // console.log(
+        //   "valid question data on send-response event : ",
+        //   validQuestion
+        // );
         // if questionId is valid
         if (validQuestion) {
           //check answer
           const findIndex = validQuestion.options.findIndex(
             (q) => q.text === parsedMessage.data.selectOption
           );
-          console.log(
-            "valid question selected optio object on send-response event : ",
-            validQuestion.options[findIndex]
-          );
+          // console.log(
+          //   "valid question selected optio object on send-response event : ",
+          //   validQuestion.options[findIndex]
+          // );
           // if selected option is correct then add score to that player
           if (validQuestion.options[findIndex]?.isCorrect) {
             user.score += validQuestion.points; //  add points to that player score
@@ -169,10 +178,10 @@ export default class GameManager {
             );
             // and send updated score of all players to everyone
             const players = simplifyPlayer(game.players);
-            console.log(
-              "players data after sending updated score to everyone : ",
-              players
-            );
+            // console.log(
+            //   "players data after sending updated score to everyone : ",
+            //   players
+            // );
             const data = sendJson(
               PLAYERS_SCORE,
               "here are the updated score of all players",
@@ -228,6 +237,52 @@ export default class GameManager {
           }
         }
       }
+    }
+  }
+
+  // player try to reconnect with server
+  reConnectPlayer(
+    roomId: string,
+    fullName: string,
+    userId: string,
+    socket: WebSocket
+  ) {
+    const game = this.checkGameId(roomId);
+    console.log("game data : ", game);
+    const user = this.checkUserId(userId);
+    // console.log("user data : ", user);
+    if (game && user) {
+      // first check that user is present in that game or not
+      const player = game.players.get(user.id);
+      // console.log("player data : ", player);
+      // if user provide correct game id and present in players data
+      if (player) {
+        // change user socket instance
+        player.socket = socket; // change the socket
+        const data = sendJson(
+          RECONNECT_PLAYER,
+          "Here you have current status of game",
+          {
+            id: player.id,
+            role: player.type,
+            fullName: player.fullName,
+            gameId: game.gameId,
+            themeId: game.themeId,
+            playerJoined: simplifyPlayer(game.players),
+            tik_tik: game.tik_tik,
+            gameStatus: game.gameStatus,
+          }
+        );
+        console.log("data send to player ; ", data);
+        player.socket.send(data);
+        const msg = sendJson(
+          RECONNECT_MSG,
+          `${player.fullName} reconnect to the game`
+        );
+        game.broadcasting(msg);
+      }
+      // then create json object with current status
+      // fire the reconnect event
     }
   }
 }

@@ -14,6 +14,7 @@ import ThemesPage from "./pages/themes/ThemesPage";
 import Game from "./pages/hostGame/Game";
 import PlayerJoin from "./pages/playerGame/PlayerJoin";
 import PlayerGame from "./pages/playerGame/PlayerGame";
+import ReconnectBox from "./pages/playerGame/ReconnectBox";
 export default function App() {
   return (
     <>

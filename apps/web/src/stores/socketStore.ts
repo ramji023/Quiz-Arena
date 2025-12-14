@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { useQuizStore } from "./quizStore";
 
 export interface PlayerType {
@@ -26,129 +27,283 @@ interface SocketStore {
   themeId: string | null;
   playerJoined: PlayerType[];
   question: QuestionType | null;
-  gameStatus: "waiting" | "ready" | "start" | "end";
+  tik_tik: number | null;
+  gameStatus: "waiting" | "ready" | "start" | "end" | null;
   answerResult: null | "correct" | "wrong";
   notification: string | null;
+  isConnected: boolean;
   setSocketInstance: (socket: WebSocket) => void;
-  clearSocket: () => void;
+  disconnectSocket: () => void;
+  resetSession: () => void;
 }
 
-const socketRef = { current: null };
+const useSocketStore = create<SocketStore>()(
+  persist(
+    (set, get) => {
+      // Create a logged set function to track all state changes
+      const loggedSet = (updates: any) => {
+        console.log("📝 SET called with:", updates);
 
-const useSocketStore = create<SocketStore>((set, get) => ({
-  socketRef,
-  id: null,
-  role: "player",
-  fullName: null, // store player name
-  gameId: null,
-  themeId: null,
-  playerJoined: [], // store all the players
-  question: null,
-  gameStatus: "waiting",
-  answerResult: null,
-  notification: null,
-  setSocketInstance: (socket) => {
-    get().socketRef.current = socket;
+        // Special tracking for fullName changes
+        if (updates.fullName !== undefined) {
+          console.log("⚠️ fullName is being changed to:", updates.fullName);
+          console.log("⚠️ Previous fullName was:", get().fullName);
+          console.trace(); // Show call stack to see where this came from
+        }
 
-    // if server send message to client
-    socket.onmessage = (event) => {
-      const parsedData = JSON.parse(event.data); // parse the json data
+        // Track gameStatus changes
+        if (updates.gameStatus !== undefined) {
+          console.log("🎮 gameStatus changing to:", updates.gameStatus);
+        }
 
-      // console.log("server message : ", parsedData);
-      switch (parsedData.type) {
-        //when host start game
-        case "game-pin":
-          set({
-            gameId: parsedData.data.gamePin,
-            id: parsedData.data.userId,
-            role: "host",
-          });
-          // console.log("gameID", parsedData.data.gamePin);
-          break;
+        set(updates);
+        console.log("📝 After SET, current state:", {
+          fullName: get().fullName,
+          gameId: get().gameId,
+          id: get().id,
+          gameStatus: get().gameStatus,
+          isConnected: get().isConnected,
+        });
+      };
 
-        // when player join quiz
-        case "player-join":
-          set({
-            id: parsedData.data.userId,
-            gameId: parsedData.data.gameId,
-            themeId: parsedData.data.themeId,
-            fullName: parsedData.data.fullName,
-          });
-          break;
+      return {
+        socketRef: { current: null },
+        id: null,
+        role: "player",
+        fullName: null,
+        gameId: null,
+        themeId: null,
+        playerJoined: [],
+        question: null,
+        tik_tik: null,
+        gameStatus: null,
+        answerResult: null,
+        notification: null,
+        isConnected: false,
 
-        // get all the joined user data
-        case "joined-player":
-          set({ playerJoined: parsedData.data.playerJoined });
-          break;
+        setSocketInstance: (socket) => {
+          console.log("🔌 setSocketInstance called");
+          get().socketRef.current = socket;
+          loggedSet({ isConnected: true });
 
-        // got messsage to start the quiz after 5 seconds
-        case "quiz-ready":
-          set({ gameStatus: "ready" as "ready" });
-          useQuizStore.getState().resetQuiz();
-          break;
+          socket.onmessage = (event) => {
+            const parsedData = JSON.parse(event.data);
+            console.log("📨 WebSocket message received:", parsedData.type);
 
-        //  got current question data and current player score
-        case "send-question":
-          set({
-            gameStatus: "start" as "start",
-            question: parsedData.data.question,
-            playerJoined: parsedData.data.players,
+            switch (parsedData.type) {
+              case "game-pin":
+                console.log("🎯 game-pin data:", parsedData.data);
+                loggedSet({
+                  gameId: parsedData.data.gamePin,
+                  id: parsedData.data.userId,
+                  gameStatus: parsedData.data.gameStatus,
+                  tik_tik: parsedData.data.tik_tik,
+                  role: parsedData.data.role,
+                  fullName: parsedData.data.fullName,
+                });
+                break;
+
+              case "player-join":
+                console.log("👤 player-join data:", parsedData.data);
+                console.log(
+                  "👤 fullName from server:",
+                  parsedData.data.fullName
+                );
+                loggedSet({
+                  id: parsedData.data.userId,
+                  role: parsedData.data.role,
+                  gameId: parsedData.data.gameId,
+                  themeId: parsedData.data.themeId,
+                  fullName: parsedData.data.fullName,
+                  tik_tik: parsedData.data.duration,
+                  gameStatus: parsedData.data.gameStatus,
+                });
+                break;
+
+              case "joined-player":
+                loggedSet({ playerJoined: parsedData.data.playerJoined });
+                break;
+
+              case "quiz-ready":
+                loggedSet({ gameStatus: parsedData.data.gameStatus });
+                useQuizStore.getState().resetQuiz();
+                break;
+
+              case "send-question":
+                loggedSet({
+                  gameStatus: parsedData.data.gameStatus,
+                  question: parsedData.data.question,
+                  playerJoined: parsedData.data.players,
+                  answerResult: null,
+                });
+                break;
+
+              case "answer-checked":
+                loggedSet({
+                  answerResult: parsedData.data.selectedOption
+                    ? "correct"
+                    : "wrong",
+                });
+                break;
+
+              case "players-score":
+                loggedSet({ playerJoined: parsedData.data.players });
+                break;
+
+              case "quiz-completed":
+                loggedSet({
+                  playerJoined: parsedData.data.players,
+                  gameStatus: parsedData.data.gameStatus,
+                });
+                break;
+
+              case "player_left":
+              case "host_left":
+                loggedSet({ notification: parsedData.message });
+                break;
+
+              case "PLAYER_RECONNECT":
+                console.log("🔄 PLAYER_RECONNECT data:", parsedData.data);
+                console.log(
+                  "🔄 fullName from server on reconnect:",
+                  parsedData.data.fullName
+                );
+                loggedSet({
+                  id: parsedData.data.id,
+                  role: parsedData.data.role,
+                  fullName: parsedData.data.fullName,
+                  gameId: parsedData.data.gameId,
+                  themeId: parsedData.data.themeId,
+                  playerJoined: parsedData.data.playerJoined,
+                  tik_tik: parsedData.data.tik_tik,
+                  gameStatus: parsedData.data.gameStatus,
+                  question: null,
+                  answerResult: null,
+                  notification: null,
+                });
+                console.log("after reconnecting : ", get().fullName);
+                get().socketRef.current?.send(
+                  JSON.stringify({ type: "PLAYER_RECONNECT_SUCCESS" })
+                );
+                break;
+
+              case "reconnect-msg":
+                loggedSet({ notification: parsedData.message });
+                break;
+            }
+          };
+
+          socket.onerror = (error) => {
+            console.error("❌ WebSocket error:", error);
+          };
+
+          socket.onclose = (event) => {
+            console.log(
+              "🔌 WebSocket closed, code:",
+              event.code,
+              "reason:",
+              event.reason
+            );
+          };
+        },
+
+        disconnectSocket: () => {
+          console.log("🔴 disconnectSocket called");
+          console.log("🔴 Current fullName before disconnect:", get().fullName);
+
+          const ws = get().socketRef.current;
+          if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.close();
+          }
+          get().socketRef.current = null;
+
+          loggedSet({ isConnected: false });
+
+          console.log("🔴 fullName after disconnect:", get().fullName);
+        },
+
+        resetSession: () => {
+          console.log(
+            "🗑️ resetSession called - THIS WILL SET fullName TO NULL"
+          );
+          console.trace(); // Show where resetSession is being called from
+
+          get().disconnectSocket();
+
+          loggedSet({
+            id: null,
+            fullName: null,
+            gameId: null,
+            gameStatus: null,
+            themeId: null,
+            playerJoined: [],
+            question: null,
             answerResult: null,
+            notification: null,
+            isConnected: false,
           });
-          break;
 
-        // got status of selected option
-        case "answer-checked":
-          set({
-            answerResult: parsedData.data.selectedOption ? "correct" : "wrong",
+          localStorage.removeItem("quiz-session");
+          console.log("🗑️ After reset session, fullName:", get().fullName);
+        },
+      };
+    },
+    {
+      name: "quiz-session",
+      partialize: (state) => {
+        const persisted = {
+          id: state.id,
+          gameId: state.gameId,
+          fullName: state.fullName,
+          gameStatus: state.gameStatus,
+        };
+
+        // Warning if trying to persist null fullName with valid gameId
+        if (state.fullName === null && state.gameId !== null) {
+          console.warn(
+            "⚠️⚠️⚠️ WARNING: Trying to persist fullName as null while gameId exists!"
+          );
+          console.warn("⚠️ This is likely a bug! Current state:", {
+            id: state.id,
+            gameId: state.gameId,
+            fullName: state.fullName,
+            gameStatus: state.gameStatus,
           });
-          break;
+          console.trace(); // Show call stack
+        }
 
-        // get updated player score
-        case "players-score":
-          set({ playerJoined: parsedData.data.players });
-          break;
+        console.log("💾 Persisting to localStorage:", persisted);
+        return persisted;
+      },
+      onRehydrateStorage: () => {
+        console.log("🔄 Starting rehydration");
+        const stored = localStorage.getItem("quiz-session");
+        console.log("📦 localStorage content:", stored);
 
-        // when quiz has been completed
-        case "quiz-completed":
-          set({
-            playerJoined: parsedData.data.players,
-            gameStatus: "end" as "end",
-          });
-          break;
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            console.log("📦 Parsed localStorage:", parsed);
+          } catch (e) {
+            console.error("❌ Error parsing localStorage:", e);
+          }
+        }
 
-        // when any player left the game
-        case "player_left":
-          // console.log("notification json data : ",parsedData)
-          set({ notification: parsedData.message });
-          break;
-
-        // when host left the game
-        case "host_left":
-          set({ notification: parsedData.message });
-          break;
-      }
-    };
-  },
-
-  clearSocket: () => {
-    if (get().socketRef.current) {
-      get().socketRef.current?.close();
+        return (state, error) => {
+          if (error) {
+            console.error("❌ Rehydration error:", error);
+          } else {
+            console.log("✅ Rehydration complete!");
+            console.log("✅ Rehydrated fullName:", state?.fullName);
+            console.log("✅ Rehydrated gameId:", state?.gameId);
+            console.log("✅ Rehydrated id:", state?.id);
+            console.log("✅ Rehydrated gameStatus:", state?.gameStatus);
+            console.log("✅ Full rehydrated state:", state);
+          }
+        };
+      },
     }
-    set({
-      socketRef: { current: null },
-      id: null,
-      fullName: null,
-      themeId: null,
-      playerJoined: [],
-      question: null,
-      gameStatus: "waiting",
-      answerResult: null,
-      notification: null,
-      gameId: null,
-    });
-    useQuizStore.setState({quiz:null,themeId:null})
-  },
-}));
+  )
+);
 
 export default useSocketStore;

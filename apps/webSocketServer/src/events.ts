@@ -10,6 +10,8 @@ export const PLAYERS_SCORE = "players-score";
 export const QUIZ_COMPLETED = "quiz-completed";
 export const HOST_LEFT = "host_left";
 export const PLAYER_LEFT ="player_left"
+export const RECONNECT_PLAYER = "PLAYER_RECONNECT"
+export const RECONNECT_MSG = "reconnect-msg"
 
 
 // client send to  server

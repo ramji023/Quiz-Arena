@@ -1,13 +1,20 @@
 import { Button } from "@repo/ui/components/ui/Button";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import useWebsocket from "../../hooks/useWebsocket";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ReconnectBox from "./ReconnectBox";
+import useSocketStore from "../../stores/socketStore";
 interface FormState {
   username: string;
   gamePin: string;
 }
 export default function PlayerJoin() {
+  console.log("rendering player join component");
+  const gameStatus = useSocketStore((s) => s.gameStatus);
+  const isConnected = useSocketStore((s) => s.isConnected);
+  const [showReconnectBox, setShowReconnectBox] = useState(false);
+  const [hasCheckedReconnect, setHasCheckedReconnect] = useState(false);
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm<FormState>({
     defaultValues: {
@@ -22,9 +29,48 @@ export default function PlayerJoin() {
   function onSubmit(data: FormState) {
     const url = `ws://localhost:3001?roomId=${data.gamePin}&fullName=${data.username}`;
     setWsUrl(url);
-    setShouldConnect(true);
-    navigate("/play");
   }
+
+  // write useEffect to set should connect true whenever wsUrl changes and is not empty
+  useEffect(() => {
+    if (wsUrl !== "") {
+      setShouldConnect(true);
+    }
+  }, [wsUrl]);
+
+  useEffect(() => {
+    if (isConnected && wsUrl) {
+      console.log(wsUrl);
+      navigate("/play");
+    }
+  }, [isConnected, wsUrl]);
+
+  // Check for reconnect ONLY on mount
+  useEffect(() => {
+    if (hasCheckedReconnect) return;
+
+    const { id, gameId, fullName, isConnected } = useSocketStore.getState();
+
+    if (
+      !isConnected &&
+      (gameStatus === "waiting" ||
+        gameStatus === "start" ||
+        gameStatus === "ready") &&
+      id &&
+      gameId &&
+      fullName
+    ) {
+      console.log("Detected disconnection, showing reconnect box");
+      setShowReconnectBox(true);
+    }
+
+    if (gameStatus === "end") {
+      console.log("Game ended, resetting session");
+      useSocketStore.getState().resetSession();
+    }
+
+    setHasCheckedReconnect(true);
+  }, []); // Empty dependency array - run only on mount
 
   return (
     <div className="min-h-screen flex flex-col gap-6 items-center justify-center font-poppins bg-primary px-4 text-secondary">
@@ -83,6 +129,12 @@ export default function PlayerJoin() {
           </Button>
         </div>
       </form>
+      {showReconnectBox && (
+        <ReconnectBox
+          closeBox={() => setShowReconnectBox(false)}
+          setwsURl={(str) => setWsUrl(str)}
+        />
+      )}
     </div>
   );
 }

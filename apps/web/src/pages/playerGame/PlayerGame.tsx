@@ -12,10 +12,11 @@ import { sounds } from "../../utils/sounds";
 import { useNavigate } from "react-router-dom";
 export default function PlayerGame() {
   const navigate = useNavigate();
+  const isConnected = useSocketStore((s) => s.isConnected);
   const socketRef = useSocketStore((s) => s.socketRef);
   const themeId = useSocketStore((s) => s.themeId);
   const theme = THEMES.find((t) => t.id === themeId);
-  const gameId = useSocketStore((s) => s.gameId);
+  const duration = useSocketStore((s) => s.tik_tik);
   const userJoined = useSocketStore((s) => s.playerJoined);
   const role = useSocketStore((s) => s.role);
   const gameStatus = useSocketStore((s) => s.gameStatus);
@@ -23,14 +24,28 @@ export default function PlayerGame() {
   const answerResult = useSocketStore((s) => s.answerResult);
   const notification = useSocketStore((s) => s.notification);
   const [answered, setAnswered] = useState(false); // set answered true when player select option so stop the timer
+  console.log("rendering player game component");
   useEffect(() => {
+    // Check if there's an active game on mount (after refresh)
+    if (
+      !isConnected &&
+      (gameStatus === "waiting" ||
+        gameStatus === "ready" ||
+        gameStatus === "start")
+    ) {
+      console.log("isConnected status : ", isConnected);
+      navigate("/join");
+      return;
+    }
+
     // preload all the sound effect
     Object.values(sounds).forEach((url) => audio.preload(url));
     // just clear the socket instance if playerGame component unmount
     return () => {
-      useSocketStore.getState().clearSocket();
+      console.log("Player game component unmount")
+      useSocketStore.getState().disconnectSocket();
     };
-  }, []);
+  }, [isConnected, gameStatus, navigate]);
 
   // when new question come from server just stop the timer state
   useEffect(() => {
@@ -48,7 +63,8 @@ export default function PlayerGame() {
       }
     }
   }, [notification]);
-  if (!theme || !themeId)
+
+  if (!theme || !themeId || !duration)
     return (
       <>
         <div>Something went wrong while joining quiz</div>
@@ -98,6 +114,7 @@ export default function PlayerGame() {
         answered={answered}
         notification={notification}
         role={role}
+        duration={duration}
       >
         {gameStatus === "waiting" && <Lobby players={userJoined} role={role} />}
         {gameStatus === "ready" && <Countdown />}

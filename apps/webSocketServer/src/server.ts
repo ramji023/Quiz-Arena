@@ -45,23 +45,35 @@ wss.on("connection", (ws, req) => {
       );
     } // if there is a player connection
     else if (parsedUrl.roomId && parsedUrl.fullName) {
-      ws.send("Player joined the room successfully"); // send message to that player
-      // check if that room id is exist or not
-      const game = newGameManager.checkGameId(parsedUrl.roomId as string);
-      console.log("game : ",game)
-      // if game id is invalid close the websocket connection
-      if (!game) {
-        ws.close(1008, "Game id is Invalid");
-        return;
+      console.log("parsed url of player : ", parsedUrl);
+      // if player want to reconnect to the server
+      if (parsedUrl.userId && parsedUrl.isReconnect) {
+        console.log("parsed url of reConnect player : ", parsedUrl);
+        newGameManager.reConnectPlayer(
+          parsedUrl.roomId as string,
+          parsedUrl.fullName as string,
+          parsedUrl.userId as string,
+          ws
+        );
+      } else {
+        ws.send("Player joined the room successfully"); // send message to that player
+        // check if that room id is exist or not
+        const game = newGameManager.checkGameId(parsedUrl.roomId as string);
+        // console.log("game : ", game);
+        // if game id is invalid close the websocket connection
+        if (!game) {
+          ws.close(1008, "Game id is Invalid");
+          return;
+        }
+        // if game id is valid
+        // create player and add in that game
+        newGameManager.addPlayer(
+          "player",
+          parsedUrl.fullName as string,
+          ws,
+          game
+        );
       }
-      // if game id is valid
-      // create player and add in that game
-      newGameManager.addPlayer(
-        "player",
-        parsedUrl.fullName as string,
-        ws,
-        game
-      );
     }
 
     // if client send message to server

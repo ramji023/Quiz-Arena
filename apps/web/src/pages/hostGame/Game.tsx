@@ -9,7 +9,11 @@ import QuestionCard from "@repo/ui/components/ui/themes/QuestionCard";
 import LeaderBoard from "../playerGame/LeaderBoard";
 import { sounds } from "../../utils/sounds";
 import audio from "../../utils/audioManager";
+import { useNavigate } from "react-router-dom";
 export default function Game() {
+  const navigate = useNavigate();
+  const isConnected = useSocketStore((s) => s.isConnected);
+  const duration = useSocketStore((s) => s.tik_tik);
   const themeId = useQuizStore((s) => s.themeId);
   const role = useSocketStore((s) => s.role);
   const theme = THEMES.find((t) => t.id === themeId);
@@ -18,15 +22,28 @@ export default function Game() {
   const question = useSocketStore((s) => s.question);
   const notification = useSocketStore((s) => s.notification);
   useEffect(() => {
+    // Check if there's an active game on mount (after refresh)
+    if (
+      !isConnected &&
+      (gameStatus === "waiting" ||
+        gameStatus === "ready" ||
+        gameStatus === "start")
+    ) {
+      console.log("isConnected status : ", isConnected);
+      navigate("/home");
+      return;
+    }
     // preload all the sound effect
     Object.values(sounds).forEach((url) => audio.preload(url));
     // just clear the socket instance if game component unmount
     return () => {
-      useSocketStore.getState().clearSocket();
+      console.log("Host game component unmount");
+      useSocketStore.getState().disconnectSocket();
     };
-  }, []);
+  }, [isConnected, gameStatus, navigate]);
+
   console.log("theme data after clicking to start button", theme);
-  if (!theme || !themeId)
+  if (!theme || !themeId || !duration)
     return (
       <>
         <div>
@@ -44,9 +61,8 @@ export default function Game() {
     console.log(id);
   };
 
- 
-  console.log(notification)
- 
+  console.log(notification);
+
   return (
     <>
       <ThemeWrapper
@@ -55,6 +71,7 @@ export default function Game() {
         questionId={question?.questionId ?? null}
         notification={notification}
         role={role}
+        duration={duration}
       >
         {gameStatus === "waiting" && <Lobby players={userJoined} role={role} />}
         {gameStatus === "ready" && <Countdown />}

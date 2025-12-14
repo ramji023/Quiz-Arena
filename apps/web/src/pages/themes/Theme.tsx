@@ -21,6 +21,7 @@ const questionData = {
     { text: "Leopord", isCorrect: true },
   ],
 };
+const duration = 10;
 export default function Theme() {
   const role = useSocketStore((s) => s.role);
   const themeID = useParams().themeID;
@@ -34,6 +35,7 @@ export default function Theme() {
       themeData={jungle}
       players={players}
       questionId={questionData.questionId}
+      duration={duration}
     >
       <QuestionCard
         role={role}
