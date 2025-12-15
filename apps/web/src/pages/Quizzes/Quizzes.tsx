@@ -121,7 +121,7 @@ export default function Quizzes() {
   }, []);
 
   function navigation(id: string) {
-    navigate(`quiz/${id}`);
+    navigate(`/home/quiz/${id}`);
   }
   if (isLoading) {
     return (
@@ -141,10 +141,6 @@ export default function Quizzes() {
     return (
       <>
         <div className="text-primary ">
-          <div className="flex justify-between px-6">
-            <h1 className="text-2xl font-semibold ">Welcome, {username} 👋</h1>
-          </div>
-
           {/* if there is quiz available  */}
           <div className="flex items-center flex-wrap p-6 gap-y-5 gap-x-10">
             {data.map((quiz, index) => (

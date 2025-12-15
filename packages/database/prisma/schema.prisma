@@ -14,6 +14,7 @@ model User {
   password      String
   quizzes       Quiz[]
   hostedQuizzes HostedQuizzes[]
+  savedQuizs    SavedQuiz[]
 }
 
 model Quiz {
@@ -21,13 +22,13 @@ model Quiz {
   title         String
   description   String
   difficulty    Difficulty      @default(easy)
-  players       Int             @default(0)
   questions     Question[]
   createdBy     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   hostedQuizzes HostedQuizzes[]
+  savedQuizs    SavedQuiz[]
 }
 
 model Question {
@@ -50,14 +51,13 @@ model Option {
 }
 
 model HostedQuizzes {
-  id           String       @id @default(uuid())
-  quiz_id      Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  quizId       String
-  start_date   DateTime     @default(now())
-  hostedBy     User         @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  hostId       String
-  totalPlayers Int          @default(0)
-  players      QuizPlayer[]
+  id         String       @id @default(uuid())
+  quiz_id    Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId     String
+  start_date DateTime     @default(now())
+  hostedBy   User         @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  hostId     String
+  players    QuizPlayer[]
 }
 
 model QuizPlayer {
@@ -67,8 +67,16 @@ model QuizPlayer {
   playerId     String
   fullName     String
   score        Int
-                            
+
   @@unique([host_quiz_id, playerId])
+}
+
+model SavedQuiz {
+  id     String @id @default(uuid())
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 }
 
 enum Difficulty {

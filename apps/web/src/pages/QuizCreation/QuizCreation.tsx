@@ -79,8 +79,7 @@ export default function QuizCreation() {
     <>
       <div className="text-primary">
         {/* first common heading  */}
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-bold ">Happy To See You! {username}</h1>
+        <div className="flex flex-row-reverse justify-between">
           <Button
             variant="primary"
             onClick={() => {

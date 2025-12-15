@@ -49,5 +49,5 @@ Return only valid JSON.
     },
   });
 
-  return response.text;  // return the response
+  return response.text; // return the response
 }

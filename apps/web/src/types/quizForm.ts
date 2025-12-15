@@ -19,6 +19,11 @@ export interface AllQuizzes {
   _count: {
     questions: number;
   };
+  hostedQuizzes: {
+    _count: {
+      players: number;
+    };
+  }[];
 }
 
 export interface Quiz {
@@ -37,4 +42,41 @@ export interface Quiz {
       isCorrect: boolean;
     }[];
   }[];
+}
+
+export interface HostQuizzes {
+  id: string;
+  start_date: string;
+  quiz_id: {
+    id: string;
+    title: string;
+    difficulty: string;
+    _count: {
+      questions: number;
+    };
+  };
+  _count: {
+    players: number;
+  };
+}
+
+export interface HostQuiz {
+  id: string;
+  quizid: string;
+  title: string;
+  description: string;
+  difficulty: string;
+  start_date: string;
+  totalQuizPoints: number;
+  totalQuestions: number;
+  players: {
+    fullName: string;
+    score: number;
+    percentage: number;
+  }[];
+  stats: {
+    totalPlayers: number;
+    averageScore: number;
+    averagePercentage: string;
+  };
 }

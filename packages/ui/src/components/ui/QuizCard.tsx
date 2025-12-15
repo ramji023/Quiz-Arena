@@ -7,6 +7,11 @@ interface QuizPropType {
   _count: {
     questions: number;
   };
+  hostedQuizzes: {
+    _count: {
+      players: number;
+    };
+  }[];
 }
 export default function QuizCard({
   quiz,
@@ -15,6 +20,21 @@ export default function QuizCard({
   quiz: QuizPropType;
   navigation: (id: string) => void;
 }) {
+  // calculate number of players
+  function calculatePlayers(
+    allPlayer: {
+      _count: {
+        players: number;
+      };
+    }[]
+  ) {
+    let sum = 0;
+    for (const p of allPlayer) {
+      sum += p._count.players;
+    }
+    return sum;
+  }
+  const players = calculatePlayers(quiz.hostedQuizzes);
   return (
     <>
       <div className="bg-white rounded-xl shadow overflow-hidden w-60 cursor-pointer">
@@ -46,7 +66,7 @@ export default function QuizCard({
           </div>
 
           <div className="flex items-center justify-between text-gray-500 text-sm mb-3">
-            <span>19 Players</span>
+            <span>{players === 0 ? "No" : players} Players</span>
             <span className="flex gap-1 items-center ">
               <StarIcon className="w-3.5 h-3.5 fill-yellow-500 stroke-yellow-500" />{" "}
               4.8

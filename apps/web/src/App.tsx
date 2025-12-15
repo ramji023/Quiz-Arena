@@ -14,7 +14,10 @@ import ThemesPage from "./pages/themes/ThemesPage";
 import Game from "./pages/hostGame/Game";
 import PlayerJoin from "./pages/playerGame/PlayerJoin";
 import PlayerGame from "./pages/playerGame/PlayerGame";
-import ReconnectBox from "./pages/playerGame/ReconnectBox";
+import SavedQuizzes from "./pages/Quizzes/SavedQuizzes";
+import YourQuizzes from "./pages/Quizzes/YourQuizzes";
+import HostedQuizzes from "./pages/hosted_quizzes/HostedQuizzes";
+import QuizResults from "./pages/hosted_quizzes/HostQuiz";
 export default function App() {
   return (
     <>
@@ -29,7 +32,11 @@ export default function App() {
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Layout_2 />}>
-              <Route index element={<Quizzes />} />
+              <Route path="" element={<Quizzes />} />
+              <Route path="saved" element={<SavedQuizzes />} />
+              <Route path="your-quizzes" element={<YourQuizzes />} />
+              <Route path="history" element={<HostedQuizzes/>} />
+              <Route path="hostquiz/:quizId" element={<QuizResults/>} /> 
               <Route path="create-quiz" element={<QuizCreation />} />
               <Route path="ai-quiz" element={<AiQuiz />} />
               <Route path="quiz/:quizId" element={<Quiz />} />

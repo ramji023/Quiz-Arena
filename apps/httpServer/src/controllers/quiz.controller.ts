@@ -1,7 +1,15 @@
 import { Request, Response } from "express"; // import type of Request and Response from express
 import { quizFormValidation } from "../validations/quizForm.validation"; // improt quiz form validation schema zod based
 import ApiError from "../utils/customError"; // import custom ApiError class
-import { createNewQuiz, findQuizById, getAllQuizs } from "../models/quiz.model"; // import quiz model functions to interact with database
+import {
+  allHostedQuizzes,
+  allSavedQuizzes,
+  allYourQuizzes,
+  createNewQuiz,
+  findHostQuizById,
+  findQuizById,
+  getAllQuizs,
+} from "../models/quiz.model"; // import quiz model functions to interact with database
 import quizGenerator from "../utils/quizGenerator"; // import quiz generator utility function
 import { cleanJson } from "../utils/helperFun"; // import cleanJson helper function
 
@@ -99,6 +107,72 @@ export async function getSingleQuiz(req: Request, res: Response) {
   return res.json({
     data: quiz,
     message: "Quiz data has been fetched successfully",
+  });
+}
+
+// controller function to get all the quizzes hosted by user
+export async function getAllHostedQuizzes(req: Request, res: Response) {
+  // check the authorised user id
+  const userId = req.user;
+
+  // if userId is present then call model function to get all hosted Quizzes data
+  const hostedQuizzes = await allHostedQuizzes(userId);
+
+  // now return hosted quizzes data
+  return res.json({
+    data: hostedQuizzes,
+    message: "Fetch all your hosted Quizzes",
+  });
+}
+
+//controller function to get single hosted quiz data by id
+export async function getSingleHostQuiz(req: Request, res: Response) {
+  const hostQuizId = req.params.quizId; // store host quiz id
+
+  // if host quiz id is not provided then throw custom error
+  if (!hostQuizId) {
+    throw new ApiError("Host Quiz id is not provided", 400);
+  }
+  // if host quiz id is provided then call model function to get all data
+  const hostQuizData = await findHostQuizById(hostQuizId);
+
+  // if hostQuizData is null then throw custom error
+  if (!hostQuizData) {
+    throw new ApiError("Host Quiz Id is invalid", 400);
+  }
+
+  // if hostQuizData is not null then return success response
+  return res.json({
+    data: hostQuizData,
+    message: "Host Quiz data has been successfully fetched.",
+  });
+}
+
+// controller function to get all saved quizzes by user
+export async function getAllSavedQuiz(req: Request, res: Response) {
+  const userId = req.user; // get user Id from authentication middleware
+
+  // fetch all saved quizzes by calling model
+  const result = await allSavedQuizzes(userId);
+
+  // return the success response to client
+  return res.json({
+    data: result,
+    message: "your all saved quizzes has been fetched",
+  });
+}
+
+// controller function to get all quizzes created by yourself
+export async function getAllYourQuiz(req: Request, res: Response) {
+  const userId = req.user; // get user id from authenticated middleware
+
+  // fetch all quizzes created by user
+  const result = await allYourQuizzes(userId);
+
+  // return the success response to client
+  return res.json({
+    data: result,
+    message: "your all quizzes has been fetched",
   });
 }
 
