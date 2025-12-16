@@ -4,17 +4,19 @@ import Navbar_2 from "./Navbar_2";
 import Sidebar from "./Sidebar";
 import { Menu, ChevronLeft } from "lucide-react";
 import { useAuthStore } from "../stores/authStore";
+import { ErrorNote } from "../pages/ErrorPages/ErrorNote";
+import { SuccessNote } from "../pages/LoadingComponents/SuccessNote";
 
 export default function Layout_2() {
   const username = useAuthStore((s) => s.userName);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <div className="flex h-screen overflow-hidden  font-poppins">
+    <div className="flex h-screen overflow-hidden font-poppins">
       {/* Sidebar */}
       <div
         className={`text-secondary bg-primary transition-all duration-300 flex flex-col flex-shrink-0  ${
-          sidebarOpen ? "w-54" : "w-20"
+          sidebarOpen ? "w-52" : "w-18"
         }`}
       >
         <button
@@ -41,13 +43,15 @@ export default function Layout_2() {
         <Navbar_2 />
 
         {/* Scrollable content */}
-        <main className="flex-1 p-6 overflow-y-auto bg-secondary">
-          <div className="flex justify-between px-6 text-primary">
+        <main className="flex-1 p-6 overflow-y-auto bg-white">
+          <div className="flex justify-between px-1 mb-2  text-primary">
             <h1 className="text-2xl font-semibold ">Welcome, {username} </h1>
           </div>
           <Outlet />
         </main>
       </div>
+      <ErrorNote />
+      <SuccessNote />
     </div>
   );
 }

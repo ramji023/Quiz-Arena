@@ -32,11 +32,7 @@ const SidebarIcons = [
     icon: Ellipsis,
     route: "history",
   },
-  {
-    item: "Account",
-    icon: CircleUser,
-    route: "/profile",
-  },
+
 ];
 export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
   const navigate = useNavigate();

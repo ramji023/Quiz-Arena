@@ -1,19 +1,28 @@
 import { Bookmark } from "lucide-react";
+import { motion } from "motion/react";
 import { AllQuizzes, HostQuizzes } from "../../types/quizForm";
 import { useGetAllHostedQuiz } from "../../queries/reactQueries";
 import { useNavigate } from "react-router-dom";
 import { StarIcon } from "lucide-react";
+import QuizCardSkeleton from "../LoadingComponents/CardSkeleton";
+import useShowLoader from "../../hooks/useShowLoader";
+import { Button } from "@repo/ui/components/ui/Button";
 
 export default function HostedQuizzes() {
   const navigate = useNavigate();
-  const { data, isLoading, error } = useGetAllHostedQuiz();
+  const query = useGetAllHostedQuiz(); // get all your history
+  const { data, isLoading, error } = useShowLoader(query, 500);
   function navigation(id: string) {
     navigate(`/home/hostQuiz/${id}`);
   }
   if (isLoading) {
     return (
       <>
-        <div>Quizzes are processing</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 py-6">
+          {[...Array(8)].map((_, i) => (
+            <QuizCardSkeleton key={i} />
+          ))}
+        </div>
       </>
     );
   }
@@ -39,16 +48,22 @@ export default function HostedQuizzes() {
               <h1 className="mt-5 px-6 flex items-center justify-start">
                 Here are your history of past 7 days...
               </h1>
-              {/* if there is quiz available  */}
-              <div className="flex items-center flex-wrap p-6 gap-y-5 gap-x-10">
-                {data.map((quiz, index) => (
-                  <HostQuizCard
-                    key={index}
-                    quiz={quiz}
-                    navigation={navigation}
-                  />
-                ))}
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                {/* if there is quiz available  */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-1">
+                  {data.map((quiz, index) => (
+                    <HostQuizCard
+                      key={index}
+                      quiz={quiz}
+                      navigation={navigation}
+                    />
+                  ))}
+                </div>
+              </motion.div>
             </>
           )}
         </div>
@@ -66,7 +81,7 @@ function HostQuizCard({
 }) {
   return (
     <>
-      <div className="bg-white rounded-xl shadow overflow-hidden w-60 cursor-pointer">
+      <div className="bg-card rounded-xl shadow overflow-hidden w-60 cursor-pointer">
         <img
           src="https://placehold.co/600x400/png"
           alt="Quiz Thumbnail"
@@ -122,14 +137,15 @@ function HostQuizCard({
           </div>
 
           <div className="flex items-center justify-between">
-            <button
+            <Button
+              variant="primary"
+              size="sm"
               onClick={() => {
                 navigation(quiz.id);
               }}
-              className="bg-pink text-white px-3 py-1 rounded-md hover:bg-pink-600 text-sm"
             >
               See Results
-            </button>
+            </Button>
             <div className="flex gap-2">
               <button>
                 <Bookmark className="w-5 h-5" />

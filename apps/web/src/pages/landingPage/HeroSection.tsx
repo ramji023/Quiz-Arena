@@ -61,9 +61,9 @@ export function HeroSection() {
         initial={{ opacity: 0, y: -30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.1 }}
-        className="font-playfair text-4xl md:text-6xl/tight break-words text-shadow-2xs text-shadow-white flex text-center"
+        className="font-playfair text-4xl md:text-6xl/tight break-words text-shadow-2xs flex text-center"
       >
-        Create, Play, and Host Quizzes  All in One Arena
+        Create, Play, and Host Quizzes All in One Arena
       </motion.div>
 
       <motion.div
@@ -82,7 +82,7 @@ export function HeroSection() {
         transition={{ duration: 1, delay: 0.3 }}
         className="mt-5"
       >
-        <Button variant="primary" onClick={()=>{}}>
+        <Button variant="primary" onClick={() => {}}>
           Create Quiz{" "}
           <span>
             <RightArrow />

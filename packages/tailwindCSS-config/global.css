@@ -11,11 +11,12 @@
   --font-poppins: "Poppins", sans-serif;
   --font-game: "Libertinus Sans", sans-serif;
   --font-playfair: "Playfair Display", serif;
-  --color-primary: #3b142a;    
-  --color-primary-shadow : #532040;
+  --color-primary: #3b142a;
+  --color-primary-shadow: #532040;
   --color-secondary: #f3efda;
-  --color-secondary-shadow : #f8f6e6;
+  --color-secondary-shadow: #f8f6e6;
   --color-pink: #ff319f;
-  --color-card: #ffc481;
+  --color-card: #F3F0E2;
+  --color-bg: #f8f6ed;
   --font-jungle: "Merriweather Sans", sans-serif;
 }

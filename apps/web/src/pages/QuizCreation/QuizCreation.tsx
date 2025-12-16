@@ -82,6 +82,7 @@ export default function QuizCreation() {
         <div className="flex flex-row-reverse justify-between">
           <Button
             variant="primary"
+            size="sm"
             onClick={() => {
               navigate("/home/ai-quiz");
             }}
@@ -148,6 +149,7 @@ export default function QuizCreation() {
               <Button
                 variant="primary"
                 type="button"
+                size="sm"
                 onClick={() =>
                   append({
                     question: "",
@@ -160,7 +162,12 @@ export default function QuizCreation() {
               >
                 Add Question <Plus className="w-4 h-4" />
               </Button>
-              <Button variant="primary" type="submit" onClick={() => {}}>
+              <Button
+                size="sm"
+                variant="primary"
+                type="submit"
+                onClick={() => {}}
+              >
                 Save Quiz <Save className="w-4 h-4" />
               </Button>
             </div>

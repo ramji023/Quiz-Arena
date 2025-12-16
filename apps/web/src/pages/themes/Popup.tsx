@@ -33,7 +33,6 @@ export default function Popup() {
     }
   }, [isConnected, wsUrl, gameStatus, tik_tik, navigate]);
 
-
   return (
     <>
       <AnimatePresence>

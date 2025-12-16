@@ -35,8 +35,8 @@ export default function App() {
               <Route path="" element={<Quizzes />} />
               <Route path="saved" element={<SavedQuizzes />} />
               <Route path="your-quizzes" element={<YourQuizzes />} />
-              <Route path="history" element={<HostedQuizzes/>} />
-              <Route path="hostquiz/:quizId" element={<QuizResults/>} /> 
+              <Route path="history" element={<HostedQuizzes />} />
+              <Route path="hostquiz/:quizId" element={<QuizResults />} />
               <Route path="create-quiz" element={<QuizCreation />} />
               <Route path="ai-quiz" element={<AiQuiz />} />
               <Route path="quiz/:quizId" element={<Quiz />} />

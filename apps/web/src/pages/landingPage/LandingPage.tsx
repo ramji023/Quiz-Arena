@@ -9,7 +9,7 @@ import { Outlet } from "react-router-dom";
 export default function LandingPage() {
   return (
     <>
-      <div className="text-secondary font-poppins">
+      <div className="text-secondary font-poppins overflow-hidden">
         <HeroSection />
         <FeaturesSection />
         <LeaderboardFeat />

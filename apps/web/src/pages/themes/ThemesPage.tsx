@@ -30,6 +30,11 @@ export default function ThemesPage() {
   return (
     <>
       <div className="text-primary">
+        <div className="px-6 mt-6 mb-0">
+          <h1 className="text-base text-primary">
+            Here are some in-built themes.
+          </h1>
+        </div>
         {/* second section  */}
         <div className="p-6 flex gap-6 flex-wrap gap-y-6 gap-x-10">
           {THEMES.map((theme, index) => (

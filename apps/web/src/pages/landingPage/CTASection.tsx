@@ -30,11 +30,11 @@ export default function CTASection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Button variant="primary" onClick={() => {}}>
+          <Button size="lg" variant="primary" onClick={() => {}}>
             {" "}
             Start Your First Quiz
           </Button>
-          <Button variant="other" onClick={() => {}}>
+          <Button size="lg" variant="outline" onClick={() => {}}>
             {" "}
             Explore Public Quizzes
           </Button>

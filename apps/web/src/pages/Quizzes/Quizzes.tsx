@@ -1,67 +1,5 @@
 import QuizCard from "@repo/ui/components/ui/QuizCard";
-export const quizzes = [
-  {
-    title: "Ultimate JavaScript Challenge",
-    questions: 15,
-    timePerQuestion: "15s",
-    difficulty: "Medium",
-    category: "Technology",
-    playersAttempted: 1245,
-    rating: 4.8,
-    image: "https://picsum.photos/id/1015/400/250", // static image
-  },
-  {
-    title: "World History Trivia",
-    questions: 20,
-    timePerQuestion: "20s",
-    difficulty: "Hard",
-    category: "History",
-    playersAttempted: 980,
-    rating: 4.6,
-    image: "https://picsum.photos/id/1025/400/250",
-  },
-  {
-    title: "General Knowledge Blitz",
-    questions: 10,
-    timePerQuestion: "10s",
-    difficulty: "Easy",
-    category: "General Knowledge",
-    playersAttempted: 2150,
-    rating: 4.7,
-    image: "https://picsum.photos/id/1005/400/250",
-  },
-  {
-    title: "Football Legends Quiz",
-    questions: 12,
-    timePerQuestion: "12s",
-    difficulty: "Medium",
-    category: "Sports",
-    playersAttempted: 1750,
-    rating: 4.5,
-    image: "https://picsum.photos/id/1041/400/250",
-  },
-  {
-    title: "Bollywood Blockbuster Challenge",
-    questions: 18,
-    timePerQuestion: "15s",
-    difficulty: "Medium",
-    category: "Entertainment",
-    playersAttempted: 1340,
-    rating: 4.4,
-    image: "https://picsum.photos/id/1011/400/250",
-  },
-  {
-    title: "Space & Astronomy Facts",
-    questions: 14,
-    timePerQuestion: "20s",
-    difficulty: "Hard",
-    category: "Science",
-    playersAttempted: 890,
-    rating: 4.9,
-    image: "https://picsum.photos/id/1022/400/250",
-  },
-];
-
+import { motion } from "motion/react";
 import { useAuthStore } from "../../stores/authStore";
 import { useGetAllQuiz } from "../../queries/reactQueries";
 import { useNavigate } from "react-router-dom";
@@ -69,10 +7,31 @@ import { useEffect, useState } from "react";
 import useSocketStore from "../../stores/socketStore";
 import useWebsocket from "../../hooks/useWebsocket";
 import ReconnectBox from "../playerGame/ReconnectBox";
+import useShowLoader from "../../hooks/useShowLoader";
+import QuizCardSkeleton from "../LoadingComponents/CardSkeleton";
+import ErrorPage from "../ErrorPages/ErrorPage";
+import useErrorStore from "../../stores/errorStore";
 export default function Quizzes() {
   const navigate = useNavigate();
-  const username = useAuthStore((s) => s.userName);
-  const { data, isLoading, error } = useGetAllQuiz();
+  // function to set error from useErrorStore
+  const setError = useErrorStore((s) => s.setError);
+  // call react query to get all the quizzes
+  const rawQuery = useGetAllQuiz();
+  const { data, isLoading, error } = useShowLoader(rawQuery, 500);
+
+  /*
+   *
+   *
+   * *
+   * *
+   * *
+   * *
+   * *
+   * *
+   * *
+   *
+   */
+  // <----------------------    game logic   ------------------------------------------------>
   // write logic to open and close reconnect box when it rendered first time
   const isConnected = useSocketStore((s) => s.isConnected);
   const gameStatus = useSocketStore((s) => s.gameStatus);
@@ -119,41 +78,66 @@ export default function Quizzes() {
     }
     setHasCheckedReconnect(true);
   }, []);
+  // <----------------------    game logic   ------------------------------------------------>
+  /*
+   *
+   *
+   * *
+   * *
+   * *
+   * *
+   * *
+   * *
+   * *
+   *
+   */
 
+  // handle navigation when user click to button see details
   function navigation(id: string) {
     navigate(`/home/quiz/${id}`);
   }
+  // if quizzes are processing then show quiz card skeleton
   if (isLoading) {
     return (
-      <>
-        <div>Quizzes are processing</div>
-      </>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 py-6">
+        {[...Array(8)].map((_, i) => (
+          <QuizCardSkeleton key={i} />
+        ))}
+      </div>
     );
   }
+  // if there is anything wrong then show error to user
   if (error) {
-    return (
-      <>
-        <div>Something went wrong while fetching quizzes</div>
-      </>
+    setError(
+      "page",
+      "Server Error",
+      "Something went wrong while processing Quizzes"
     );
+    return <ErrorPage />;
   }
+
   if (data) {
     return (
       <>
-        <div className="text-primary ">
-          {/* if there is quiz available  */}
-          <div className="flex items-center flex-wrap p-6 gap-y-5 gap-x-10">
-            {data.map((quiz, index) => (
-              <QuizCard key={index} quiz={quiz} navigation={navigation} />
-            ))}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
+          <div className="text-primary ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-1">
+              {data.map((quiz, index) => (
+                <QuizCard key={index} quiz={quiz} navigation={navigation} />
+              ))}
+            </div>
+            {openReconnectBox && (
+              <ReconnectBox
+                closeBox={() => setOpenReconnectBox(false)}
+                setwsURl={(url: string) => setWsUrl(url)}
+              />
+            )}
           </div>
-          {openReconnectBox && (
-            <ReconnectBox
-              closeBox={() => setOpenReconnectBox(false)}
-              setwsURl={(url: string) => setWsUrl(url)}
-            />
-          )}
-        </div>
+        </motion.div>
       </>
     );
   }

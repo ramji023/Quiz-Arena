@@ -1,4 +1,5 @@
 import { Bookmark, StarIcon } from "lucide-react";
+import { Button } from "./Button";
 
 interface QuizPropType {
   title: string;
@@ -37,7 +38,7 @@ export default function QuizCard({
   const players = calculatePlayers(quiz.hostedQuizzes);
   return (
     <>
-      <div className="bg-white rounded-xl shadow overflow-hidden w-60 cursor-pointer">
+      <div className="bg-card rounded-xl shadow overflow-hidden w-60 cursor-pointer">
         <img
           src="https://placehold.co/600x400/png"
           alt="Quiz Thumbnail"
@@ -45,7 +46,9 @@ export default function QuizCard({
         />
 
         <div className="p-4">
-          <h3 className="text-md font-semibold mb-2 truncate">{quiz.title}</h3>
+          <h3 className="text-base font-semibold mb-2 truncate">
+            {quiz.title}
+          </h3>
 
           <div className="flex justify-between text-sm text-gray-500 mb-3">
             <span>{quiz._count.questions} Questions</span>
@@ -74,14 +77,15 @@ export default function QuizCard({
           </div>
 
           <div className="flex items-center justify-between">
-            <button
+            <Button
+              variant="primary"
+              size="sm"
               onClick={() => {
                 navigation(quiz.id);
               }}
-              className="bg-pink text-white px-3 py-1 rounded-md hover:bg-pink-600 text-sm"
             >
               See details
-            </button>
+            </Button>
             <div className="flex gap-2">
               <button>
                 <Bookmark className="w-5 h-5" />

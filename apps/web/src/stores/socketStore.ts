@@ -35,23 +35,25 @@ interface SocketStore {
   resetSession: () => void;
 }
 
+// zustand store to manage all states while hosting/playing quiz 
+// it handle both events (admin and player)
 const useSocketStore = create<SocketStore>()(
   persist(
     (set, get) => {
       return {
-        socketRef: { current: null },
-        id: null,
-        role: "player",
-        fullName: null,
-        gameId: null,
-        themeId: null,
-        playerJoined: [],
-        question: null,
-        tik_tik: null,
-        gameStatus: null,
-        answerResult: null,
-        notification: null,
-        isConnected: false,
+        socketRef: { current: null },  // store socket instance
+        id: null,  // store id (player && host)
+        role: "player", // store role (wheather he is admin or player)
+        fullName: null, // store user fullName
+        gameId: null, // store game Id
+        themeId: null, //  store theme Id
+        playerJoined: [], // store joined player list (fullName, score,id)
+        question: null, // store current question data (when question is send by server)
+        tik_tik: null, // store timer duration for question
+        gameStatus: null, // store current game status (waiting, ready, start, end)
+        answerResult: null, // store answer result (correct/wrong) after checking answer by server
+        notification: null, // store notification message (player join,left and reconnect messages)
+        isConnected: false, // store socket connection status (wheather socket is connected or not )
 
         setSocketInstance: (socket) => {
           get().socketRef.current = socket;

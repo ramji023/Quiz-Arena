@@ -18,12 +18,16 @@ import {
 } from "@repo/ui/components/icons/Badges";
 import { useState } from "react";
 import { useGetHostQuiz } from "../../queries/reactQueries";
+import { Button } from "@repo/ui/components/ui/Button";
+import HostQuizSkeleton from "../LoadingComponents/HostQuizSkeleton";
+import useShowLoader from "../../hooks/useShowLoader";
 
 export default function QuizResults() {
   const navigate = useNavigate();
   const { quizId } = useParams();
   const [showAllPlayers, setShowAllPlayers] = useState(false);
-  const { data, isLoading, error } = useGetHostQuiz(quizId);
+  const query = useGetHostQuiz(quizId);
+  const { data, isLoading, error } = useShowLoader(query,600);
 
   // const { quiz, gameStats, leaderboard } = mockResultsData;
 
@@ -47,7 +51,7 @@ export default function QuizResults() {
   if (isLoading) {
     return (
       <>
-        <div>Quizzes are processing</div>
+        <HostQuizSkeleton/>
       </>
     );
   }
@@ -69,18 +73,25 @@ export default function QuizResults() {
       ? leaderboard
       : leaderboard.slice(0, 5);
     return (
-      <div className="min-h-screen bg-secondary p-6">
+      <div className="min-h-screen bg-white p-6">
         <div className="max-w-6xl mx-auto">
           {/* first Section */}
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-[#e8e2c7] transition">
-              <MoveLeft size={30} strokeWidth={2.5} />
+            <div
+              onClick={() => navigate(-1)}
+              className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-bg transition"
+            >
+              <MoveLeft size={30} strokeWidth={1.5} />
             </div>
 
-            <button className="flex gap-2 items-center cursor-pointer justify-center bg-pink text-white px-4 py-2 rounded-md font-medium hover:bg-pink-600 transition">
+            <Button
+              variant="primary"
+              size="md"
+              onClick={()=>{}}
+            >
               Re-Play
               <Triangle className="rotate-90" size={15} />
-            </button>
+            </Button>
           </div>
 
           {/* Quiz Summary Card */}
@@ -239,7 +250,7 @@ export default function QuizResults() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-secondary text-primary text-sm font-semibold">
+                  <tr className="bg-white text-primary text-sm font-semibold">
                     <th className="py-4 px-6 text-left">Rank</th>
                     <th className="py-4 px-6 text-left">Player</th>
                     <th className="py-4 px-6 text-center">Score</th>

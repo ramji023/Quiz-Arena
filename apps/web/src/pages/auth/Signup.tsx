@@ -5,19 +5,38 @@ import { useForm } from "react-hook-form";
 import { AuthForm } from "../../types/auth";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInterceptor";
+import useErrorStore from "../../stores/errorStore";
+import useSuccessStore from "../../stores/SuccessStore";
 export default function Signup() {
   const navigate = useNavigate();
+  const setError = useErrorStore((s) => s.setError);
+  const setMessage = useSuccessStore((s)=>s.setMessage)
   const signupMutation = useMutation({
     mutationFn: async (data: AuthForm) => {
       const response = await api.post("/api/v1/user/auth/signup", data);
       return response.data;
     },
     onSuccess: (data) => {
-      console.log("response from signup endpoint ", data);
+      // console.log("response from signup endpoint ", data);
       navigate("/auth/login");
+      setMessage("Your most welcome in QuizArena !!")
     },
-    onError: (err) => {
-      console.log("something went wrong while signed up : ", err);
+    onError: (err: Error | any) => {
+      // console.log("something went wrong while signed up : ", err);
+      if (err.message === "Network Error") {
+        // console.log("No internet connection");
+        setError("notification", "Network Error", "No internet connection");
+      } else if (err.response?.data?.message) {
+        // console.log(err.response.data.errors);
+        setError("notification", "Server Error", err.response.data.message);
+      } else {
+        // console.log("Something went wrong. Please try again.");
+        setError(
+          "notification",
+          "Application Error",
+          "Something went wrong. Please try again."
+        );
+      }
     },
   });
 
@@ -32,39 +51,32 @@ export default function Signup() {
     },
   });
   function onSubmit(data: AuthForm) {
-    console.log("signup form data : ", data);
+    // console.log("signup form data : ", data);
     signupMutation.mutate(data);
   }
 
   return (
     <>
       <div className="fixed top-0 left-0 w-full h-full backdrop-blur-[2px] z-50 flex justify-center items-center">
-        <div className="w-[400px] h-[470px] bg-primary-shadow rounded-xl  p-6 flex flex-col gap-3  font-poppins">
+        <div className="w-[400px] h-[470px] bg-secondary rounded-xl  p-6 flex flex-col gap-3  font-poppins">
           <div className=" flex flex-col gap-5 items-center justify-center p-4">
-            <div className="">
+            <div>
               <Logo />
             </div>
-            <h1 className=" text-md text-gray-300">Create Your Account</h1>
+            <h1 className=" text-base text-slate-600">Create Your Account</h1>
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="">
-              {/* <div>
-                    {signupMutation.isError && (
-                      <p className="text-red-500 text-xs flex justify-center items-center">
-                        Error: {(signupMutation.error as Error).message}{" "}
-                      </p>
-                    )}
-                  </div> */}
+            <div className="text-primary">
               <div className="flex flex-col gap-1 py-1">
-                <label className="text-lg">Email</label>
+                <label className="text-base">Email</label>
                 <input
                   type="text"
                   placeholder="Enter email"
-                  className="p-2 rounded-lg outline-1 outline-secondary focus:outline-pink"
+                  className="p-2 rounded-lg outline-1 outline-secondary bg-white text-base"
                   {...register("email", {
                     required: {
                       value: true,
-                      message: "Email is Required",
+                      message: "**Email is Required",
                     },
                   })}
                 />
@@ -73,15 +85,15 @@ export default function Signup() {
                 </span>
               </div>
               <div className="flex flex-col gap-1 py-1 ">
-                <label className="text-lg">Password</label>
+                <label className="text-base">Password</label>
                 <input
                   type="text"
                   placeholder="Enter Strong Password"
-                  className="p-2 rounded-lg outline-1 outline-secondary focus:outline-pink"
+                  className="p-2 rounded-lg outline-1 outline-secondary bg-white text-base"
                   {...register("password", {
                     required: {
                       value: true,
-                      message: "Password is Required",
+                      message: "**Password is Required",
                     },
                   })}
                 />
@@ -91,13 +103,18 @@ export default function Signup() {
               </div>
             </div>
             <div className="flex justify-center items-center">
-              <Button variant="primary" type="submit" onClick={() => {}}>
+              <Button
+                variant="primary"
+                type="submit"
+                onClick={() => {}}
+                loading={signupMutation.isPending}
+              >
                 Signup
               </Button>
             </div>
           </form>
           <div className="">
-            <p className="text-sm text-gray-300 text-center">
+            <p className="text-sm text-slate-600 text-center">
               If you have already registered,{" "}
               <span
                 onClick={() => {

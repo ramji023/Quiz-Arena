@@ -3,7 +3,7 @@ export function Logo() {
     <>
       <div className="font-logo font-semibold text-pink">
         <span className="text-3xl">Q</span>
-        <span className="text-3xl text-secondary">uizArena</span>
+        <span className="text-3xl">uizArena</span>
       </div>
     </>
   );

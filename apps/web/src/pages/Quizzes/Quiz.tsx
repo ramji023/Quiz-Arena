@@ -4,15 +4,20 @@ import { MoveLeft, Triangle, Star, User, ListChecks } from "lucide-react";
 import { useGetQuiz } from "../../queries/reactQueries";
 import { useQuizStore } from "../../stores/quizStore";
 import { type Quiz } from "../../types/quizForm";
+import { Button } from "@repo/ui/components/ui/Button";
+import useShowLoader from "../../hooks/useShowLoader";
+import QuizSkeleton from "../LoadingComponents/QuizSkeleton";
 
 export default function Quiz() {
   const navigate = useNavigate();
   const setQuiz = useQuizStore((s) => s.setQuiz);
   const quizId = useParams().quizId;
   console.log(quizId);
-  const { data } = useGetQuiz(quizId);
+  const query = useGetQuiz(quizId);
+  const { data, isLoading, error } = useShowLoader(query, 600);
   if (!quizId) return <div>Quiz id is not provided</div>;
 
+  if (isLoading) return <QuizSkeleton />;
   if (data) {
     function setSelectedQuiz(data: Quiz) {
       setQuiz(data);
@@ -22,19 +27,23 @@ export default function Quiz() {
       <div className="mx-20">
         {/* Header with Back + Play buttons */}
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-[#e8e2c7] transition">
-            <MoveLeft size={30} strokeWidth={2.5} />
+          <div
+            onClick={() => navigate(-1)}
+            className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-bg transition"
+          >
+            <MoveLeft size={30} strokeWidth={1.5} />
           </div>
 
-          <button
+          <Button
+            variant="primary"
+            size="md"
             onClick={() => {
               setSelectedQuiz(data);
             }}
-            className="flex gap-2 items-center cursor-pointer justify-center bg-pink text-white px-4 py-2 rounded-md font-medium hover:bg-pink-600 transition"
           >
             Play
             <Triangle className="rotate-90" size={15} />
-          </button>
+          </Button>
         </div>
 
         {/* Main Content */}

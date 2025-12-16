@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReconnectBox from "./ReconnectBox";
 import useSocketStore from "../../stores/socketStore";
+import { Logo } from "@repo/ui/components/Logo";
 
 interface FormState {
   username: string;
@@ -131,18 +132,15 @@ export default function PlayerJoin() {
   return (
     <div className="min-h-screen flex flex-col gap-6 items-center justify-center font-poppins bg-primary px-4 text-secondary">
       {/* Logo */}
-      <div className="font-logo font-semibold text-pink">
-        <span className="text-4xl">Q</span>
-        <span className="text-4xl text-secondary">uizArena</span>
-      </div>
+      <Logo/>
 
       {/* Card */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex justify-center"
+        className="w-full flex justify-center text-primary"
       >
-        <div className=" bg-primary-shadow rounded-xl shadow-2xl w-full max-w-sm p-6 flex flex-col justify-center items-center gap-4">
-          <h2 className="text-2xl font-semibold text-secondary text-center mb-6">
+        <div className=" bg-secondary rounded-xl shadow-2xl w-full max-w-sm p-6 flex flex-col justify-center items-center gap-4">
+          <h2 className="text-2xl font-semibold text-primary text-center mb-6">
             Join Quiz Game
           </h2>
           <div className="flex flex-col gap-1 py-1 w-full">
@@ -150,7 +148,7 @@ export default function PlayerJoin() {
             <input
               type="text"
               placeholder="Enter Your Full Name"
-              className="w-full p-2 rounded-lg outline-1 outline-secondary focus:outline-pink"
+              className="w-full p-2 rounded-lg outline-1 outline-secondary bg-white text-base"
               {...register("username", {
                 required: {
                   value: true,
@@ -164,7 +162,7 @@ export default function PlayerJoin() {
             <input
               type="text"
               placeholder="Enter Room Pin"
-              className="p-2 rounded-lg outline-1 outline-secondary focus:outline-pink"
+              className="p-2 rounded-lg outline-1 outline-secondary bg-white text-base"
               {...register("gamePin", {
                 required: {
                   value: true,
