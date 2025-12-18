@@ -43,7 +43,7 @@ export function HeroSection() {
       <motion.div
         animate={{ x: mouse.x, y: -mouse.y }}
         transition={{ type: "spring", stiffness: 50, damping: 10 }}
-        className="absolute bottom-20 left-20  opacity-60 pointer-events-none"
+        className="absolute bottom-30 left-20  opacity-60 pointer-events-none"
       >
         <UserIcon />
       </motion.div>
@@ -51,7 +51,7 @@ export function HeroSection() {
       <motion.div
         animate={{ x: -mouse.x, y: mouse.y }}
         transition={{ type: "spring", stiffness: 50, damping: 10 }}
-        className="absolute bottom-16 right-24 opacity-60 pointer-events-none"
+        className="absolute bottom-25 right-28 opacity-60 pointer-events-none"
       >
         <StarIcon />
       </motion.div>
@@ -70,7 +70,7 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.2 }}
-        className="font-poppins text-md flex text-center mt-5 max-w-2xl"
+        className="font-poppins text-md flex text-center mt-2 max-w-2xl"
       >
         Create your own quizzes, play with friends in real-time, and climb the
         leaderboard to prove you’re the ultimate quiz champion.
@@ -82,12 +82,45 @@ export function HeroSection() {
         transition={{ duration: 1, delay: 0.3 }}
         className="mt-5"
       >
-        <Button variant="primary" onClick={() => {}}>
+        <Button variant="primary" size="md" onClick={() => {}}>
           Create Quiz{" "}
           <span>
             <RightArrow />
           </span>
         </Button>
+      </motion.div>
+
+      {/* Stats Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.4 }}
+        className="mt-8 flex flex-nowrap gap-12 md:gap-12 text-center"
+      >
+        <div className="flex flex-col">
+          <span className="font-playfair text-3xl md:text-4xl font-bold">
+            50K+
+          </span>
+          <span className="font-poppins text-sm md:text-base opacity-80">
+            Players
+          </span>
+        </div>
+        <div className="flex flex-col">
+          <span className="font-playfair text-3xl md:text-4xl font-bold">
+            1M+
+          </span>
+          <span className="font-poppins text-sm md:text-base opacity-80">
+            Quizzes
+          </span>
+        </div>
+        <div className="flex flex-col">
+          <span className="font-playfair text-3xl md:text-4xl font-bold">
+            100+
+          </span>
+          <span className="font-poppins text-sm md:text-base opacity-80">
+            Categories
+          </span>
+        </div>
       </motion.div>
     </div>
   );

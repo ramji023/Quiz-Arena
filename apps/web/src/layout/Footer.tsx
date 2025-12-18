@@ -6,7 +6,7 @@ import {
 } from "@repo/ui/components/icons/SocialIcons";
 export default function Footer() {
   return (
-    <footer className="bg-primary text-white font-poppins px-5 py-3">
+    <footer className="bg-primary text-secondary font-poppins px-5 py-3">
       <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Top section */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
