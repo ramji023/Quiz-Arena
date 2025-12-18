@@ -8,6 +8,8 @@ import { PlayerType } from "../../stores/socketStore";
 import { useQuizStore } from "../../stores/quizStore";
 import audio from "../../utils/audioManager";
 import { sounds } from "../../utils/sounds";
+import ErrorPage from "../ErrorPages/ErrorPage";
+import useErrorStore from "../../stores/errorStore";
 export default function Lobby({
   players = [],
   role,
@@ -15,13 +17,16 @@ export default function Lobby({
   players: PlayerType[];
   role: string;
 }) {
-  // when server send gameId
-  const gameId = useSocketStore((s) => s.gameId);
+  const setError = useErrorStore((s) => s.setError);
+  const gameId = useSocketStore((s) => s.gameId); // store the gameID from useSocketStore
+  const quizData = useQuizStore.getState().quiz; // store the quiz data
+  const socket = useSocketStore.getState().socketRef.current; // store the socket instance
 
   const [positions, setPositions] = useState<
     Record<string, { x: number; y: number }>
   >({});
 
+  // write effect to manage player positions randomly
   useEffect(() => {
     const moveRandomly = (userId: string) => {
       const maxX = window.innerWidth - 100;
@@ -48,6 +53,7 @@ export default function Lobby({
     return () => intervals.forEach((interval) => clearInterval(interval));
   }, [players]);
 
+  // state to manage wheather host copied the room id or not
   const [isCopied, setIsCopied] = useState(false);
   // function to copy game pin
   const copyPin = () => {
@@ -57,11 +63,12 @@ export default function Lobby({
       .catch((err) => console.error("Failed to copy:", err));
   };
 
+  // effect to show message div to host that copied the gameid has been succeed
   useEffect(() => {
     if (isCopied) {
       const timer = setTimeout(() => {
         setIsCopied(false);
-      }, 3000);
+      }, 5000);
 
       return () => clearTimeout(timer);
     }
@@ -69,35 +76,58 @@ export default function Lobby({
 
   // if user click to start button then send quiz data to websocket server
   function sendQuizDataToServer() {
-    const quizData = useQuizStore.getState().quiz;
-    const socket = useSocketStore.getState().socketRef.current;
+    // check if quizData is available
+    if (!quizData) {
+      setError("notification", "Quiz Error", "You have not selected any quiz");
+      return;
+    }
+    // if quizData is available
+    // format the quiz data
     const quizz = {
-      id: quizData?.id,
-      title: quizData?.title,
-      questions: quizData?.questions,
+      id: quizData.id,
+      title: quizData.title,
+      questions: quizData.questions,
     };
     // console.log("QUizz data : ", quizz);
-    if (socket) {
-      socket.send(
-        JSON.stringify({
-          type: "send-quiz",
-          data: {
-            gameId: useSocketStore.getState().gameId,
-            userId: useSocketStore.getState().id,
-            quiz: quizz,
-          },
-          message: "Quiz data send to server successfully",
-        })
+
+    // check if there is at least one player joined or not
+    if (useSocketStore.getState().playerJoined.length < 1) {
+      setError(
+        "notification",
+        "Quiz Error",
+        "Before starting game, There should be minimum one player"
       );
+      return;
     }
+    // if user is not connected with websocket server
+    if (socket === null) {
+      setError("page", "Server Error", "Server Connection Failed");
+      return <ErrorPage />;
+    }
+    // send the quiz data to websocket server
+    socket.send(
+      JSON.stringify({
+        type: "send-quiz",
+        data: {
+          gameId: useSocketStore.getState().gameId,
+          userId: useSocketStore.getState().id,
+          quiz: quizz,
+        },
+        message: "Quiz data send to server successfully",
+      })
+    );
   }
 
-  if (!gameId) return <div>Game ID is not provided</div>;
+  if (!gameId) {
+    setError("page", "Server Error", "Game Id is not provided");
+    return <ErrorPage />;
+  }
   // console.log("game id on Lobby component : ", gameId);
   return (
     <>
       <div className="w-full h-full relative flex flex-col items-center justify-center gap-10 p-6 select-none">
         {/* Room Pin */}
+        {/* show Room pin box only if user is host  */}
         {role === "host" ? (
           <div
             onClick={copyPin}
@@ -113,7 +143,7 @@ export default function Lobby({
             </div>
           </div>
         ) : (
-          // placeholder to take up space
+          // hide the game pin if user is not host
           <div className="opacity-0">
             <div>
               <span className="text-sm text-gray-700">Room Pin</span>
@@ -158,6 +188,7 @@ export default function Lobby({
         })}
 
         {/* submit button  */}
+        {/* show start button to user if he is host  */}
         {role === "host" && (
           <div className="shadow-4xl mb-0 mt-10">
             <Button

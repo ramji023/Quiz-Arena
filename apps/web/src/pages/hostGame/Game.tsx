@@ -10,8 +10,16 @@ import LeaderBoard from "../playerGame/LeaderBoard";
 import { sounds } from "../../utils/sounds";
 import audio from "../../utils/audioManager";
 import { useNavigate } from "react-router-dom";
+import ErrorPage from "../ErrorPages/ErrorPage";
+import useErrorStore from "../../stores/errorStore";
+import Leaderboard from "../playerGame/LeaderBoard";
+
+// the main game component for hosting the game
 export default function Game() {
   const navigate = useNavigate();
+  // store functions to set the error message or success message
+  const setError = useErrorStore((s) => s.setError);
+  // store states from the useSocketStore and useQuizStore
   const isConnected = useSocketStore((s) => s.isConnected);
   const duration = useSocketStore((s) => s.tik_tik);
   const themeId = useQuizStore((s) => s.themeId);
@@ -21,40 +29,48 @@ export default function Game() {
   const gameStatus = useSocketStore((s) => s.gameStatus);
   const question = useSocketStore((s) => s.question);
   const notification = useSocketStore((s) => s.notification);
+
+  // effect to handle component mount and unmount stated
   useEffect(() => {
-    // Check if there's an active game on mount (after refresh)
+    /***
+     * if player is refreshed the page
+     * then useSocketStore becomes null and isConnected become false
+     * but gameStatus is still persist in the local storage
+     * so navigate to /join page to ask user to reconnect to the game again
+     */
     if (
       !isConnected &&
       (gameStatus === "waiting" ||
         gameStatus === "ready" ||
         gameStatus === "start")
     ) {
-      console.log("isConnected status : ", isConnected);
+      // console.log(" PlayerGame: Not connected but has game status, navigating to /join");
       navigate("/home");
       return;
     }
+
+    // console.log(" PlayerGame: Preloading sounds");
     // preload all the sound effect
     Object.values(sounds).forEach((url) => audio.preload(url));
-    // just clear the socket instance if game component unmount
+
+    // and when component unmount then disconnect from the websocket server
     return () => {
-      console.log("Host game component unmount");
+      // console.log(" PlayerGame: Main effect CLEANUP - disconnecting socket");
       useSocketStore.getState().disconnectSocket();
     };
   }, [navigate]);
 
-  console.log("theme data after clicking to start button", theme);
+  // if theme or themeID or duration is not present then show error page
   if (!theme || !themeId || !duration) {
-    console.error("if there is any error" ,theme, themeId, duration);
-    return (
-      <>
-        <div>
-          Something went wrong while starting quiz {JSON.stringify(theme)}
-        </div>
-      </>
+    setError(
+      "page",
+      "Client Error",
+      "Something went wrong. Please select quiz and theme"
     );
+    return <ErrorPage />;
   }
 
-  // when player click to any options
+  // when host click to any options
   const onAnswer = (
     option: { text: string; isCorrect: boolean },
     id: string
@@ -73,8 +89,11 @@ export default function Game() {
         role={role}
         duration={duration}
       >
+        {/* if game status is "waiting" then render Lobby component and pass joined players and role  */}
         {gameStatus === "waiting" && <Lobby players={userJoined} role={role} />}
+        {/* if game Statuc become "ready" then show a 5 seconds of Countdown to user (host and player both ) */}
         {gameStatus === "ready" && <Countdown />}
+        {/* if game status become "start" then render questionCard to user (host/player)  */}
         {gameStatus === "start" && question && (
           <QuestionCard
             role={role}
@@ -83,7 +102,8 @@ export default function Game() {
             optionColors={theme.optionColor}
           />
         )}
-        {gameStatus === "end" && <LeaderBoard themeId={themeId} />}
+        {/* if game status is end then show the leaderboard */}
+        {gameStatus === "end" && <Leaderboard themeId={themeId} />}
       </ThemeWrapper>
     </>
   );

@@ -12,13 +12,15 @@ export default function Timer({ duration = 10, id, answered }: CountdownProps) {
   const radius = 30;
   const circumference = 2 * Math.PI * radius;
 
-  const [time, setTime] = useState(duration);
+  const [time, setTime] = useState(duration); // set the duartion time if not given then default to 10 seconds
   const controls = useAnimationControls();
 
   console.log("timer component rendered..");
+
+  // effect to start the timer animation whenever new question come or duration change
   useEffect(() => {
-    setTime(duration);
-    controls.set({ strokeDashoffset: circumference });
+    setTime(duration); // reset the time whenever new question come or duration change
+    controls.set({ strokeDashoffset: circumference }); // set the strokeDashoffset to circumference to restart the animation
 
     // let interval: NodeJS.Timeout;
 
@@ -26,7 +28,7 @@ export default function Timer({ duration = 10, id, answered }: CountdownProps) {
       strokeDashoffset: 0,
       transition: { duration, ease: "linear" },
     });
-
+    // here set interval to decrease the time every second
     const interval: NodeJS.Timeout = setInterval(() => {
       setTime((t) => {
         if (t <= 1) {
@@ -38,13 +40,13 @@ export default function Timer({ duration = 10, id, answered }: CountdownProps) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [id,circleSize,radius,circumference,controls,duration]);  // before linting [id]
+  }, [id, circleSize, radius, circumference, controls, duration]); // set the id and duration as dependency so whenever new question come or duration change then reset the timer
 
+  // effect to stop the timer animation whenever answered is true (means player has selected the option)
   useEffect(() => {
     if (!answered) return;
 
-    controls.stop();
-    setTime((t) => t);
+    controls.stop(); // stop the timer animation
   }, [answered]);
 
   return (

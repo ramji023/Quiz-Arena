@@ -8,6 +8,7 @@ export const THEMES: ThemeData[] = [
       "li-text-100": "#fef9c3", // leaderboard row
       "button-text-200": "#fef08a", // back button
       "primary-300": "#fde047", // primary yellow color
+      "secondary" : "#ffff" // for player name in leaderboard
     },
     background: {
       "bg-black/20": "rgba(0, 0, 0, 0.2)", // main black background
@@ -17,6 +18,8 @@ export const THEMES: ThemeData[] = [
       "bg-button-900/40": "rgba(124, 45, 18, 0.4)",
       "from-leaderboard-900/70": "rgba(20, 83, 45, 0.7)", // leaderboard floating
       "to-leaderboard-800/70": "rgba(6, 95, 70, 0.7)", // emerald
+      "light-green" : "#006400", // light color for leaderboard
+      "dark-green":"#013220" // dark color for rank and score
     },
     borders: {
       "border-li-300": "#86efac",

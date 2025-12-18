@@ -3,14 +3,25 @@ import { motion, AnimatePresence } from "motion/react";
 import useSocketStore from "../../stores/socketStore";
 import audio from "../../utils/audioManager";
 import { sounds } from "../../utils/sounds";
+import ErrorPage from "../ErrorPages/ErrorPage";
+import useErrorStore from "../../stores/errorStore";
 const Countdown = ({ start = 5 }: { start?: number }) => {
-  const [count, setCount] = useState(start);
-  const [hasSentStart, setHasSentStart] = useState(false);
-  const socket = useSocketStore((state) => state.socketRef.current);
+  const [count, setCount] = useState(start); // set the count of 5 by default
+  const [hasSentStart, setHasSentStart] = useState(false); // keep track wheather start game event send or not
+  const socket = useSocketStore((state) => state.socketRef.current); // store the socket instace
+  const role = useSocketStore((s) => s.role); // store the user role
+  const setError = useErrorStore((s) => s.setError);
 
+  // if user is not connected with websocket server
+  if (socket === null) {
+    setError("page", "Server Error", "Server Connection Failed");
+    return <ErrorPage />;
+  }
+
+  // effect to stop the countdown and send start game status to server (only from host not from player)
   useEffect(() => {
     if (count < 0 && !hasSentStart) {
-      if (socket) {
+      if (role === "host") {
         socket.send(
           JSON.stringify({
             type: "start-game",
@@ -23,7 +34,7 @@ const Countdown = ({ start = 5 }: { start?: number }) => {
         );
       }
       audio.play(sounds["enterGame"]!, 1000);
-      setHasSentStart(true);
+      setHasSentStart(true); // set true to hasSentStart so start game event send successfully
     }
 
     if (count >= 0) {

@@ -1,17 +1,21 @@
 import { Bookmark } from "lucide-react";
 import { motion } from "motion/react";
-import { AllQuizzes, HostQuizzes } from "../../types/quizForm";
+import { HostQuizzes } from "../../types/quizForm";
 import { useGetAllHostedQuiz } from "../../queries/reactQueries";
 import { useNavigate } from "react-router-dom";
 import { StarIcon } from "lucide-react";
 import QuizCardSkeleton from "../LoadingComponents/CardSkeleton";
 import useShowLoader from "../../hooks/useShowLoader";
 import { Button } from "@repo/ui/components/ui/Button";
+import ErrorPage from "../ErrorPages/ErrorPage";
+import useErrorStore from "../../stores/errorStore";
 
 export default function HostedQuizzes() {
   const navigate = useNavigate();
   const query = useGetAllHostedQuiz(); // get all your history
   const { data, isLoading, error } = useShowLoader(query, 500);
+  const setError = useErrorStore((s) => s.setError);
+  // navigate to HostQuiz component
   function navigation(id: string) {
     navigate(`/home/hostQuiz/${id}`);
   }
@@ -26,12 +30,15 @@ export default function HostedQuizzes() {
       </>
     );
   }
+
+  // if there is something wrong 
   if (error) {
-    return (
-      <>
-        <div>Something went wrong while fetching quizzes</div>
-      </>
+    setError(
+      "page",
+      "Server Error",
+      "Something went wrong while processing Hosted Quizzes"
     );
+    return <ErrorPage />;
   }
   if (data) {
     return (

@@ -21,14 +21,17 @@ import { useGetHostQuiz } from "../../queries/reactQueries";
 import { Button } from "@repo/ui/components/ui/Button";
 import HostQuizSkeleton from "../LoadingComponents/HostQuizSkeleton";
 import useShowLoader from "../../hooks/useShowLoader";
+import ErrorPage from "../ErrorPages/ErrorPage";
+import useErrorStore from "../../stores/errorStore";
 
 export default function QuizResults() {
   const navigate = useNavigate();
-  const { quizId } = useParams();
+  const { quizId } = useParams(); // get the quiz id from params
   const [showAllPlayers, setShowAllPlayers] = useState(false);
+  // call react query to get hosted quiz data
   const query = useGetHostQuiz(quizId);
-  const { data, isLoading, error } = useShowLoader(query,600);
-
+  const { data, isLoading, error } = useShowLoader(query, 600);
+  const setError = useErrorStore((s) => s.setError);
   // const { quiz, gameStats, leaderboard } = mockResultsData;
 
   const formatDate = (dateString: string) => {
@@ -48,19 +51,28 @@ export default function QuizResults() {
     return rank;
   };
 
+  if (!quizId) {
+    setError(
+      "page",
+      "Server Error",
+      "Something went wrong while processing Hosted Quizzes"
+    );
+    return <ErrorPage />;
+  }
   if (isLoading) {
     return (
       <>
-        <HostQuizSkeleton/>
+        <HostQuizSkeleton />
       </>
     );
   }
   if (error) {
-    return (
-      <>
-        <div>Something went wrong while fetching quizzes</div>
-      </>
+    setError(
+      "page",
+      "Server Error",
+      "Something went wrong while processing Hosted Quizzes"
     );
+    return <ErrorPage />;
   }
   if (data) {
     const leaderboard = data.players
@@ -84,11 +96,7 @@ export default function QuizResults() {
               <MoveLeft size={30} strokeWidth={1.5} />
             </div>
 
-            <Button
-              variant="primary"
-              size="md"
-              onClick={()=>{}}
-            >
+            <Button variant="primary" size="md" onClick={() => {}}>
               Re-Play
               <Triangle className="rotate-90" size={15} />
             </Button>

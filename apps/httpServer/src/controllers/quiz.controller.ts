@@ -46,7 +46,7 @@ export async function createQuiz(req: Request, res: Response) {
 
   // console.log("quiz data : ", quizData); // log the created quiz
   // return success response to the client
-  return res.json({ message: "You have created new Quiz Successfully" });
+  return res.json({ message: "You have created new Quiz Successfully" ,quizId:quizData.id});
 }
 
 // controller to create AI powered quiz

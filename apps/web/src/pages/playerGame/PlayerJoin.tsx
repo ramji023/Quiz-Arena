@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import ReconnectBox from "./ReconnectBox";
 import useSocketStore from "../../stores/socketStore";
 import { Logo } from "@repo/ui/components/Logo";
+import useErrorStore from "../../stores/errorStore";
+import useSuccessStore from "../../stores/SuccessStore";
+import { ErrorNote } from "../ErrorPages/ErrorNote";
 
 interface FormState {
   username: string;
@@ -13,73 +16,70 @@ interface FormState {
 }
 
 export default function PlayerJoin() {
-  // console.log(" PlayerJoin: RENDER");
-
-  const gameStatus = useSocketStore((s) => s.gameStatus);
-  const isConnected = useSocketStore((s) => s.isConnected);
-  const tik_tik = useSocketStore((s) => s.tik_tik);
-  const [showReconnectBox, setShowReconnectBox] = useState(false);
-  const [hasCheckedReconnect, setHasCheckedReconnect] = useState(false);
+  // get the states from useSocketStore
+  const gameStatus = useSocketStore((s) => s.gameStatus); // get the game Status
+  const isConnected = useSocketStore((s) => s.isConnected); // get isConnected status
+  const tik_tik = useSocketStore((s) => s.tik_tik); // get the duration
+  const [showReconnectBox, setShowReconnectBox] = useState(false); // state to manage wheather reconnect box should open or not
+  const [hasCheckedReconnect, setHasCheckedReconnect] = useState(false); // state to track the state of opening and closing of reconnect box
   const navigate = useNavigate();
-
-  const { register, handleSubmit } = useForm<FormState>({
+  const setError = useErrorStore((s) => s.setError); // get the function to set the error
+  const setMessage = useSuccessStore((s) => s.setMessage);
+  // intialize the react hook form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormState>({
     defaultValues: {
       username: "",
       gamePin: "",
     },
   });
 
+  // state to manage the websocket url to connect to
   const [wsUrl, setWsUrl] = useState<string>("");
+  // custom hook for managing WebSocket connection status
   const { setShouldConnect } = useWebsocket(wsUrl);
 
+  // handles the form submission for joining the game
   function onSubmit(data: FormState) {
-    // console.log(" PlayerJoin: Form submitted", data);
+    // format the websocket url
     const url = `ws://localhost:3001?roomId=${data.gamePin}&fullName=${data.username}`;
-    setWsUrl(url);
+    setWsUrl(url); // set url to trigger wesocket connection
   }
 
-  // Trigger connection when wsUrl changes
+  // effect to make setShouldConnect to true when websocket url is set
   useEffect(() => {
-    // console.log(" PlayerJoin: wsUrl effect running, wsUrl:", wsUrl);
     if (wsUrl !== "") {
-      // console.log("PlayerJoin: Setting shouldConnect to true");
-      setShouldConnect(true);
+      setShouldConnect(true); // initiate websocket connection
     }
   }, [wsUrl, setShouldConnect]);
 
-  // Navigate to /play when connected
+  // effect to navigate to /play when isConnected,websocket url,tik_tik and gameStatus are all valid
   useEffect(() => {
-    // console.log("PlayerJoin: Navigation effect running", {
-    //   isConnected,
-    //   wsUrl,
-    // });
     if (isConnected && wsUrl) {
-      // console.log(" PlayerJoin: Navigating to /play");
-      navigate("/play");
+      navigate("/play"); // redirect to game play page
+      setMessage("You have successfully joined the game");
     }
   }, [isConnected, wsUrl, navigate, tik_tik, gameStatus]);
 
-  // Check for reconnect ONLY on mount
+  // effect run on mount, decide if the player should see a reconnect box
   useEffect(() => {
-    // console.log(" PlayerJoin: Reconnect check effect running");
-    // console.log(" hasCheckedReconnect:", hasCheckedReconnect);
-
     if (hasCheckedReconnect) {
-      // console.log(" PlayerJoin: Already checked, skipping");
-      return;
+      return; // if already checked then do nothing
     }
 
+    // get the latest states  from useSocketStore
     const storeState = useSocketStore.getState();
     const { id, gameId, fullName, isConnected: storeIsConnected } = storeState;
 
-    // console.log("PlayerJoin: Store state for reconnect check:", {
-    //   id,
-    //   gameId,
-    //   fullName,
-    //   isConnected: storeIsConnected,
-    //   gameStatus,
-    // });
-
+    /*
+     * if isConnected is false and gameStatus is valid
+     * AND user is on PlayerJoin page
+     * it means that the game has not ended and user might be clicked to back button by mistake on themeWrapper component
+     * so open the reconnect box to ask user to reconnect to the game
+     */
     if (
       !storeIsConnected &&
       (gameStatus === "waiting" ||
@@ -89,50 +89,26 @@ export default function PlayerJoin() {
       gameId &&
       fullName
     ) {
-      // console.log("PlayerJoin: ALL CONDITIONS MET - Showing reconnect box");
-      setShowReconnectBox(true);
+      setShowReconnectBox(true); // open reconnect box
     }
-    // } else {
-    //   console.log("❌ PlayerJoin: NOT showing reconnect box. Reason:", {
-    //     isConnectedCheck: !storeIsConnected
-    //       ? "PASS"
-    //       : "FAIL (already connected)",
-    //     gameStatusCheck:
-    //       gameStatus === "waiting" ||
-    //       gameStatus === "start" ||
-    //       gameStatus === "ready"
-    //         ? "PASS"
-    //         : `FAIL (gameStatus is ${gameStatus})`,
-    //     hasId: id ? "PASS" : "FAIL",
-    //     hasGameId: gameId ? "PASS" : "FAIL",
-    //     hasFullName: fullName ? "PASS" : "FAIL",
-    //   });
-    // }
 
+    /*
+     * if gameStatus is end
+     * AND user is on PlayerJoin page
+     * it means that the game has ended and user click to back button on themeWrapper component
+     * so reset all the states of useSocketStore
+     */
     if (gameStatus === "end") {
-      // console.log(" PlayerJoin: Game ended, resetting session");
       useSocketStore.getState().resetSession();
     }
 
-    setHasCheckedReconnect(true);
-    // console.log("PlayerJoin: Set hasCheckedReconnect to true");
-
-    return () => {
-      // console.log("PlayerJoin: Reconnect check effect CLEANUP");
-    };
-  }, []);
-
-  // Component unmount logging
-  useEffect(() => {
-    return () => {
-      // console.log("PlayerJoin: COMPONENT UNMOUNTING");
-    };
+    setHasCheckedReconnect(true); // mark the reconnect check to true
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col gap-6 items-center justify-center font-poppins bg-primary px-4 text-secondary">
       {/* Logo */}
-      <Logo/>
+      <Logo />
 
       {/* Card */}
       <form
@@ -152,10 +128,14 @@ export default function PlayerJoin() {
               {...register("username", {
                 required: {
                   value: true,
-                  message: "User name is required",
+                  message: "**User name is required",
                 },
               })}
             />
+            <span className="text-xs text-red-500 flex flex-row-reverse">
+              {" "}
+              {errors.username?.message}
+            </span>
           </div>
           <div className="flex flex-col gap-1 py-1 w-full">
             <label className="text-md">Room Pin</label>
@@ -166,10 +146,14 @@ export default function PlayerJoin() {
               {...register("gamePin", {
                 required: {
                   value: true,
-                  message: "Game pin is required",
+                  message: "**Game pin is required",
                 },
               })}
             />
+            <span className="text-xs text-red-500 flex flex-row-reverse">
+              {" "}
+              {errors.gamePin?.message}
+            </span>
           </div>
 
           <Button variant="primary" onClick={() => {}}>
@@ -183,6 +167,9 @@ export default function PlayerJoin() {
           setwsURl={(str) => setWsUrl(str)}
         />
       )}
+
+      {/* render Error note  */}
+      <ErrorNote />
     </div>
   );
 }

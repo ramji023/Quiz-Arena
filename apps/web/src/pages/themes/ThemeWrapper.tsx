@@ -13,12 +13,17 @@ import { useQuizStore } from "../../stores/quizStore";
 import useSocketStore from "../../stores/socketStore";
 import Timer from "../clock/Timer";
 import Notification from "./Notification";
+import useSuccessStore from "../../stores/SuccessStore";
+import useErrorStore from "../../stores/errorStore";
+import { ErrorNote } from "../ErrorPages/ErrorNote";
+import { SuccessNote } from "../LoadingComponents/SuccessNote";
 interface Player {
   id: string;
   fullName: string;
   score: number;
   rank: number;
 }
+// component to manage whole game operations for host/player
 export default function ThemeWrapper({
   children,
   themeData,
@@ -27,63 +32,76 @@ export default function ThemeWrapper({
   answered,
   notification,
   role,
-  duration
+  duration,
 }: {
-  children: ReactNode;
-  themeData: ThemeData;
-  players: { id: string; fullName: string; score: number }[] | null;
-  questionId: string | null;
-  answered?: boolean;
-  notification?: string | null;
-  role?: "host" | "player";
-  duration : number
+  children: ReactNode; // render children components
+  themeData: ThemeData; // store themeData
+  players: { id: string; fullName: string; score: number }[] | null; // get the players data
+  questionId: string | null; // get current question id
+  answered?: boolean; // get wheather player select answer or not
+  notification?: string | null; // get notification message
+  role?: "host" | "player"; // get user role (it can be host or player)
+  duration: number; // get duration for timer
 }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const gameStatus = useSocketStore((s) => s.gameStatus);
-  const [playerData, setPlayerData] = useState<Player[] | null>(null);
-  const [yourScore, setYourScore] = useState<Player | null>(null);
-  const [shouldOpen, setShouldOpen] = useState(location.state);
-  const [isSelect, setIsSelect] = useState(false);
+  const gameStatus = useSocketStore((s) => s.gameStatus); // store the game status
+  const [playerData, setPlayerData] = useState<Player[] | null>(null); // store the player data with rank
+  const [yourScore, setYourScore] = useState<Player | null>(null); // store your own score data
+  // const [shouldOpen, setShouldOpen] = useState(location.state); // state to control popup model
+  const [isSelect, setIsSelect] = useState(false); // state to control wheather popup model open or not
+
+  //wrote useEffect to control popup model
+  // when user click to preview button on themecard then show a popup model after 5 seconds
+  // wheather he want to select this theme or not
   useEffect(() => {
-    if (shouldOpen) {
+    if (location.state !== undefined && location.state === true) {
       const timer = setTimeout(() => {
         setIsSelect(true);
-      }, 3000);
+      }, 5000);
       return () => {
         return clearTimeout(timer);
       };
     }
-  }, [shouldOpen]); // before linting []
+  }, [location.state]);
 
-  // when player data changes
+  // when playerData change then sort the players based on score and set rank to each player
+  // after sorting the players data , filter out your own score data and set it to yourScore state
+  // rest of the players data set it to playerData state
   useEffect(() => {
+    // if players data is  not null
     if (players) {
+      // then sort the players based on score and add rank to each player
       const playerArray: Player[] = players
         .sort((a, b) => b.score - a.score)
         .map((player, index) => ({ ...player, rank: index + 1 }));
+      // now filter out your own data and rest of the players data
       const playersScore = playerArray.filter(
         (player) => player.id !== useSocketStore.getState().id
       );
       const yourScoreData = playerArray.find(
         (player) => player.id === useSocketStore.getState().id
       );
-      setPlayerData(playersScore);
+      setPlayerData(playersScore); // set the rest of players data
       if (yourScoreData) {
-        setYourScore(yourScoreData);
+        setYourScore(yourScoreData); // set your own score data
       }
     }
   }, [players]);
 
+  // now get top 4 players from playerData and store it in topPlayers array
   const topPlayers = playerData?.slice(0, 4) || [];
+  // now create new array leaderboardDisplay and store topPlayers data then add yourScore data at the end of the array
   const leaderboardDisplay = [...topPlayers, ...(yourScore ? [yourScore] : [])];
 
-  // when player or host click to back button
+  // function to handle back button click operation
   function handleBackButton() {
     console.log("Back button pressed : ", role);
+    // if user role is player then navigate to join page
     if (role === "player") {
       navigate("/join");
     }
+    // if user role is host then navigate to home page
     if (role === "host") {
       navigate("/home");
     }
@@ -194,7 +212,11 @@ export default function ThemeWrapper({
                   </span>
 
                   <span className="truncate text-base">
-                    {isYou ? "⭐You" : player.fullName}
+                    {isYou ? (
+                      <span className="font-semibold">You</span>
+                    ) : (
+                      player.fullName
+                    )}
                   </span>
 
                   <span style={{ fontSize: "0.875rem", opacity: 0.8 }}>
@@ -215,16 +237,17 @@ export default function ThemeWrapper({
         style={{ backgroundColor: themeData.background["bg-black/20"] }}
       >
         {/* Theme Title */}
-        <motion.h1
-          className={`text-5xl font-extrabold mt-5 drop-shadow-md`}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.8, type: "spring", stiffness: 100 }}
-          style={{ color: themeData.textColor["primary-300"] }}
-        >
-          {themeData.name}
-        </motion.h1>
-
+        {gameStatus !== "end" && (
+          <motion.h1
+            className={`text-5xl font-extrabold mt-5 drop-shadow-md`}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.8, type: "spring", stiffness: 100 }}
+            style={{ color: themeData.textColor["primary-300"] }}
+          >
+            {themeData.name}
+          </motion.h1>
+        )}
         {/* Question Content */}
         <motion.div
           className={`mt-8 w-full text-white`}
@@ -236,17 +259,25 @@ export default function ThemeWrapper({
         </motion.div>
       </motion.div>
 
-      {/* pop up model  */}
+      {/* show pop up model to make sure user want to seect this theme to play or not when user click to preview button  */}
       {isSelect && <PopUp id={themeData.id} />}
 
+      {/* Timer component  */}
+      {/* render Timer component to start the time whenever new question come or player select option*/}
       {players && questionId && answered !== undefined && (
         <div className=" fixed bottom-6 right-6 z-50">
-          <Timer id={questionId} answered={answered} duration={duration}/>
+          <Timer id={questionId} answered={answered} duration={duration} />
         </div>
       )}
 
       {/* notification div  */}
+      {/* show notification div to show notification message (get from the useSocketStore means from websocket server) */}
       {notification && <Notification msg={notification} />}
+
+      {/* show error messages  */}
+      <ErrorNote />
+      {/* show success messages  */}
+      <SuccessNote />
     </motion.div>
   );
 }

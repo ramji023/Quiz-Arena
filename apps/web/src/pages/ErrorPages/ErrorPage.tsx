@@ -6,8 +6,7 @@ import { Button } from "@repo/ui/components/ui/Button";
 
 export default function ErrorPage() {
   const navigate = useNavigate();
-  const { message, clearError } = useErrorStore();
-
+  const { message, clearError, type } = useErrorStore();
   const handleGoHome = () => {
     clearError();
     navigate("/home");
@@ -97,7 +96,7 @@ export default function ErrorPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          Server Error
+          {type}
         </motion.h1>
 
         {/* Message */}

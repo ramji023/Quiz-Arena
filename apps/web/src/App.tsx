@@ -18,6 +18,7 @@ import SavedQuizzes from "./pages/Quizzes/SavedQuizzes";
 import YourQuizzes from "./pages/Quizzes/YourQuizzes";
 import HostedQuizzes from "./pages/hosted_quizzes/HostedQuizzes";
 import QuizResults from "./pages/hosted_quizzes/HostQuiz";
+import Leaderboard from "./pages/playerGame/LeaderBoard";
 export default function App() {
   return (
     <>
@@ -26,27 +27,43 @@ export default function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<LandingPage />} />
             <Route path="/auth" element={<LandingPage />}>
-              <Route path="signup" element={<Signup />} />
-              <Route path="login" element={<Login />} />
+              {" "}
+              // show landing page of QuizArena
+              <Route path="signup" element={<Signup />} /> // show singnup
+              component
+              <Route path="login" element={<Login />} /> // show login component
             </Route>
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Layout_2 />}>
-              <Route path="" element={<Quizzes />} />
-              <Route path="saved" element={<SavedQuizzes />} />
-              <Route path="your-quizzes" element={<YourQuizzes />} />
-              <Route path="history" element={<HostedQuizzes />} />
-              <Route path="hostquiz/:quizId" element={<QuizResults />} />
-              <Route path="create-quiz" element={<QuizCreation />} />
-              <Route path="ai-quiz" element={<AiQuiz />} />
-              <Route path="quiz/:quizId" element={<Quiz />} />
-              <Route path="themes" element={<ThemesPage />} />
+              <Route path="" element={<Quizzes />} /> // show application wide
+              quizzes
+              <Route path="saved" element={<SavedQuizzes />} /> // show all
+              saved quizzes
+              <Route path="your-quizzes" element={<YourQuizzes />} /> // show
+              your quizzes
+              <Route path="history" element={<HostedQuizzes />} /> // show all
+              hosted quizzes
+              <Route path="hostquiz/:quizId" element={<QuizResults />} /> //
+              show whole data of any specific hosted quiz
+              <Route path="create-quiz" element={<QuizCreation />} /> //
+              create-quiz page
+              <Route path="ai-quiz" element={<AiQuiz />} /> // create Ai-Quiz
+              <Route path="quiz/:quizId" element={<Quiz />} /> // specific quiz
+              page
+              <Route path="themes" element={<ThemesPage />} /> // show all
+              themes cards
             </Route>
-            <Route path="theme/:themeID" element={<Theme />} />
+            <Route path="theme/:themeID" element={<Theme />} /> // show full
+            theme to user
             <Route path="game" element={<Game />} />
           </Route>
           <Route path="join" element={<PlayerJoin />} />
           <Route path="play" element={<PlayerGame />} />
+          <Route
+            path="leader"
+            element={<Leaderboard themeId="jungle-quest" />}
+          />
         </Routes>
       </BrowserRouter>
     </>

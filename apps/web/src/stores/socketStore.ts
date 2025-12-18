@@ -177,11 +177,11 @@ const useSocketStore = create<SocketStore>()(
           };
 
           socket.onerror = (error) => {
-            console.error("❌ WebSocket error:", error);
+            console.error("WebSocket error:", error);
           };
 
           socket.onclose = (event) => {
-            console.log("🔌 WebSocket closed");
+            console.log(" WebSocket closed");
           };
         },
 

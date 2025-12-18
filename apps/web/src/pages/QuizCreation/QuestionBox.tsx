@@ -1,6 +1,6 @@
 import { InputBox } from "./InputBox";
 import { Trash2 } from "lucide-react";
-import { UseFormRegister, Control } from "react-hook-form";
+import { UseFormRegister, Control, FieldErrors } from "react-hook-form";
 import { QuizFormState } from "../../types/quizForm";
 
 interface QuestionBoxProps {
@@ -8,9 +8,15 @@ interface QuestionBoxProps {
   register: UseFormRegister<QuizFormState>;
   control: Control<QuizFormState>;
   remove: (index: number) => void;
+  errors: FieldErrors<QuizFormState>;
 }
 
-export function QuestionBox({ index, register, remove }: QuestionBoxProps) {
+export function QuestionBox({
+  index,
+  register,
+  remove,
+  errors,
+}: QuestionBoxProps) {
   return (
     <div className="outline-1 border border-gray-300 p-4 rounded-2xl">
       <div className="flex justify-between items-center mb-2">
@@ -27,7 +33,10 @@ export function QuestionBox({ index, register, remove }: QuestionBoxProps) {
         label="Question"
         placeholder="Enter your question"
         type="text"
-        {...register(`quiz.${index}.question`, { required: true })}
+        {...register(`quiz.${index}.question`, {
+          required: { value: true, message: "Enter Question" },
+        })}
+        error={errors?.quiz?.[index]?.question?.message}
       />
 
       {/* options with checkboxes  */}
@@ -36,7 +45,7 @@ export function QuestionBox({ index, register, remove }: QuestionBoxProps) {
           {Array.from({ length: 4 }).map((_, optIndex) => (
             <div
               key={optIndex}
-              className="flex items-center gap-2 bg-secondary/30 p-2 rounded-md"
+              className="flex items-center gap-2 p-2 rounded-md"
             >
               {/* checkbox  */}
               <label className="pt-2 relative flex items-center cursor-pointer">
@@ -56,8 +65,14 @@ export function QuestionBox({ index, register, remove }: QuestionBoxProps) {
                 placeholder={`Option ${optIndex + 1}...`}
                 type="text"
                 {...register(`quiz.${index}.options.${optIndex}.text`, {
-                  required: true,
+                  required: {
+                    value: true,
+                    message: "Option text is required",
+                  },
                 })}
+                error={
+                  errors?.quiz?.[index]?.options?.[optIndex]?.text?.message
+                }
               />
             </div>
           ))}

@@ -7,14 +7,19 @@ import { QuizFormState } from "../../types/quizForm";
 import { useForm, useFieldArray } from "react-hook-form";
 import AutoSave from "./AutoSave";
 import { useAuthStore } from "../../stores/authStore";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInterceptor";
 import { useLocation, useNavigate } from "react-router-dom";
+import useErrorStore from "../../stores/errorStore";
+import useSuccessStore from "../../stores/SuccessStore";
 export default function QuizCreation() {
+  const reactQuery = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
-  const quizData: QuizFormState = location.state;
-  const username = useAuthStore((s) => s.userName);
+  const quizData: QuizFormState = location.state; // check if we got the quiz data successfully from Ai-server
+  const setError = useErrorStore((s) => s.setError); // function to set the error
+  const setMessage = useSuccessStore((s) => s.setMessage); // function to set the success message
+  // mutattion to send quiz data to server
   const quizCreation = useMutation({
     mutationFn: async (data: QuizFormState) => {
       const response = await api.post("/api/v1/quiz/createQuiz", data);
@@ -22,17 +27,43 @@ export default function QuizCreation() {
     },
     onSuccess: (data) => {
       console.log("response data from quiz creation : ", data);
-      navigate("/home");
+      setMessage("You have created Quiz Successfully.");
+      // navigate to that created quiz page
+      navigate(`/home/quiz/${data.quizId}`);
+      reactQuery.invalidateQueries({ queryKey: ["Quizzes"] }); // invalidate react query (fetch all quizzes)
     },
-    onError: (error) => {
-      console.log("something went wrong while creating quiz : ", error);
+    onError: (err: Error | any) => {
+      // console.log("something went wrong while signed up : ", err);
+      if (err.message === "Network Error") {
+        // console.log("No internet connection");
+        setError("notification", "Network Error", "No internet connection");
+      } else if (err.response?.data?.message) {
+        // console.log(err.response.data.errors);
+        setError("notification", "Server Error", err.response.data.message);
+      } else {
+        // console.log("Something went wrong. Please try again.");
+        setError(
+          "notification",
+          "Application Error",
+          "Something went wrong. Please try again."
+        );
+      }
     },
   });
-  const { control, register, handleSubmit, reset } = useForm<QuizFormState>({
+
+  // initialize quiz form using react-hook-form
+  const {
+    control,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<QuizFormState>({
     defaultValues: {
-      title: "",
-      description: "",
-      difficulty: "easy",
+      title: "", // set the title
+      description: "", // set the description
+      difficulty: "easy", // set default value to difficulty
+      // set default two questions in quiz
       quiz: Array(2)
         .fill(null)
         .map(() => ({
@@ -45,8 +76,12 @@ export default function QuizCreation() {
     },
   });
 
+
+  // if got the Ai Quiz data from this route "ai-quiz"
   useEffect(() => {
+    // if quizData is not null
     if (quizData) {
+      // reset the react quiz data
       reset({
         title: quizData.title ?? "",
         description: quizData.description ?? "",
@@ -65,14 +100,17 @@ export default function QuizCreation() {
       });
     }
   }, [quizData, reset]);
+
+  // define useFieldArray to add/remove dynamic input field using react-hook-form
   const { fields, append, remove } = useFieldArray({
     control,
     name: "quiz",
   });
 
+  // call the submit button
   function onSubmit(data: QuizFormState) {
     console.log("quiz data : ", data);
-    quizCreation.mutate(data);
+    quizCreation.mutate(data); //  call quizCreation mutation and send quiz data to server
   }
 
   return (
@@ -105,6 +143,7 @@ export default function QuizCreation() {
                     message: "Title is required",
                   },
                 })}
+                error={errors.title?.message}
               />
               <InputBox
                 label="Description"
@@ -116,6 +155,7 @@ export default function QuizCreation() {
                     message: "Description is required",
                   },
                 })}
+                error={errors.description?.message}
               />
               <div className="flex flex-col gap-1 p-2 min-w-[300px]">
                 <label htmlFor="difficulty" className="text-sm font-semibold">
@@ -141,6 +181,7 @@ export default function QuizCreation() {
                   register={register}
                   control={control}
                   remove={remove}
+                  errors={errors}
                 />
               ))}
             </div>
@@ -167,6 +208,7 @@ export default function QuizCreation() {
                 variant="primary"
                 type="submit"
                 onClick={() => {}}
+                loading={quizCreation.isPending}
               >
                 Save Quiz <Save className="w-4 h-4" />
               </Button>

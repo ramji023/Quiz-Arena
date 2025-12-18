@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "react-router-dom";
-// import { useAuthStore } from "../../stores/authStore";
 import { MoveLeft, Triangle, Star, User, ListChecks } from "lucide-react";
 import { useGetQuiz } from "../../queries/reactQueries";
 import { useQuizStore } from "../../stores/quizStore";
@@ -7,15 +6,25 @@ import { type Quiz } from "../../types/quizForm";
 import { Button } from "@repo/ui/components/ui/Button";
 import useShowLoader from "../../hooks/useShowLoader";
 import QuizSkeleton from "../LoadingComponents/QuizSkeleton";
+import useErrorStore from "../../stores/errorStore";
+import ErrorPage from "../ErrorPages/ErrorPage";
 
 export default function Quiz() {
   const navigate = useNavigate();
+  const setError = useErrorStore((s)=>s.setError)
   const setQuiz = useQuizStore((s) => s.setQuiz);
   const quizId = useParams().quizId;
   console.log(quizId);
   const query = useGetQuiz(quizId);
   const { data, isLoading, error } = useShowLoader(query, 600);
-  if (!quizId) return <div>Quiz id is not provided</div>;
+  if (!quizId || error){
+     setError(
+      "page",
+      "Server Error",
+      "Something went wrong while processing Quizzes"
+    );
+    return <ErrorPage/>
+  };
 
   if (isLoading) return <QuizSkeleton />;
   if (data) {

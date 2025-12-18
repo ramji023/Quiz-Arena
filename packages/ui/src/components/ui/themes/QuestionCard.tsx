@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnswerFeedback } from "./Popup";
 interface QuestionType {
   questionId: string;
@@ -15,28 +15,37 @@ export default function QuestionCard({
   onAnswer,
   optionColors,
   answerResult,
-  sounds
+  sounds,
 }: {
-  role: "host" | "player";
+  role: "host" | "player"; // get user role
   questionData: QuestionType;
   onAnswer: (option: { text: string; isCorrect: boolean }, id: string) => void;
   optionColors: Record<number, { from?: string; to?: string; color?: string }>;
   answerResult?: null | "correct" | "wrong";
-  sounds?:{success:()=>void,failure:()=>void}
+  sounds?: { success: () => void; failure: () => void };
 }) {
+  // state to manage which option got selected by player
   const [selected, setSelected] = useState<{
     text: string;
     isCorrect: boolean;
   } | null>(null);
-
+  const [disabled, setDisable] = useState(false);
+  // function to handle selected options correctness to the websocket server
   const handleSelect = (
     option: { text: string; isCorrect: boolean },
     questionId: string
   ) => {
     setSelected(option);
+    setDisable(true); // Set disabled immediately when selecting
     onAnswer(option, questionId);
   };
 
+  // effect to mange disabled and selected state whenever new question arrived
+  useEffect(() => {
+    // Reset states when question changes
+    setSelected(null);
+    setDisable(false);
+  }, [questionData.questionId]); // Reset when new question appears
   return (
     <div className="flex flex-col items-center justify-center font-jungle text-[#FFFBEA] px-6 py-10 text-center select-none">
       {/* Question */}
@@ -59,7 +68,7 @@ export default function QuestionCard({
 
           return (
             <button
-              disabled={role === "host" ? true : false}
+              disabled={role === "host" || disabled ? true : false}
               key={index}
               onClick={() => handleSelect(option, questionData.questionId)}
               style={{
@@ -100,8 +109,10 @@ export default function QuestionCard({
         })}
       </div>
       {/* show question result  */}
-      {answerResult && sounds && <AnswerFeedback result={answerResult} sound={sounds} />}
+      {/* render icons if answered is correct or not with applying sounds also */}
+      {answerResult && sounds && (
+        <AnswerFeedback result={answerResult} sound={sounds} />
+      )}
     </div>
-    
   );
 }

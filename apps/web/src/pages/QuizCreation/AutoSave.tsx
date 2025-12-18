@@ -11,7 +11,7 @@ const AutoSave = ({ control }: { control: Control<QuizFormState> }) => {
     const handler = setTimeout(() => {
       localStorage.setItem("quiz-draft", JSON.stringify(data));
       console.log("Auto-saved");
-    }, 5000);
+    }, 10000);
 
     return () => clearTimeout(handler);
   }, [data]);

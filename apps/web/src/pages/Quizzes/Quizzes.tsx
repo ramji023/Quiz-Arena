@@ -11,86 +11,85 @@ import useShowLoader from "../../hooks/useShowLoader";
 import QuizCardSkeleton from "../LoadingComponents/CardSkeleton";
 import ErrorPage from "../ErrorPages/ErrorPage";
 import useErrorStore from "../../stores/errorStore";
+import useSuccessStore from "../../stores/SuccessStore";
 export default function Quizzes() {
   const navigate = useNavigate();
   // function to set error from useErrorStore
   const setError = useErrorStore((s) => s.setError);
+  // function to set the success message from useSuccessStore
+  const setMessage = useSuccessStore((s)=>s.setMessage)
   // call react query to get all the quizzes
   const rawQuery = useGetAllQuiz();
   const { data, isLoading, error } = useShowLoader(rawQuery, 500);
 
-  /*
-   *
-   *
-   * *
-   * *
-   * *
-   * *
-   * *
-   * *
-   * *
-   *
-   */
-  // <----------------------    game logic   ------------------------------------------------>
-  // write logic to open and close reconnect box when it rendered first time
+  // <--- game logic if host refresh the game page or click to back button by mistake --------->
+  // get the states from useSocketStore
   const isConnected = useSocketStore((s) => s.isConnected);
   const gameStatus = useSocketStore((s) => s.gameStatus);
-  const [openReconnectBox, setOpenReconnectBox] = useState(false);
-  const [hasCheckedReconnect, setHasCheckedReconnect] = useState(false);
+  const [openReconnectBox, setOpenReconnectBox] = useState(false); // state to manage wheather reconnect box should open or not
+  const [hasCheckedReconnect, setHasCheckedReconnect] = useState(false); // state to track the state of opening and closing of reconnect box                  
   const tik_tik = useSocketStore((s) => s.tik_tik);
-  const [wsUrl, setWsUrl] = useState<string>("");
-  const { setShouldConnect } = useWebsocket(wsUrl);
-
+  const [wsUrl, setWsUrl] = useState<string>("");  // state to manage the websocket url to connect to
+  const { setShouldConnect } = useWebsocket(wsUrl); // custom hook for managing WebSocket connection status
+  // effect to make setShouldConnect to true when websocket url is set
   useEffect(() => {
     if (wsUrl !== "") {
-      setShouldConnect(true);
+      setShouldConnect(true); // initiate websocket connection
     }
-  }, [wsUrl]);
+  }, [wsUrl, setShouldConnect]);
 
+  // effect to navigate to /game when isConnected,websocket url,tik_tik and gameStatus are all valid
   useEffect(() => {
     if (isConnected && wsUrl && gameStatus && tik_tik) {
       // console.log(" Connected and have game data, navigating to /game");
       navigate("/game");
+      setMessage("You have successfully start the game");
     }
   }, [isConnected, wsUrl, gameStatus, tik_tik, navigate]);
 
+  // effect run on mount, decide if the player should see a reconnect box
   useEffect(() => {
-    if (hasCheckedReconnect) return;
+    if (hasCheckedReconnect) {
+      return; // if already checked then do nothing
+    }
 
-    const { id, gameId, fullName, isConnected } = useSocketStore.getState();
+    // get the latest states  from useSocketStore
+    const storeState = useSocketStore.getState();
+    const { id, gameId, fullName, isConnected: storeIsConnected } = storeState;
 
+    /*
+     * if isConnected is false and gameStatus is valid
+     * AND user is on PlayerJoin page
+     * it means that the game has not ended and user might be clicked to back button by mistake on themeWrapper component
+     * so open the reconnect box to ask user to reconnect to the game
+     */
     if (
-      !isConnected &&
+      !storeIsConnected &&
       (gameStatus === "waiting" ||
-        gameStatus === "ready" ||
-        gameStatus === "start") &&
+        gameStatus === "start" ||
+        gameStatus === "ready") &&
       id &&
       gameId &&
       fullName
     ) {
-      // open reconnect box
-      setOpenReconnectBox(true);
+      setOpenReconnectBox(true); // open reconnect box
     }
 
+    /*
+     * if gameStatus is end
+     * AND user is on PlayerJoin page
+     * it means that the game has ended and user click to back button on themeWrapper component
+     * so reset all the states of useSocketStore
+     */
     if (gameStatus === "end") {
-      // reset the session
       useSocketStore.getState().resetSession();
     }
-    setHasCheckedReconnect(true);
+
+    setHasCheckedReconnect(true); // mark the reconnect check to true
   }, []);
+
   // <----------------------    game logic   ------------------------------------------------>
-  /*
-   *
-   *
-   * *
-   * *
-   * *
-   * *
-   * *
-   * *
-   * *
-   *
-   */
+  
 
   // handle navigation when user click to button see details
   function navigation(id: string) {

@@ -6,30 +6,39 @@ import { useAuthStore } from "../../stores/authStore";
 import { useQuizStore } from "../../stores/quizStore";
 import { useEffect, useState } from "react";
 import useSocketStore from "../../stores/socketStore";
-//write popup for consent
-export default function Popup() {
+import useSuccessStore from "../../stores/SuccessStore";
+//write popup for consent to  start quiz game
+export default function StartQuiz() {
+  const navigate = useNavigate();
+  const setMessage = useSuccessStore((s)=>s.setMessage)
+  // store useSocketStore values in variables
   const isConnected = useSocketStore((s) => s.isConnected);
   const gameStatus = useSocketStore((s) => s.gameStatus);
   const tik_tik = useSocketStore((s) => s.tik_tik);
-  const navigate = useNavigate();
   const token = useAuthStore.getState().token;
   const themeId = useQuizStore((s) => s.themeId);
   const [wsUrl, setWsUrl] = useState<string>("");
   const { setShouldConnect } = useWebsocket(wsUrl);
-  console.log("Popup rendered");
+  console.log("StartQuiz rendered"); // check that start quiz is rendered
+
+  // function to set websocket url
   function sendWsRequest() {
     setWsUrl(`ws://localhost:3001?token=${token}&themeId=${themeId}`);
   }
+
+  // write effect to set shouldConnect to true when websocket url is set
   useEffect(() => {
     if (wsUrl !== "") {
       setShouldConnect(true);
     }
   }, [wsUrl]);
 
+  // effect to navigate to "/game" when isConnected, websocket url, gamestatus and tik_tik are all valid
   useEffect(() => {
     if (isConnected && wsUrl && gameStatus && tik_tik) {
       // console.log(" Connected and have game data, navigating to /game");
-      navigate("/game");
+      navigate("/game"); // then navigate to game page
+      setMessage("You have successfully start the game");
     }
   }, [isConnected, wsUrl, gameStatus, tik_tik, navigate]);
 
