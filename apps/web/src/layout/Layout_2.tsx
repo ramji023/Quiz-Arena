@@ -6,11 +6,23 @@ import { Menu, ChevronLeft } from "lucide-react";
 import { useAuthStore } from "../stores/authStore";
 import { ErrorNote } from "../pages/ErrorPages/ErrorNote";
 import { SuccessNote } from "../pages/LoadingComponents/SuccessNote";
+import { LikeNote, ThankuNote } from "../pages/testimonials/ReviewForm";
 
 export default function Layout_2() {
   const username = useAuthStore((s) => s.userName);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
+  const [showThankYou, setShowThankYou] = useState(false);
+
+  // shet showThankYou true if user click to love note
+  const handleLikeClick = () => {
+    setShowThankYou(true);
+  };
+
+  // hide thanku note after 5 seconds
+  const handleCloseThankYou = () => {
+    setShowThankYou(false);
+  };
   return (
     <div className="flex h-screen overflow-hidden font-poppins">
       {/* Sidebar */}
@@ -52,6 +64,16 @@ export default function Layout_2() {
       </div>
       <ErrorNote />
       <SuccessNote />
+      {/* love note always visible to user */}
+      <LikeNote onLikeClick={handleLikeClick} />
+
+      {/* thanku note when user click to likeNote */}
+      {showThankYou && (
+        <ThankuNote
+          username={username as string}
+          onClose={handleCloseThankYou}
+        />
+      )}
     </div>
   );
 }
