@@ -60,6 +60,12 @@ export default function Game() {
     };
   }, [navigate]);
 
+  // effect Handle gameStatus changes (when host failed to reconnect)
+  useEffect(() => {
+    if (gameStatus === null) {
+      navigate("/home");
+    }
+  }, [gameStatus, navigate]);
   // if theme or themeID or duration is not present then show error page
   if (!theme || !themeId || !duration) {
     setError(

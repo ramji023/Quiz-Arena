@@ -30,7 +30,7 @@ export function Card({ index, step }: PropType) {
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: index * 0.2 }}
         whileHover={{ scale: 1.1 }}
-        className="bg-card cursor-pointer p-6 rounded-lg shadow-md flex flex-col items-center hover:shadow-xl transition-shadow duration-300"
+        className="bg-box cursor-pointer p-6 rounded-lg shadow-md flex flex-col items-center hover:shadow-xl transition-shadow duration-300"
         style={{
           clipPath: polygonShape[index],
         }}

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import useErrorStore from "./errorStore";
 export interface PlayerType {
   id: string;
   fullName: string;
@@ -32,17 +33,17 @@ interface SocketStore {
   isConnected: boolean;
   setSocketInstance: (socket: WebSocket) => void;
   disconnectSocket: () => void;
-  resetSession: () => void;
+  resetSession: (errorMessage?: { title: string; description: string }) => void;
 }
 
-// zustand store to manage all states while hosting/playing quiz 
+// zustand store to manage all states while hosting/playing quiz
 // it handle both events (admin and player)
 const useSocketStore = create<SocketStore>()(
   persist(
     (set, get) => {
       return {
-        socketRef: { current: null },  // store socket instance
-        id: null,  // store id (player && host)
+        socketRef: { current: null }, // store socket instance
+        id: null, // store id (player && host)
         role: "player", // store role (wheather he is admin or player)
         fullName: null, // store user fullName
         gameId: null, // store game Id
@@ -124,6 +125,9 @@ const useSocketStore = create<SocketStore>()(
                 break;
 
               case "player_left":
+                set({ notification: parsedData.message });
+                break;
+
               case "host_left":
                 set({ notification: parsedData.message });
                 break;
@@ -171,7 +175,10 @@ const useSocketStore = create<SocketStore>()(
                 break;
 
               case "host_reconnect_failed":
-                set({ gameStatus: null });
+                get().resetSession({
+                  title: "Host Left",
+                  description: "Host left the game",
+                });
                 break;
             }
           };
@@ -182,6 +189,18 @@ const useSocketStore = create<SocketStore>()(
 
           socket.onclose = (event) => {
             console.log(" WebSocket closed");
+            const errorStore = useErrorStore.getState();
+            const hasRecentError = errorStore.message !== null;
+
+            if (!hasRecentError) {
+              get().resetSession({
+                title: "Connection Lost",
+                description: "Lost Server Connection",
+              });
+            } else {
+              // Just reset without showing another error
+              get().resetSession();
+            }
           };
         },
 
@@ -194,7 +213,10 @@ const useSocketStore = create<SocketStore>()(
           set({ isConnected: false });
         },
 
-        resetSession: () => {
+        resetSession: (errorMessage?: {
+          title: string;
+          description: string;
+        }) => {
           get().disconnectSocket();
           set({
             id: null,
@@ -209,6 +231,18 @@ const useSocketStore = create<SocketStore>()(
             isConnected: false,
           });
           localStorage.removeItem("quiz-session");
+
+          // set error
+          if (errorMessage) {
+            setTimeout(() => {
+              const setError = useErrorStore.getState().setError;
+              setError(
+                "notification",
+                errorMessage.title,
+                errorMessage.description
+              );
+            }, 0);
+          }
         },
       };
     },

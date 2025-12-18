@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import useSocketStore from "../stores/socketStore";
+import useErrorStore from "../stores/errorStore";
 
 const useWebsocket = (url: string) => {
   const [shouldConnect, setShouldConnect] = useState(false);
   const setSocketInstance = useSocketStore((s) => s.setSocketInstance);
+  const setError = useErrorStore((s)=>s.setError)
   // console.log("websocket url : ", url);
   useEffect(() => {
     if (!shouldConnect) return;
     // console.log("websocket url : ",url)
     const ws = new WebSocket(url);
     ws.onopen = () => {
-      console.log(
-        "before reconnecting past websocket instance : ",useSocketStore.getState().socketRef.current);
+      // console.log(
+      //   "before reconnecting past websocket instance : ",useSocketStore.getState().socketRef.current);
       setSocketInstance(ws);
       // console.log(useSocketStore.getState().socketRef.current);
       // console.log("successfully connected with websocket server", ws);
@@ -21,6 +23,7 @@ const useWebsocket = (url: string) => {
 
     ws.onclose = (event) => {
       console.log("disconnected with websocket server");
+      setError("notification","Connection Failed","Server Connection Failed")
       console.log("Code:", event.code, "Reason:", event.reason);
       if (event.code === 1008) {
         alert("Session expired or invalid token. Please log in again.");

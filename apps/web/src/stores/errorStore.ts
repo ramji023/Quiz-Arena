@@ -22,7 +22,7 @@ const useErrorStore = create<ErrorStoreType>((set) => ({
       if (variant === "notification") {
         setTimeout(() => {
           set({ variant: null, type: null, message: null });
-        }, 5000);
+        }, 10000);
       }
     }, 10);
   },

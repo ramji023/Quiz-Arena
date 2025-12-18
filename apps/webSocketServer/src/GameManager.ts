@@ -240,7 +240,7 @@ export default class GameManager {
               game.broadcasting(data); // broadcast this message to everyone
               this.games.delete(game.gameId);
             }
-          }, 15000);
+          }, 12000);
         } else if (game.players.get(user.id)) {
           // if left user is player
           const player = game.players.get(user.id);

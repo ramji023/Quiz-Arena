@@ -71,7 +71,6 @@ export default function PlayerGame() {
   useEffect(() => {
     if (gameStatus === null) {
       navigate("/join");
-      setError("notification", "Host Left", "Host left the game");
     }
   }, [gameStatus, navigate]);
 
