@@ -10,9 +10,7 @@ import { rateLimit } from "express-rate-limit";
 // create instance of express app
 const app = express();
 
-
 app.use(helmet()); // Help secure Express apps by setting HTTP response headers
-
 
 // enable cors for selected origin and allow credentials
 app.use(

@@ -32,6 +32,7 @@ wss.on("connection", (ws, req) => {
   console.log("New client connected from IP:", ip);
   connections.set(ip, connections.get(ip) ?? 0 + 1);
   if (connections.get(ip)! > 10) {
+    console.log("Too Many Connections from IP:", ip);
     ws.close(1008, "Too many connections from this IP");
     return;
   }
