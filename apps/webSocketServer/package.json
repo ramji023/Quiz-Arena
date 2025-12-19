@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "build": "tsc -b",
-    "dev": "tsc -b && node dist/server.js"
+    "dev": "tsc -b && node dist/server.js",
+    "prod:build": "pnpm install && cd ../../packages/database && pnpm prisma generate && tsc -b && cd ../../apps/webSocketServer && tsc -b"
   },
   "keywords": [],
   "author": "",
