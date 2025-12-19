@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "dev": "pnpm build && node ./dist/index.js"
+    "dev": "pnpm build && node ./dist/index.js",
+    "prod:build": "pnpm install && cd ../../packages/database && pnpm dlx prisma migrate deploy --config ./src/prisma.config.ts && pnpm prisma generate && cd ../../apps/httpServer && tsc -b"
   },
   "keywords": [],
   "author": "",

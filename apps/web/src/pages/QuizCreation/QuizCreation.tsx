@@ -31,6 +31,7 @@ export default function QuizCreation() {
       // navigate to that created quiz page
       navigate(`/home/quiz/${data.quizId}`);
       reactQuery.invalidateQueries({ queryKey: ["Quizzes"] }); // invalidate react query (fetch all quizzes)
+      reset();
     },
     onError: (err: Error | any) => {
       // console.log("something went wrong while signed up : ", err);
@@ -75,7 +76,6 @@ export default function QuizCreation() {
         })),
     },
   });
-
 
   // if got the Ai Quiz data from this route "ai-quiz"
   useEffect(() => {

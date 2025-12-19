@@ -10,7 +10,7 @@ import useSuccessStore from "../../stores/SuccessStore";
 //write popup for consent to  start quiz game
 export default function StartQuiz() {
   const navigate = useNavigate();
-  const setMessage = useSuccessStore((s)=>s.setMessage)
+  const setMessage = useSuccessStore((s) => s.setMessage);
   // store useSocketStore values in variables
   const isConnected = useSocketStore((s) => s.isConnected);
   const gameStatus = useSocketStore((s) => s.gameStatus);
@@ -23,7 +23,9 @@ export default function StartQuiz() {
 
   // function to set websocket url
   function sendWsRequest() {
-    setWsUrl(`ws://localhost:3001?token=${token}&themeId=${themeId}`);
+    setWsUrl(
+      `${import.meta.env.VITE_WS_BASE_URL ?? `ws://localhost:3001`}?token=${token}&themeId=${themeId}`
+    );
   }
 
   // write effect to set shouldConnect to true when websocket url is set
