@@ -89,7 +89,7 @@ export async function login(req: Request, res: Response) {
   })!;
   // console.log("access token : ", accessToken); // log access token
   // console.log("refresh token : ", refreshToken); // log refresh token
-  res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true }); // set refresh token in httpOnly cookie
+  res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true,sameSite:'none' }); // set refresh token in httpOnly cookie
   // return success message along with access token to client
   return res.json({
     token: accessToken,
@@ -148,7 +148,7 @@ export async function refreshedToken(req: Request, res: Response) {
   // console.log("refresh token : ", refreshToken); // log refresh token
   // if both tokens are generated successfully then set the refresh token in secure cookie and return access token to the clinet
   if (refreshToken && accessToken) {
-    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true,sameSite:'none' });
     return res.json({
       token: accessToken,
       id: userData.id,

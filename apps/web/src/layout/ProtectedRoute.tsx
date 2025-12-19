@@ -39,7 +39,12 @@ export default function ProtectedRoute() {
     }
   }
   useEffect(() => {
-    newToken();
+    // only send request to refresh the token if there is no access token in authentication store
+    if (!useAuthStore.getState().token) {
+      newToken();
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   if (loading) return <PageLoader />;
