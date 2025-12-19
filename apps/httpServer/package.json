@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -b",
     "dev": "pnpm build && node ./dist/index.js",
-    "prod:build": "pnpm install && cd ../../packages/database && pnpm dlx prisma migrate deploy --config ./src/prisma.config.ts && pnpm prisma generate && cd ../../apps/httpServer && tsc -b"
+    "prod:build": "pnpm install && cd ../../packages/database && tsc -b && pnpm dlx prisma migrate deploy --config ./src/prisma.config.ts && pnpm prisma generate && cd ../../apps/httpServer && tsc -b"
   },
   "keywords": [],
   "author": "",
