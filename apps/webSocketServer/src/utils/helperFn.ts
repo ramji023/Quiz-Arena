@@ -136,3 +136,13 @@ async function savePlayerScoresToDB(playersData: playerData) {
     console.log(error);
   }
 }
+
+
+
+export function getClientIp(req: any) {
+  const xff = req.headers["x-forwarded-for"];
+  if (xff) {
+    return xff.split(",")[0].trim();
+  }
+  return req.socket.remoteAddress;
+}

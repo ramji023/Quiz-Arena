@@ -9,6 +9,7 @@ const wss = new WebSocket.Server({ port: 3001 }); // create a new websocket serv
 // make sure prisma is connected
 import { prisma } from "@repo/database";
 import { createHostedQuizEntry } from "./models/game";
+import { getClientIp } from "./utils/helperFn";
 async function testPrismaConnection() {
   try {
     await prisma.$queryRaw`SELECT 1;`;
@@ -22,10 +23,18 @@ testPrismaConnection();
 // create new instance of game manager
 const newGameManager = new GameManager();
 
+const connections = new Map<string, number>(); // to track connection attempts per IP address
 // ws://localhost:3001?token=${token}&roomId=${gameId}&fullName=${fullName}&userId=${userId}&isReconnect=${true}
 // when a client connects to the server
 wss.on("connection", (ws, req) => {
   const parsedUrl = url.parse(req.url as string, true).query; // parse the url to get query parameters
+  const ip = getClientIp(req);
+  console.log("New client connected from IP:", ip);
+  connections.set(ip, connections.get(ip) ?? 0 + 1);
+  if (connections.get(ip)! > 10) {
+    ws.close(1008, "Too many connections from this IP");
+    return;
+  }
   try {
     // if there is a host connection
     if (parsedUrl.token && parsedUrl.themeId) {
@@ -59,7 +68,7 @@ wss.on("connection", (ws, req) => {
         // console.log("decoded user data : ", decodedToken); // log the decoded token data
         // ws.send("host Authentication Successfull");
         // create host and add in that game (call addPlayer method of game manager class)
-        console.log("parsed url of new host : ",parsedUrl)
+        console.log("parsed url of new host : ", parsedUrl);
         newGameManager.addHost(
           "host",
           decodedToken.id,
@@ -107,6 +116,7 @@ wss.on("connection", (ws, req) => {
     });
   } catch (err) {
     ws.close(1008, "Inavlid Token");
+    connections.set(ip, connections.get(ip)! - 1);
   }
   // when client disconnects from the server
   ws.on("close", () => {

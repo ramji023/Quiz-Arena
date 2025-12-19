@@ -4,16 +4,33 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
+
 // create instance of express app
 const app = express();
+
+
+app.use(helmet()); // Help secure Express apps by setting HTTP response headers
+
 
 // enable cors for selected origin and allow credentials
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
     credentials: true,
   })
 );
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// apply rate limiting middleware to all requests
+app.use(limiter);
 
 // parse json bodies with a size limit of 10kb
 app.use(express.json({ limit: "10kb" }));
