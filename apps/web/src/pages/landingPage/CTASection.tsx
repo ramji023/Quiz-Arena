@@ -1,8 +1,10 @@
 import { motion } from "motion/react";
 import { Button } from "@repo/ui/components/ui/Button";
 import { Sparkles, Zap, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function CTASection() {
+  const navigate = useNavigate();
   return (
     <section className="relative py-10 md:py-10 bg-primary text-secondary overflow-hidden ">
       {/* Animated background elements */}
@@ -147,14 +149,13 @@ export default function CTASection() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               size="lg"
               variant="primary"
-              onClick={() => {}}
+              onClick={() => {
+                navigate("/auth/login");
+              }}
             >
               <span className="flex items-center gap-2">
                 Start Your First Quiz
@@ -172,14 +173,13 @@ export default function CTASection() {
             </Button>
           </motion.div>
 
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               size="lg"
               variant="secondary"
-              onClick={() => {}}
+              onClick={() => {
+                navigate("/auth/login");
+              }}
             >
               Explore Public Quizzes
             </Button>

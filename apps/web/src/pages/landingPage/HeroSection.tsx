@@ -8,8 +8,10 @@ import {
   HelpIcon,
 } from "@repo/ui/components/icons/MotionIcon";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function HeroSection() {
+  const navigate = useNavigate();
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -82,7 +84,7 @@ export function HeroSection() {
         transition={{ duration: 1, delay: 0.3 }}
         className="mt-5"
       >
-        <Button variant="primary" size="md" onClick={() => {}}>
+        <Button variant="primary" size="md" onClick={() => {navigate("/auth/login")}}>
           Create Quiz{" "}
           <span>
             <RightArrow />

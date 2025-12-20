@@ -57,6 +57,6 @@ export default function ProtectedRoute() {
       <Outlet />
     </motion.div>
   ) : (
-    <Navigate to="/auth/login" replace />
+    <Navigate to="/" replace />
   );
 }
