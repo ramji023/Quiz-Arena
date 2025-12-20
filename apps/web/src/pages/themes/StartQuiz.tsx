@@ -19,10 +19,12 @@ export default function StartQuiz() {
   const themeId = useQuizStore((s) => s.themeId);
   const [wsUrl, setWsUrl] = useState<string>("");
   const { setShouldConnect } = useWebsocket(wsUrl);
+  const [isLoading, setIsLoading] = useState(false);
   console.log("StartQuiz rendered"); // check that start quiz is rendered
 
   // function to set websocket url
   function sendWsRequest() {
+    setIsLoading(true);
     setWsUrl(
       `${import.meta.env.VITE_WS_BASE_URL ?? `ws://localhost:3001`}?token=${token}&themeId=${themeId}`
     );
@@ -38,6 +40,7 @@ export default function StartQuiz() {
   // effect to navigate to "/game" when isConnected, websocket url, gamestatus and tik_tik are all valid
   useEffect(() => {
     if (isConnected && wsUrl && gameStatus && tik_tik) {
+      setIsLoading(false);
       // console.log(" Connected and have game data, navigating to /game");
       navigate("/game"); // then navigate to game page
       setMessage("You have successfully start the game");
@@ -78,6 +81,7 @@ export default function StartQuiz() {
                   onClick={() => {
                     sendWsRequest();
                   }}
+                  loading={isLoading}
                 >
                   Yes
                 </Button>

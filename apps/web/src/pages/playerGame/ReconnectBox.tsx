@@ -20,8 +20,8 @@ export default function ReconnectBox({
   // format the websocket url
   const url =
     role === "player"
-      ? `ws://localhost:3001?roomId=${gameId}&fullName=${fullName}&userId=${userId}&isReconnect=${true}`
-      : `ws://localhost:3001?token=${token}&themeId=${themeId}&roomId=${gameId}&fullName=${fullName}&userId=${userId}&isReconnect=${true}`;
+      ? `${import.meta.env.VITE_WS_BASE_URL ?? `ws://localhost:3001`}?roomId=${gameId}&fullName=${fullName}&userId=${userId}&isReconnect=${true}`
+      : `${import.meta.env.VITE_WS_BASE_URL ?? `ws://localhost:3001`}?token=${token}&themeId=${themeId}&roomId=${gameId}&fullName=${fullName}&userId=${userId}&isReconnect=${true}`;
   const [timeLeft, setTimeLeft] = useState(10); // state to manage the time left for reconnect
 
   // effect to manage the time left for reconnect

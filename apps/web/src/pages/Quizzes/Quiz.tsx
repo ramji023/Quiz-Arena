@@ -11,20 +11,20 @@ import ErrorPage from "../ErrorPages/ErrorPage";
 
 export default function Quiz() {
   const navigate = useNavigate();
-  const setError = useErrorStore((s)=>s.setError)
+  const setError = useErrorStore((s) => s.setError);
   const setQuiz = useQuizStore((s) => s.setQuiz);
   const quizId = useParams().quizId;
   console.log(quizId);
   const query = useGetQuiz(quizId);
   const { data, isLoading, error } = useShowLoader(query, 600);
-  if (!quizId || error){
-     setError(
+  if (!quizId || error) {
+    setError(
       "page",
       "Server Error",
       "Something went wrong while processing Quizzes"
     );
-    return <ErrorPage/>
-  };
+    return <ErrorPage />;
+  }
 
   if (isLoading) return <QuizSkeleton />;
   if (data) {
@@ -37,7 +37,7 @@ export default function Quiz() {
         {/* Header with Back + Play buttons */}
         <div className="flex items-center justify-between mb-6">
           <div
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/home")}
             className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-bg transition"
           >
             <MoveLeft size={30} strokeWidth={1.5} />

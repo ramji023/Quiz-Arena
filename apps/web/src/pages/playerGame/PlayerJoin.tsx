@@ -25,6 +25,7 @@ export default function PlayerJoin() {
   const navigate = useNavigate();
   const setError = useErrorStore((s) => s.setError); // get the function to set the error
   const setMessage = useSuccessStore((s) => s.setMessage);
+  const [isLoading,setIsLoading] = useState(false)//store loading state
   // intialize the react hook form
   const {
     register,
@@ -44,8 +45,9 @@ export default function PlayerJoin() {
 
   // handles the form submission for joining the game
   function onSubmit(data: FormState) {
+    setIsLoading(true)
     // format the websocket url
-    const url = `ws://localhost:3001?roomId=${data.gamePin}&fullName=${data.username}`;
+    const url = `${import.meta.env.VITE_WS_BASE_URL ?? `ws://localhost:3001`}?roomId=${data.gamePin}&fullName=${data.username}`;
     setWsUrl(url); // set url to trigger wesocket connection
   }
 
@@ -59,6 +61,7 @@ export default function PlayerJoin() {
   // effect to navigate to /play when isConnected,websocket url,tik_tik and gameStatus are all valid
   useEffect(() => {
     if (isConnected && wsUrl) {
+      setIsLoading(false)
       navigate("/play"); // redirect to game play page
       setMessage("You have successfully joined the game");
     }
@@ -156,7 +159,7 @@ export default function PlayerJoin() {
             </span>
           </div>
 
-          <Button variant="primary" onClick={() => {}}>
+          <Button variant="primary" onClick={() => {}} loading={isLoading}>
             Join
           </Button>
         </div>
