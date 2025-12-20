@@ -56,7 +56,12 @@ export default function PlayerGame() {
     // and when component unmount then disconnect from the websocket server
     return () => {
       // console.log(" PlayerGame: Main effect CLEANUP - disconnecting socket");
-      useSocketStore.getState().disconnectSocket();
+      const currentState = useSocketStore.getState();
+      // Only disconnect if game is still active (not already reset)
+      if (currentState.gameStatus !== null && currentState.isConnected) {
+        console.log("User navigated away, disconnecting socket");
+        useSocketStore.getState().disconnectSocket();
+      }
     };
   }, [navigate]);
 

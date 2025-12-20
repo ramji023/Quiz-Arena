@@ -190,17 +190,11 @@ const useSocketStore = create<SocketStore>()(
           socket.onclose = (event) => {
             console.log(" WebSocket closed");
             const errorStore = useErrorStore.getState();
-            const hasRecentError = errorStore.message !== null;
-
-            if (!hasRecentError) {
-              get().resetSession({
-                title: "Connection Lost",
-                description: "Lost Server Connection",
-              });
-            } else {
-              // Just reset without showing another error
-              get().resetSession();
-            }
+            errorStore.setError(
+              "notification",
+              "Connection Lost",
+              "Server Connection Lost"
+            );
           };
         },
 
@@ -210,6 +204,8 @@ const useSocketStore = create<SocketStore>()(
             ws.close();
           }
           get().socketRef.current = null;
+          // set the isConnected false
+          console.log("set the isConnected false");
           set({ isConnected: false });
         },
 
@@ -217,8 +213,12 @@ const useSocketStore = create<SocketStore>()(
           title: string;
           description: string;
         }) => {
-          get().disconnectSocket();
+          const ws = get().socketRef.current;
+          if (ws) {
+            ws.close();
+          }
           set({
+            socketRef: { current: null },
             id: null,
             fullName: null,
             gameId: null,
@@ -230,8 +230,9 @@ const useSocketStore = create<SocketStore>()(
             notification: null,
             isConnected: false,
           });
+          console.log("remove key from local storage ");
           localStorage.removeItem("quiz-session");
-
+          console.log("remove key from local storage complete");
           // set error
           if (errorMessage) {
             setTimeout(() => {
