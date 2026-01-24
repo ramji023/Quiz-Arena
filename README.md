@@ -541,14 +541,3 @@ Live Demo: [https://quiz-arena-web.vercel.app/](https://quiz-arena-web.vercel.ap
 
 Give a ⭐️ if you like this project!
 
----
-
-<div align="center">
-  
-  **Made with ❤️ by Ram Ji Mishra**
-  
-  [![Portfolio](https://img.shields.io/badge/Portfolio-Visit-blue?style=for-the-badge)](https://ram-ji-mishra.vercel.app/)
-  [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/ram-ji-mishra-2081bb25a/)
-  [![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=for-the-badge&logo=github)](https://github.com/ramji023)
-  
-</div>
