@@ -162,7 +162,7 @@ export default function ThemeWrapper({
       {/* Leaderboard Floating Panel */}
       {gameStatus !== "end" && playerData && (
         <motion.div
-          className={`absolute top-3 right-3 w-50 rounded p-2 shadow backdrop-blur-md z-20`}
+          className={`absolute bottom-0 left-0 right-0 md:top-3 md:right-3 md:left-auto md:bottom-auto w-full md:w-64 rounded p-2 shadow backdrop-blur-md z-20 max-h-40 md:max-h-none overflow-y-auto`}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.6, ease: "easeOut" }}
@@ -174,7 +174,7 @@ export default function ThemeWrapper({
             border: `1px solid ${themeData.borders["border-leaderboard-500/50"]}`,
           }}
         >
-          <h2 className={`text-lg font-bold mb-3 text-center drop-shadow-md`}>
+          <h2 className={`text-base md:text-lg font-bold mb-3 text-center drop-shadow-md`}>
             🏆 Leaderboard
           </h2>
           <ul className="space-y-1">
@@ -203,15 +203,15 @@ export default function ThemeWrapper({
                   }}
                 >
                   <span
+                    className="text-xs md:text-sm"
                     style={{
                       color: themeData.textColor["primary-300"],
-                      fontSize: "0.875rem",
                     }}
                   >
                     {player.rank}
                   </span>
 
-                  <span className="truncate text-base">
+                  <span className="truncate text-sm md:text-base">
                     {isYou ? (
                       <span className="font-semibold">You</span>
                     ) : (
@@ -219,7 +219,7 @@ export default function ThemeWrapper({
                     )}
                   </span>
 
-                  <span style={{ fontSize: "0.875rem", opacity: 0.8 }}>
+                  <span className="text-xs md:text-sm" style={{ opacity: 0.8 }}>
                     {player.score}
                   </span>
                 </li>
@@ -230,7 +230,7 @@ export default function ThemeWrapper({
       )}
       {/* Main Layout */}
       <motion.div
-        className={`relative z-10 flex flex-col items-center justify-center gap-8 min-h-screen p-6`}
+        className={`relative z-10 flex flex-col items-center justify-center gap-4 md:gap-8 min-h-screen p-4 md:p-6`}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
@@ -239,7 +239,7 @@ export default function ThemeWrapper({
         {/* Theme Title */}
         {gameStatus !== "end" && (
           <motion.h1
-            className={`text-5xl font-extrabold mt-5 drop-shadow-md`}
+            className={`text-3xl md:text-4xl lg:text-5xl font-extrabold mt-5 drop-shadow-md`}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.8, type: "spring", stiffness: 100 }}
@@ -265,7 +265,7 @@ export default function ThemeWrapper({
       {/* Timer component  */}
       {/* render Timer component to start the time whenever new question come or player select option*/}
       {players && questionId && answered !== undefined && (
-        <div className=" fixed bottom-6 right-6 z-50">
+        <div className=" fixed bottom-6 left-6 md:right-6 z-50">
           <Timer id={questionId} answered={answered} duration={duration} />
         </div>
       )}

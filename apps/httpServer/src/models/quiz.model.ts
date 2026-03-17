@@ -50,6 +50,7 @@ export async function findQuizById(quizId: string) {
         id: true,
         title: true,
         description: true,
+        thumbnails: true,
         difficulty: true,
         createdBy: {
           select: {
@@ -92,6 +93,7 @@ export async function getAllQuizs() {
       select: {
         id: true,
         title: true,
+        thumbnails: true,
         difficulty: true,
         _count: {
           select: {
@@ -123,9 +125,9 @@ export async function allHostedQuizzes(id: string) {
     return await prisma.hostedQuizzes.findMany({
       where: {
         hostId: id,
-        start_date: {
-          gte: sevenDaysAgo,
-        },
+        // start_date: {
+        //   gte: sevenDaysAgo,
+        // },
       },
       select: {
         id: true,
@@ -134,6 +136,7 @@ export async function allHostedQuizzes(id: string) {
           select: {
             id: true,
             title: true,
+            thumbnails: true,
             difficulty: true,
             _count: {
               select: {
@@ -186,7 +189,7 @@ export async function findHostQuizById(hostQuizId: string) {
     // calculate total quiz points
     const totalQuizPoints = hostedQuiz.quiz_id.questions.reduce(
       (sum, q) => sum + q.points,
-      0
+      0,
     );
 
     // calculate each player percentage
@@ -202,17 +205,18 @@ export async function findHostQuizById(hostQuizId: string) {
         ? totalScore / hostedQuiz.players.length
         : 0;
     const averagePercentage = Math.round(
-      (averageScore / totalQuizPoints) * 100
+      (averageScore / totalQuizPoints) * 100,
     );
 
     return {
-      id:hostedQuiz.id,
-      quizid:hostedQuiz.quiz_id.id,
+      id: hostedQuiz.id,
+      quizid: hostedQuiz.quiz_id.id,
       title: hostedQuiz.quiz_id.title,
-      description : hostedQuiz.quiz_id.description,
-      difficulty : hostedQuiz.quiz_id.difficulty,
-      start_date : hostedQuiz.start_date,
-      totalQuestions:hostedQuiz.quiz_id.questions.length,
+      description: hostedQuiz.quiz_id.description,
+      thumbnails: hostedQuiz.quiz_id.thumbnails,
+      difficulty: hostedQuiz.quiz_id.difficulty,
+      start_date: hostedQuiz.start_date,
+      totalQuestions: hostedQuiz.quiz_id.questions.length,
       totalQuizPoints,
       players: playersWithPercentage,
       stats: {
@@ -236,6 +240,7 @@ export async function allSavedQuizzes(userId: string) {
           select: {
             id: true,
             title: true,
+            thumbnails: true,
             difficulty: true,
             _count: {
               select: {
@@ -268,6 +273,7 @@ export async function allYourQuizzes(userId: string) {
       select: {
         id: true,
         title: true,
+        thumbnails: true,
         difficulty: true,
         _count: {
           select: {

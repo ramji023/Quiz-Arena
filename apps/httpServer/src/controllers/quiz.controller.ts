@@ -12,6 +12,10 @@ import {
 } from "../models/quiz.model"; // import quiz model functions to interact with database
 import quizGenerator from "../utils/quizGenerator"; // import quiz generator utility function
 import { cleanJson } from "../utils/helperFun"; // import cleanJson helper function
+import {
+  quizImageGenerator,
+  updateQuizThumbnails,
+} from "../utils/imageGeneration";
 
 // controller function to create a new Quiz
 export async function createQuiz(req: Request, res: Response) {
@@ -27,7 +31,7 @@ export async function createQuiz(req: Request, res: Response) {
     throw new ApiError(
       parsedBodyObject.error.issues[0]?.message ??
         "Quiz Form Validation Failed",
-      404
+      404,
     );
   }
 
@@ -44,9 +48,15 @@ export async function createQuiz(req: Request, res: Response) {
     throw new ApiError("Something went wrong while creating quiz", 404);
   }
 
+  // after creating quiz create quiz thumbails
+  const quizThumbnail = await quizImageGenerator({ title: quizData.title });
+  await updateQuizThumbnails(quizData.id, quizThumbnail);
   // console.log("quiz data : ", quizData); // log the created quiz
   // return success response to the client
-  return res.json({ message: "You have created new Quiz Successfully" ,quizId:quizData.id});
+  return res.json({
+    message: "You have created new Quiz Successfully",
+    quizId: quizData.id,
+  });
 }
 
 // controller to create AI powered quiz
@@ -68,7 +78,7 @@ export async function createAiQuiz(req: Request, res: Response) {
   if (!quizResponse) {
     throw new ApiError(
       "Something went wrong while generation Ai powered wuiz",
-      404
+      404,
     );
   }
 
@@ -114,7 +124,7 @@ export async function getSingleQuiz(req: Request, res: Response) {
 export async function getAllHostedQuizzes(req: Request, res: Response) {
   // check the authorised user id
   const userId = req.user;
-
+  console.log("user id :",userId)
   // if userId is present then call model function to get all hosted Quizzes data
   const hostedQuizzes = await allHostedQuizzes(userId);
 

@@ -90,7 +90,7 @@ function HostQuizCard({
     <>
       <div className="bg-card rounded-xl shadow overflow-hidden w-60 cursor-pointer">
         <img
-          src="https://placehold.co/600x400/png"
+          src={quiz.quiz_id.thumbnails}
           alt="Quiz Thumbnail"
           className="w-full h-25 object-cover"
         />

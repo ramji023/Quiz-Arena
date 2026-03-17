@@ -55,7 +55,7 @@ export default function QuizResults() {
     setError(
       "page",
       "Server Error",
-      "Something went wrong while processing Hosted Quizzes"
+      "Something went wrong while processing Hosted Quizzes",
     );
     return <ErrorPage />;
   }
@@ -70,7 +70,7 @@ export default function QuizResults() {
     setError(
       "page",
       "Server Error",
-      "Something went wrong while processing Hosted Quizzes"
+      "Something went wrong while processing Hosted Quizzes",
     );
     return <ErrorPage />;
   }
@@ -108,7 +108,7 @@ export default function QuizResults() {
               {/* Thumbnail */}
               <div className="md:col-span-1">
                 <img
-                  src="https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=400&h=300&fit=crop"
+                  src={data.thumbnails}
                   alt={data.title}
                   className="w-full h-full object-cover min-h-[250px]"
                 />

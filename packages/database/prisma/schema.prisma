@@ -21,6 +21,7 @@ model Quiz {
   id            String          @id @default(uuid())
   title         String
   description   String
+  thumbnails    String?
   difficulty    Difficulty      @default(easy)
   questions     Question[]
   createdBy     User            @relation(fields: [userId], references: [id], onDelete: Cascade)

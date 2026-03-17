@@ -4,6 +4,7 @@ import { Button } from "./Button";
 interface QuizPropType {
   title: string;
   difficulty: "easy" | "medium" | "hard";
+  thumbnails:string;
   id: string;
   _count: {
     questions: number;
@@ -40,7 +41,7 @@ export default function QuizCard({
     <>
       <div className="bg-card rounded-xl shadow overflow-hidden w-60 cursor-pointer">
         <img
-          src="https://placehold.co/600x400/png"
+          src={quiz.thumbnails}
           alt="Quiz Thumbnail"
           className="w-full h-25 object-cover"
         />

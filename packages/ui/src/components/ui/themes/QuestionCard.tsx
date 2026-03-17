@@ -50,7 +50,7 @@ export default function QuestionCard({
     <div className="flex flex-col items-center justify-center font-jungle text-[#FFFBEA] px-6 py-10 text-center select-none">
       {/* Question */}
       <div className="max-w-4xl mb-12">
-        <h2 className="text-5xl md:text-4xl font-extrabold leading-snug tracking-wide drop-shadow-[0_4px_6px_rgba(0,0,0,0.7)]">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-snug tracking-wide drop-shadow-[0_4px_6px_rgba(0,0,0,0.7)]">
           {questionData.question}
         </h2>
       </div>
@@ -71,6 +71,7 @@ export default function QuestionCard({
               disabled={role === "host" || disabled ? true : false}
               key={index}
               onClick={() => handleSelect(option, questionData.questionId)}
+              className="text-lg md:text-xl lg:text-2xl font-bold p-3 md:p-4"
               style={{
                 background,
                 border: isSelected
@@ -80,9 +81,6 @@ export default function QuestionCard({
                 transition: "all 0.3s ease",
                 color: "#fff",
                 borderRadius: "1rem",
-                padding: "0.75rem 1rem",
-                fontWeight: 700,
-                fontSize: "1.25rem",
                 boxShadow: isSelected
                   ? "0 0 20px rgba(255, 255, 100, 0.6)"
                   : "none",

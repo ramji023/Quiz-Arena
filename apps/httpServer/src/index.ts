@@ -6,7 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
-
+import cron from "node-cron";
 // create instance of express app
 const app = express();
 
@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
     credentials: true,
-  })
+  }),
 );
 
 app.set("trust proxy", 1);
@@ -41,9 +41,11 @@ app.use(cookieParser());
 
 // make sure prisma is connected
 import { prisma } from "@repo/database";
+import { isImagePresent } from "./utils/imageGeneration";
 async function testPrismaConnection() {
   try {
     await prisma.$queryRaw`SELECT 1;`;
+    await isImagePresent()
     console.log("prisma connected successfully");
   } catch (error) {
     console.error("prisma connection failed:", error);
@@ -64,4 +66,10 @@ import errorMiddleware from "./middleware/error.middleware";
 app.use(errorMiddleware); // handle application error
 
 // start server on 3000
-app.listen(3000);
+app.listen(3000, () => {
+  // schedule cleanup to run daily at 3 AM
+  cron.schedule("0 3 * * *", async () => {
+    console.log("Running scheduled thumbnails generation...");
+    await isImagePresent();
+  });
+});
