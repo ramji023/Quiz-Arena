@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap&family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;600;800&display=swap");
-
 /* Scan for classes in UI package */
 @source "../ui/**/*.{js,ts,jsx,tsx}";
 @source "../ui/src/**/*.{js,ts,jsx,tsx}";
@@ -11,13 +10,21 @@
   --font-poppins: "Poppins", sans-serif;
   --font-game: "Libertinus Sans", sans-serif;
   --font-playfair: "Playfair Display", serif;
+  --font-body: "Plus Jakarta Sans", sans-serif;
+  --font-label: "Plus Jakarta Sans", sans-serif;
   --color-primary: #3b142a;
   --color-primary-shadow: #532040;
   --color-secondary: #f3efda;
   --color-secondary-shadow: #f8f6e6;
   --color-pink: #ff319f;
-  --color-card: #F3F0E2;
+  --color-card: #f3f0e2;
   --color-bg: #f8f6ed;
-  --color-box:#f7bd86;
+  --color-box: #f7bd86;
   --font-jungle: "Merriweather Sans", sans-serif;
+  --color-background-color: #fbf9f0;
+  --color-background-color-secondary : #f0eee5;
+  --color-text-body:#1b1c17;
+  --color-text-body-variant:#504448;
+  --font-logo-secondary: "Newsreader", serif;
+  --color-secondary-container:#e7e3c3;
 }

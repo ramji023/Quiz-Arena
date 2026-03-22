@@ -2,7 +2,7 @@ import QuizCard from "@repo/ui/components/ui/QuizCard";
 import { motion } from "motion/react";
 import { useAuthStore } from "../../stores/authStore";
 import { useGetAllQuiz } from "../../queries/reactQueries";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useSocketStore from "../../stores/socketStore";
 import useWebsocket from "../../hooks/useWebsocket";
@@ -12,12 +12,13 @@ import QuizCardSkeleton from "../LoadingComponents/CardSkeleton";
 import ErrorPage from "../ErrorPages/ErrorPage";
 import useErrorStore from "../../stores/errorStore";
 import useSuccessStore from "../../stores/SuccessStore";
+import { MoveRight, Play } from "lucide-react";
 export default function Quizzes() {
   const navigate = useNavigate();
   // function to set error from useErrorStore
   const setError = useErrorStore((s) => s.setError);
   // function to set the success message from useSuccessStore
-  const setMessage = useSuccessStore((s)=>s.setMessage)
+  const setMessage = useSuccessStore((s) => s.setMessage);
   // call react query to get all the quizzes
   const rawQuery = useGetAllQuiz();
   const { data, isLoading, error } = useShowLoader(rawQuery, 500);
@@ -27,9 +28,9 @@ export default function Quizzes() {
   const isConnected = useSocketStore((s) => s.isConnected);
   const gameStatus = useSocketStore((s) => s.gameStatus);
   const [openReconnectBox, setOpenReconnectBox] = useState(false); // state to manage wheather reconnect box should open or not
-  const [hasCheckedReconnect, setHasCheckedReconnect] = useState(false); // state to track the state of opening and closing of reconnect box                  
+  const [hasCheckedReconnect, setHasCheckedReconnect] = useState(false); // state to track the state of opening and closing of reconnect box
   const tik_tik = useSocketStore((s) => s.tik_tik);
-  const [wsUrl, setWsUrl] = useState<string>("");  // state to manage the websocket url to connect to
+  const [wsUrl, setWsUrl] = useState<string>(""); // state to manage the websocket url to connect to
   const { setShouldConnect } = useWebsocket(wsUrl); // custom hook for managing WebSocket connection status
   // effect to make setShouldConnect to true when websocket url is set
   useEffect(() => {
@@ -89,7 +90,6 @@ export default function Quizzes() {
   }, []);
 
   // <----------------------    game logic   ------------------------------------------------>
-  
 
   // handle navigation when user click to button see details
   function navigation(id: string) {
@@ -110,7 +110,7 @@ export default function Quizzes() {
     setError(
       "page",
       "Server Error",
-      "Something went wrong while processing Quizzes"
+      "Something went wrong while processing Quizzes",
     );
     return <ErrorPage />;
   }
@@ -123,8 +123,10 @@ export default function Quizzes() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <div className="text-primary ">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-1">
+          <div className="text-primary py-3">
+            <SubSection />
+            <FeaturedQuizzes />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {data.map((quiz, index) => (
                 <QuizCard key={index} quiz={quiz} navigation={navigation} />
               ))}
@@ -140,4 +142,159 @@ export default function Quizzes() {
       </>
     );
   }
+}
+
+function SubSection() {
+  return (
+    <>
+      <div className="mb-16 grid grid-col-1 lg:grid-cols-2 gap-8 items-center">
+        <div className="lg:col-span-7">
+          <h1 className="font-logo-secondary leading-tight text-primary mb-4">
+            Ready to Host the{" "}
+            <span className="italic font-light">Intellectual</span> Arena?
+          </h1>
+          <h1 className="max-w-xl mb-8 leading-relaxed">
+            Create and manage quizzes that challenge every mind. From quantum
+            physics to renaissance art, craft your niche and watch players climb
+            the leagues.
+          </h1>
+          <div className="flex flex-wrap gap-4">
+            <button className="bg-pink text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all active:scale-95">
+              Start Quick Play
+            </button>
+            <button className="bg-primary text-[#e7e3ce] px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-all active:scale-95">
+              View Leagues
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function FeaturedQuizzes() {
+  return (
+    <>
+      <section className="mt-10 mb-16">
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-2xl font-logo-secondary italic font-bold text-primary">
+            Featured Arenas
+          </h3>
+          <Link
+            to="#"
+            className="text-sm font-bold text-text-body-variant hover:text-pink transition-colors flex items-center gap-1"
+          >
+            View All{" "}
+            <span>
+              <MoveRight />
+            </span>
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <FeaturedQuizCard />
+          <FeaturedQuizCard_2 />
+          <FeaturedQuizCard_3 />
+        </div>
+      </section>
+    </>
+  );
+}
+
+function FeaturedQuizCard() {
+  return (
+    <>
+      <div className="group relative h-80 rounded-xl overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-500">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_BSNe160g8YJ4X5OAMg4E6B1lLtgn-3LyN88onrHVGn40TdAfkuZdaOuoNfLJruZRDW_bR_sglMzEBmm0kCEfqfFzLOTPGlwD8_tZmsfAI46WqsvS7OFoZpiaUxwWvL2CAe22ZfaEbimwowgxT7uS0gmeKF8PDMr1aESI1fpCvzdBgjTczE-EFPZWwnKLKIVqD9JgzYW4Po_htWma1d5ALzskQWinbEpjFjGoJd_2zfq5PboE9ylNTS9CiSP5QEkARYG5hKxCOwE"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 p-8 w-full">
+          <span className="px-3 py-1 bg-pink text-white text-[10px] font-bold uppercase rounded-full mb-3 inline-block tracking-widest">
+            Premium elite
+          </span>
+          <h4 className="text-2xl font-bold text-[#e7e3c3] mb-2">
+            History Of Digital Art
+          </h4>
+          <p className="text-[#e7e3c3]/70 text-sm mb-6 line-clamp-2">
+            Explore the evolution of pixels to generative masterpieces in this
+            deep dive.
+          </p>
+          <button className="bg-pink text-white px-6 py-3 rounded-full text-sm font-bold flex items-center gap-2 transition-all hover:shadow-[0_0_20px_rgba(255,49,159,0.4)]">
+            Play Arena{" "}
+            <span>
+              <Play className="w-4 h-4 fill-white" />
+            </span>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function FeaturedQuizCard_2() {
+  return (
+    <>
+      <div className="group relative h-80 rounded-xl overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-500">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_BSNe160g8YJ4X5OAMg4E6B1lLtgn-3LyN88onrHVGn40TdAfkuZdaOuoNfLJruZRDW_bR_sglMzEBmm0kCEfqfFzLOTPGlwD8_tZmsfAI46WqsvS7OFoZpiaUxwWvL2CAe22ZfaEbimwowgxT7uS0gmeKF8PDMr1aESI1fpCvzdBgjTczE-EFPZWwnKLKIVqD9JgzYW4Po_htWma1d5ALzskQWinbEpjFjGoJd_2zfq5PboE9ylNTS9CiSP5QEkARYG5hKxCOwE"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 p-8 w-full">
+          <span className="px-3 py-1 bg-secondary-container text-primary text-[10px] font-bold uppercase rounded-full mb-3 inline-block tracking-widest">
+            Premium elite
+          </span>
+          <h4 className="text-2xl font-bold text-[#e7e3c3] mb-2">
+            History Of Digital Art
+          </h4>
+          <p className="text-[#e7e3c3]/70 text-sm mb-6 line-clamp-2">
+            Explore the evolution of pixels to generative masterpieces in this
+            deep dive.
+          </p>
+          <button className="bg-secondary-container text-primary px-6 py-3 rounded-full text-sm font-bold flex items-center gap-2 transition-all hover:shadow-[0_0_20px_rgba(255,49,159,0.4)]">
+            Play Arena{" "}
+            <span>
+              <Play className="w-4 h-4 fill-primary" />
+            </span>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function FeaturedQuizCard_3() {
+  return (
+    <>
+      <div className="group relative h-80 rounded-xl overflow-hidden shadow-xl hover:scale-[1.02] transition-transform duration-500">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_BSNe160g8YJ4X5OAMg4E6B1lLtgn-3LyN88onrHVGn40TdAfkuZdaOuoNfLJruZRDW_bR_sglMzEBmm0kCEfqfFzLOTPGlwD8_tZmsfAI46WqsvS7OFoZpiaUxwWvL2CAe22ZfaEbimwowgxT7uS0gmeKF8PDMr1aESI1fpCvzdBgjTczE-EFPZWwnKLKIVqD9JgzYW4Po_htWma1d5ALzskQWinbEpjFjGoJd_2zfq5PboE9ylNTS9CiSP5QEkARYG5hKxCOwE"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 p-8 w-full">
+          <span className="px-3 py-1 bg-pink text-white text-[10px] font-bold uppercase rounded-full mb-3 inline-block tracking-widest">
+            Premium elite
+          </span>
+          <h4 className="text-2xl font-bold text-[#e7e3c3] mb-2">
+            History Of Digital Art
+          </h4>
+          <p className="text-[#e7e3c3]/70 text-sm mb-6 line-clamp-2">
+            Explore the evolution of pixels to generative masterpieces in this
+            deep dive.
+          </p>
+          <button className="bg-pink text-white px-6 py-3 rounded-full text-sm font-bold flex items-center gap-2 transition-all hover:shadow-[0_0_20px_rgba(255,49,159,0.4)]">
+            Play Arena{" "}
+            <span>
+              <Play className="w-4 h-4 fill-white" />
+            </span>
+          </button>
+        </div>
+      </div>
+    </>
+  );
 }

@@ -5,7 +5,7 @@ import {
   Package,
   Ellipsis,
   LogOut,
-  CircleUser,
+  CirclePlus,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { api } from "../utils/axiosInterceptor";
@@ -18,9 +18,14 @@ const SidebarIcons = [
     end: true,
   },
   {
-    item: "Your Quizzes",
+    item: "My Quizzes",
     icon: ListChecks,
     route: "your-quizzes",
+  },
+  {
+    item: "Create Quiz",
+    icon: CirclePlus,
+    route: "create-quiz",
   },
   {
     item: "Saved Quizzes",
@@ -32,7 +37,6 @@ const SidebarIcons = [
     icon: Ellipsis,
     route: "history",
   },
-
 ];
 export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
   const navigate = useNavigate();
@@ -70,12 +74,14 @@ export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
                     to={items.route}
                     end={items.end}
                     className={({ isActive }) =>
-                      `${isActive ? "bg-primary-shadow" : "text-secondary"} 
-     flex items-center justify-start cursor-pointer py-2 px-2 rounded-lg hover:bg-primary-shadow my-2 mx-3`
+                      `${isActive ? "bg-[#3b142a] text-[#f3efda]" : "text-[#3b142a]/60 hover:bg-[#3b142a]/5"} 
+     flex items-center gap-3 cursor-pointer py-3 px-4 rounded-3xl my-2 mx-2 hover:scale-[1.02] transition-all duration-200`
                     }
                   >
                     <items.icon className="w-5 h-5" />
-                    <span className="text-md px-5">{items.item}</span>
+                    <span className="text-sm font-medium">
+                      {items.item}
+                    </span>
                   </NavLink>
                 </div>
               ))}
@@ -88,8 +94,8 @@ export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
                     to={items.route}
                     end={items.end}
                     className={({ isActive }) =>
-                      `${isActive ? "bg-primary-shadow" : "text-secondary"} 
-     flex items-center justify-center cursor-pointer py-2 rounded-lg hover:bg-primary-shadow my-2 mx-3`
+                      `${isActive ? "bg-[#3b142a] text-[#f3efda]" : "text-[#3b142a]/60 hover:bg-[#3b142a]/5"} 
+     flex items-center justify-center cursor-pointer rounded-3xl p-3 my-2 mx-2 hover:scale-[1.02] transition-all duration-200`
                     }
                   >
                     <items.icon className="w-5 h-5" />
@@ -103,17 +109,17 @@ export default function SidebarItems({ collapsed }: { collapsed: boolean }) {
         <div className="mb-4">
           {!collapsed ? (
             <div
-              className="flex items-center justify-start px-2 cursor-pointer text-secondary py-2 rounded-lg hover:bg-primary-shadow my-2 mx-3"
+              className="flex items-center justify-start px-4 py-3 cursor-pointer text-[#3b142a]/60 rounded-3xl hover:bg-[#3b142a]/5 my-2 mx-3 hover:scale-[1.02] transition-all duration-200"
               onClick={() => {
                 logoutMutation.mutate();
               }}
             >
-              <LogOut className="w-5 h-5 text-red-500" />
-              <span className="text-md text-red-500 px-5">Logout</span>
+              <LogOut className="w-5 h-5 " />
+              <span className="text-sm px-5 font-medium">Logout</span>
             </div>
           ) : (
-            <div className="flex items-center  justify-center cursor-pointer text-secondary py-2 rounded-lg hover:bg-primary-shadow my-2 mx-3">
-              <LogOut className="w-5 h-5 text-red-500" />
+            <div className="flex items-center justify-center cursor-pointer text-[#3b142a]/60 p-3 rounded-3xl hover:bg-[#3b142a]/5 my-2 mx-2 hover:scale-[1.02] transition-all duration-200">
+              <LogOut className="w-5 h-5 " />
             </div>
           )}
         </div>

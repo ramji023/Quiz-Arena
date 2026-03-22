@@ -3,7 +3,7 @@ import SidebarItems from "./SidebarItems";
 export default function Sidebar({ collapsed }: { collapsed: boolean }) {
   return (
     <>
-      <div className="flex flex-col justify-between h-full">
+      <div className={`flex-1`}>
       <SidebarItems collapsed={collapsed} />
     </div>
     </>
