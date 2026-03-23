@@ -24,7 +24,7 @@ export default function Layout_2() {
     setShowThankYou(false);
   };
   return (
-    <div className="flex h-screen overflow-hidden font-body text-text-body">
+    <div className="flex bg-background-color h-screen overflow-hidden font-body text-text-body">
       {/* Sidebar */}
       <div
         className={`bg-[#f0eee5] px-2 transition-all duration-300 flex flex-col flex-shrink-0  ${

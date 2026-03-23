@@ -123,7 +123,7 @@ export default function Quizzes() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <div className="text-primary py-3">
+          <div className="text-text-body py-3">
             <SubSection />
             <FeaturedQuizzes />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

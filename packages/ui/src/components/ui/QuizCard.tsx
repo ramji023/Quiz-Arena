@@ -62,7 +62,7 @@ export default function QuizCard({
             Easy
           </div>
         </div>
-        <div className="p-6">
+        <div className="px-6 py-4">
           <h3 className="text-lg font-bold text-primary mb-2 truncate">
             {quiz.title}
           </h3>

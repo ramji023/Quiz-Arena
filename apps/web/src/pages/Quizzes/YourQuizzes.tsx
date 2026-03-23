@@ -6,6 +6,7 @@ import QuizCardSkeleton from "../LoadingComponents/CardSkeleton";
 import useShowLoader from "../../hooks/useShowLoader";
 import ErrorPage from "../ErrorPages/ErrorPage";
 import useErrorStore from "../../stores/errorStore";
+import { Plus } from "lucide-react";
 
 export default function YourQuizzes() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function YourQuizzes() {
     setError(
       "page",
       "Server Error",
-      "Something went wrong while processing your Quizzes"
+      "Something went wrong while processing your Quizzes",
     );
     return <ErrorPage />;
   }
@@ -44,17 +45,18 @@ export default function YourQuizzes() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <div className="text-primary ">
+          <div className="text-text-body py-3">
+            <SubSection />
             {data.length === 0 ? (
               <>
-                <div className="h-screen text-2xl text-center">
+                <div className="text-2xl text-center">
                   You haven't created any Quiz yet.
                 </div>
               </>
             ) : (
               <>
                 {/* if there is quiz available  */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {data.map((quiz, index) => (
                     <QuizCard key={index} quiz={quiz} navigation={navigation} />
                   ))}
@@ -66,4 +68,32 @@ export default function YourQuizzes() {
       </>
     );
   }
+}
+
+function SubSection() {
+  return (
+    <>
+      <div className="py-5">
+        <div className="flex justify-between items-end mb-16 relative">
+          <div className="absolute -left-8 top-0 w-1 h-28 bg-pink"></div>
+          <div>
+            <h2 className="font-logo-secondary font-bold text-5xl text-primary mb-4 tracking-tight">
+              My Quizzes
+            </h2>
+            <p className="max-w-md leading-relaxed ">
+              Manage and edit your original creations. Keep your arena sharp and
+              your players challenged.
+            </p>
+          </div>
+
+          <button className="bg-pink text-white px-8 py-4 rounded-3xl font-bold flex items-center gap-2 shadow-xl hover:translate-y-[-2px] transition-transform active:scale-95">
+            <span>
+              <Plus />
+            </span>{" "}
+            Create New Quiz{" "}
+          </button>
+        </div>
+      </div>
+    </>
+  );
 }

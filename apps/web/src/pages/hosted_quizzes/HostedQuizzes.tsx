@@ -1,4 +1,4 @@
-import { Bookmark } from "lucide-react";
+import { Bookmark, CircleQuestionMark, UsersRound } from "lucide-react";
 import { motion } from "motion/react";
 import { HostQuizzes } from "../../types/quizForm";
 import { useGetAllHostedQuiz } from "../../queries/reactQueries";
@@ -31,12 +31,12 @@ export default function HostedQuizzes() {
     );
   }
 
-  // if there is something wrong 
+  // if there is something wrong
   if (error) {
     setError(
       "page",
       "Server Error",
-      "Something went wrong while processing Hosted Quizzes"
+      "Something went wrong while processing Hosted Quizzes",
     );
     return <ErrorPage />;
   }
@@ -61,7 +61,7 @@ export default function HostedQuizzes() {
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
                 {/* if there is quiz available  */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {data.map((quiz, index) => (
                     <HostQuizCard
                       key={index}
@@ -88,41 +88,40 @@ function HostQuizCard({
 }) {
   return (
     <>
-      <div className="bg-card rounded-xl shadow overflow-hidden w-60 cursor-pointer">
-        <img
-          src={quiz.quiz_id.thumbnails}
-          alt="Quiz Thumbnail"
-          className="w-full h-25 object-cover"
-        />
+      <div className="bg-[#ffffff] rounded-xl hover:shadow-[0_20px_50px_rgba(59,20,42,0.08)] overflow-hidden transition-all duration-300 group cursor-pointer">
+        <div className="h-48 w-full overflow-hidden relative">
+          <img
+            src={quiz.quiz_id.thumbnails}
+            alt="Quiz Thumbnail"
+            className="w-full h-full object-cover group-hover:scale-[1.5] transition-transform duration-500"
+          />
+        </div>
 
-        <div className="p-4">
-          <h3 className="text-md font-semibold mb-2 truncate">
+        <div className="px-6 py-4">
+          <h3 className="text-lg font-bold text-primary mb-2 truncate">
             {quiz.quiz_id.title}
           </h3>
+          <p className="text-[#504448]/70 text-sm mb-6">
+            Test your knowledge on 21st-century skyscrapers and sustainable
+            design.
+          </p>
 
-          <div className="flex justify-between text-sm text-gray-500 mb-3">
-            <span>{quiz.quiz_id._count.questions} Questions</span>
-            <span
-              className={`${
-                quiz.quiz_id.difficulty === "easy"
-                  ? "bg-green-100 text-green-800"
-                  : ""
-              } ${
-                quiz.quiz_id.difficulty === "medium"
-                  ? "bg-yellow-100 text-yellow-800"
-                  : ""
-              } ${
-                quiz.quiz_id.difficulty === "hard"
-                  ? "bg-red-100 text-red-800"
-                  : ""
-              }  px-2 py-0.5 rounded-full text-xs`}
-            >
-              {quiz.quiz_id.difficulty}
+          <div className="flex items-center justify-between text-[#3b142a]/60 text-sm font-medium mb-3">
+            <div className="flex items-center gap-1">
+              <UsersRound className="w-4 h-4 group-hover:text-pink" />
+              <span>
+                {quiz._count.players === 0 ? "No" : quiz._count.players} Players
+              </span>
+            </div>
+
+            <span className="flex gap-1 items-center ">
+              <StarIcon className="w-3.5 h-3.5 fill-yellow-500 stroke-yellow-500" />{" "}
+              4.8
             </span>
           </div>
 
           {/* Date field */}
-          <div className="text-xs text-gray-400 mb-3">
+          <div className="text-xs text-[#3b142a]/60 mb-3">
             Played on{" "}
             {new Date(quiz.start_date).toLocaleString("en-US", {
               year: "numeric",
@@ -133,31 +132,19 @@ function HostQuizCard({
             })}
           </div>
 
-          <div className="flex items-center justify-between text-gray-500 text-sm mb-3">
-            <span>
-              {quiz._count.players === 0 ? "No" : quiz._count.players} Players
-            </span>
-            <span className="flex gap-1 items-center ">
-              <StarIcon className="w-3.5 h-3.5 fill-yellow-500 stroke-yellow-500" />{" "}
-              4.8
-            </span>
-          </div>
-
           <div className="flex items-center justify-between">
-            <Button
-              variant="primary"
-              size="sm"
+            <div className="flex items-center gap-1 text-[#3b142a]/60 text-sm font-medium">
+              <CircleQuestionMark className="w-4 h-4 group-hover:text-pink" />
+              <span> {quiz.quiz_id._count.questions} Qs</span>
+            </div>
+            <button
               onClick={() => {
                 navigation(quiz.id);
               }}
+              className="bg-pink shadow-lg hover:shadow-pink/30 text-white flex items-center gap-2 px-6 py-2.5 rounded-full font-label text-xs font-bold transition-all active:scale-95"
             >
               See Results
-            </Button>
-            <div className="flex gap-2">
-              <button>
-                <Bookmark className="w-5 h-5" />
-              </button>
-            </div>
+            </button>
           </div>
         </div>
       </div>

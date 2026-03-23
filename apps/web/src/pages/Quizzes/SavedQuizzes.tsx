@@ -29,7 +29,7 @@ export default function SavedQuizzes() {
     setError(
       "page",
       "Server Error",
-      "Something went wrong while processing your Saved Quizzes"
+      "Something went wrong while processing your Saved Quizzes",
     );
     return <ErrorPage />;
   }
@@ -45,17 +45,18 @@ export default function SavedQuizzes() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <div className="text-primary ">
+          <div className="text-text-body py-3">
+            <SubSection />
             {data.length === 0 ? (
               <>
-                <div className="h-screen items-center justify-center flex text-2xl text-center">
+                <div className="items-center justify-center flex text-2xl text-center">
                   You haven't saved any Quiz yet.
                 </div>
               </>
             ) : (
               <>
                 {/* if there is quiz available  */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {data.map((quiz, index) => (
                     <QuizCard key={index} quiz={quiz} navigation={navigation} />
                   ))}
@@ -67,4 +68,22 @@ export default function SavedQuizzes() {
       </>
     );
   }
+}
+
+function SubSection() {
+  return (
+    <>
+      <div className="py-5">
+        <div className="mb-16 relative">
+          <div className="absolute -left-8 top-0 w-1 h-24 bg-pink"></div>
+          <h2 className="font-logo-secondary font-bold text-5xl text-primary mb-4 tracking-tight">
+            Saved Quizzes
+          </h2>
+          <p className="text-xl text-[#504448] font-light italic max-w-2xl">
+            Your saved quizzes, ready to revisit.
+          </p>
+        </div>
+      </div>
+    </>
+  );
 }
