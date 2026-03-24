@@ -2,6 +2,8 @@ import {
   Bookmark,
   CircleQuestionMark,
   Clock10,
+  Edit,
+  Play,
   StarIcon,
   UsersRound,
 } from "lucide-react";
@@ -20,7 +22,7 @@ interface QuizPropType {
     };
   }[];
 }
-export default function QuizCard({
+export default function MyQuizCard({
   quiz,
   navigation,
 }: {
@@ -92,13 +94,17 @@ export default function QuizCard({
             </span>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex gap-2">
-              <button>
-                <Bookmark className="w-6 h-6" />
-              </button>
-            </div>
-            <button className="bg-pink shadow-lg hover:shadow-pink/30 text-white flex items-center gap-2 px-6 py-2.5 rounded-full font-label text-xs font-bold transition-all active:scale-95">
+          <div className="flex gap-2 ">
+            <button className="bg-[#f0eee5] flex-1 hover:bg-[#e4e3da] text-primary flex items-center justify-center gap-2  py-2.5 rounded-lg text-xs font-bold transition-colors active:scale-95">
+              <span>
+                <Edit className="w-4 h-4" />
+              </span>{" "}
+              Edit
+            </button>
+            <button className="bg-primary flex-1 hover:opacity-90 text-white flex items-center justify-center  gap-2  py-2.5 rounded-lg font-label text-xs font-bold transition-colors active:scale-95">
+              <span>
+                <Play className="w-4 h-4" />
+              </span>
               See Details
             </button>
           </div>
