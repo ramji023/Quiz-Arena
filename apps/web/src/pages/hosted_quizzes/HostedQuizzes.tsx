@@ -1,4 +1,10 @@
-import { Bookmark, CircleQuestionMark, UsersRound } from "lucide-react";
+import {
+  Bookmark,
+  CalendarDays,
+  CircleQuestionMark,
+  ListFilter,
+  UsersRound,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { HostQuizzes } from "../../types/quizForm";
 import { useGetAllHostedQuiz } from "../../queries/reactQueries";
@@ -6,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import { StarIcon } from "lucide-react";
 import QuizCardSkeleton from "../LoadingComponents/CardSkeleton";
 import useShowLoader from "../../hooks/useShowLoader";
-import { Button } from "@repo/ui/components/ui/Button";
 import ErrorPage from "../ErrorPages/ErrorPage";
 import useErrorStore from "../../stores/errorStore";
 
@@ -43,7 +48,9 @@ export default function HostedQuizzes() {
   if (data) {
     return (
       <>
-        <div className="text-primary ">
+        <div className="text-text-body py-3">
+          <SubSection />
+          <QuizMetricsSection />
           {data.length === 0 ? (
             <>
               <div className=" text-2xl text-center">
@@ -52,9 +59,7 @@ export default function HostedQuizzes() {
             </>
           ) : (
             <>
-              <h1 className="mt-5 px-6 flex items-center justify-start">
-                Here are your history of past 7 days...
-              </h1>
+              <HostQuizzesTable />
               <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -77,6 +82,146 @@ export default function HostedQuizzes() {
       </>
     );
   }
+}
+
+function SubSection() {
+  return (
+    <>
+      <div className="py-5">
+        <div className="mb-16 relative">
+          <div className="absolute -left-8 top-0 w-1 h-28 bg-pink"></div>
+          <h2 className="font-logo-secondary font-bold text-5xl text-primary mb-4 tracking-tight">
+            Hosted Quizzes
+          </h2>
+          <p className="max-w-md leading-relaxed ">
+            Track Performance and engagement from your live arenas. Review
+            historical data to improve your next session.
+          </p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function QuizMetricsSection() {
+  return (
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 transition-colors duration-500">
+        <div className="bg-white p-6 rounded-xl shadow-sm hover:border-l-4 hover:border-[#ffd9e4] transition-transform duration-500">
+          <p className="text-sm font-bold text-[#504448] uppercase tracking-wider mb-1">
+            Total Sessions
+          </p>
+          <p className="text-3xl font-headline font-bold text-primary">42</p>
+        </div>
+        <div className="bg-white p-6 rounded-xl shadow-sm hover:border-l-4 hover:border-[#ffd9e4] ">
+          <p className="text-sm font-bold text-[#504448] uppercase tracking-wider mb-1">
+            Total Players
+          </p>
+          <p className="text-3xl font-headline font-bold text-primary">1,284</p>
+        </div>
+        <div className="bg-white p-6 rounded-xl shadow-sm hover:border-l-4 hover:border-[#ffd9e4] ">
+          <p className="text-sm font-bold text-[#504448] uppercase tracking-wider mb-1">
+            Avg. Accuracy
+          </p>
+          <p className="text-3xl font-headline font-bold text-primary">76.4%</p>
+        </div>
+        <div className="bg-primary p-6 rounded-xl shadow-lg relative group overflow-hidden ">
+          <p className="text-sm font-bold text-[#e7e3ce] uppercase tracking-wider mb-1">
+            Live Now
+          </p>
+          <p className="text-3xl font-headline font-bold text-white">
+            2 Arenas
+          </p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function HostQuizzesTable() {
+  return (
+    <>
+      {/* filter section  */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex gap-4">
+          <button className="px-4 py-2 bg-[#eae8df] rounded-lg text-sm font-semibold text-primary flex items-center gap-2 border border-[#d3c2c8]/40 hover:bg-[#f0eee5 transition-colors] ">
+            <span>
+              <ListFilter />
+            </span>{" "}
+            All Sessions
+          </button>
+          <button className="px-4 py-2 bg-[#eae8df] rounded-lg text-sm font-semibold text-primary flex items-center gap-2 border border-[#d3c2c8]/40 hover:bg-[#f0eee5 transition-colors] ">
+            <span>
+              <CalendarDays />
+            </span>{" "}
+            Last 30 Days
+          </button>
+        </div>
+      </div>
+
+      {/* sessions data  */}
+      <div className="bg-[#f6f4eb] rounded-xl overflow-hidden border border-[#d3c2c8]/10 ">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-[#eae8df]">
+              <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-[#504448] ">
+                Quiz Title
+              </th>
+              <th className="px-6 py-5 text-xs font-bold uppercase tracking-widest text-[#504448] ">
+                Date Hosted
+              </th>
+              <th className="px-6 py-5 text-xs font-bold uppercase tracking-widest text-[#504448] ">
+                Players
+              </th>
+              <th className="px-6 py-5 text-xs font-bold uppercase tracking-widest text-[#504448] ">
+                Avg. Accuracy
+              </th>
+              <th className="px-6 py-5 text-xs font-bold uppercase tracking-widest text-[#504448] ">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#d3c2c8]/10">
+            <tr className="bg-white hover:bg-[#fbf9f0] transition-colors group">
+              <td className="px-8 py-6 ">
+                <div>
+                  <p className="font-bold text-primary leading-tight">
+                    Advance Quantum Theory
+                  </p>
+                  <p className="text-xs text-[#504448] mt-1">
+                    {" "}
+                    Difficculty: Hard . 20 Questions
+                  </p>
+                </div>
+              </td>
+              <td className="px-6 py-6 text-sm text-[#504448] ">
+                Oct 24, 2023
+                <br />
+                <span className="text-[10px] opacity-60">14:30 PM</span>
+              </td>
+              <td className="px-6 py-6 ">
+                <span className="text-sm font-bold text-primary">124</span>
+              </td>
+              <td className="px-6 py-6 ">
+                <div className="flex flex-col items-center gap-2">
+                  <span className="text-sm font-bold text-primary">68%</span>
+                  <div className="w-24 h-1.5 bg-[#e7e3ce] rounded-full overflow-hidden">
+                    <div className="h-full bg-[#ffd9e4] w-[68%]"></div>
+                  </div>
+                </div>
+              </td>
+              <td className="px-6 py-6 ">
+                <button className="px-4 py-2 bg-primary text-white text-xs font-bold rounded-full hover:bg-[#1f0113] transition-colors active:scale-95">
+                  View Result
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div></div>
+      </div>
+    </>
+  );
 }
 
 function HostQuizCard({
