@@ -10,6 +10,11 @@ import {
   Clock,
   Target,
   Triangle,
+  Share,
+  Earth,
+  CircleQuestionMark,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   FirstRank,
@@ -85,259 +90,230 @@ export default function QuizResults() {
       ? leaderboard
       : leaderboard.slice(0, 5);
     return (
-      <div className="min-h-screen bg-white p-6">
+      <div className="min-h-screen p-6">
         <div className="max-w-6xl mx-auto">
           {/* first Section */}
-          <div className="flex items-center justify-between mb-6">
-            <div
-              onClick={() => navigate(-1)}
-              className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-bg transition"
-            >
-              <MoveLeft size={30} strokeWidth={1.5} />
-            </div>
-
-            <Button variant="primary" size="md" onClick={() => {}}>
-              Re-Play
-              <Triangle className="rotate-90" size={15} />
-            </Button>
+          <div
+            onClick={() => navigate(-1)}
+            className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-[#3b142a]/5 transitions-colors"
+          >
+            <MoveLeft size={30} strokeWidth={1.5} />
           </div>
-
-          {/* Quiz Summary Card */}
-          <div className="bg-white overflow-hidden mb-8">
-            <div className="grid md:grid-cols-3 gap-0">
-              {/* Thumbnail */}
-              <div className="md:col-span-1">
-                <img
-                  src={data.thumbnails}
-                  alt={data.title}
-                  className="w-full h-full object-cover min-h-[250px]"
-                />
+          {/* header section  */}
+          <div className="flex items-start justify-between mb-6 mt-6">
+            <div className="flex flex-col">
+              <div>
+                <span className="text-primary font-logo-secondary font-bold text-4xl tracking-tight">
+                  Performance Insights
+                </span>
+                <p className="text-[#504448] mt-2 font-body text-lg">
+                  Detailed breakdown of your session with real-time participant
+                  data.
+                </p>
               </div>
-
-              {/* Content */}
-              <div className="md:col-span-2 p-8">
-                {/* Title & Description */}
-                <div className="mb-6">
-                  <div className="flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-primary mb-2">
-                      {data.title}
-                    </h1>
-                    <span
-                      className={`${
-                        data.difficulty === "easy"
-                          ? "bg-green-100 text-green-800"
-                          : ""
-                      } ${
-                        data.difficulty === "medium"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : ""
-                      } ${
-                        data.difficulty === "hard"
-                          ? "bg-red-100 text-red-800"
-                          : ""
-                      }  px-2 py-0.5 rounded-full text-sm`}
-                    >
-                      {data.difficulty}
-                    </span>
-                  </div>
-
-                  <p className="text-primary-shadow text-sm leading-relaxed">
-                    {data.description}
-                  </p>
-                </div>
-
-                {/* Quick Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {/* Date Played */}
-                  <div className="bg-secondary rounded-lg p-3 flex items-start gap-3 hover:bg-pink/10 hover:outline-2 hover:outline-pink">
-                    <div className="bg-pink/10 p-2 rounded-lg">
-                      <Calendar size={18} className="text-pink" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-primary-shadow font-medium mb-1">
-                        Date Played
-                      </p>
-                      <p className="text-sm font-semibold text-primary truncate">
-                        {formatDate(data.start_date)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Total Players */}
-                  <div className="bg-secondary-shadow rounded-lg p-3 flex items-start gap-3 hover:bg-pink/10 hover:outline-2 hover:outline-pink">
-                    <div className="bg-pink/10 p-2 rounded-lg">
-                      <Users size={18} className="text-pink" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs text-primary-shadow font-medium mb-1">
-                        Total Players
-                      </p>
-                      <p className="text-sm font-semibold text-primary">
-                        {data.stats.totalPlayers}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Questions */}
-                  <div className="bg-secondary-shadow rounded-lg p-3 flex items-start gap-3 hover:bg-pink/10 hover:outline-2 hover:outline-pink">
-                    <div className="bg-pink/10 p-2 rounded-lg">
-                      <ListChecks size={18} className="text-pink" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs text-primary-shadow font-medium mb-1">
-                        Questions
-                      </p>
-                      <p className="text-sm font-semibold text-primary">
-                        {data.totalQuestions}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Average Score */}
-                  <div className="bg-secondary-shadow rounded-lg p-3 flex items-start gap-3 hover:bg-pink/10 hover:outline-2 hover:outline-pink">
-                    <div className="bg-pink/10 p-2 rounded-lg">
-                      <Target size={18} className="text-pink" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs text-primary-shadow font-medium mb-1">
-                        Average Score
-                      </p>
-                      <p className="text-sm font-semibold text-primary">
-                        {data.stats.averageScore}%
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Your Score (if player) */}
-                  {data.stats.averagePercentage && (
-                    <div className="bg-secondary-shadow rounded-lg p-3 flex items-start gap-3 hover:bg-pink/10 hover:outline-2 hover:outline-pink">
-                      <div className="bg-pink/20 p-2 rounded-lg">
-                        <Trophy size={18} className="text-pink" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-xs text-primary-shadow  font-medium mb-1">
-                          Average Percentage
-                        </p>
-                        <p className="text-sm font-semibold text-primary">
-                          {data.stats.averagePercentage}%
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Total Time */}
-                  <div className="bg-secondary-shadow rounded-lg p-3 flex items-start gap-3 hover:bg-pink/10 hover:outline-2 hover:outline-pink">
-                    <div className="bg-pink/10 p-2 rounded-lg">
-                      <Clock size={18} className="text-pink" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs text-primary-shadow font-medium mb-1">
-                        Total Time
-                      </p>
-                      <p className="text-sm font-semibold text-primary">
-                        {data.totalQuestions * 10} Sec.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            </div>
+            <div className="flex gap-3">
+              <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-primary border border-[#d3c2c8]/20  hover:bg-[#f0eee5] transition-colors text-sm font-semibold">
+                <span>
+                  <Share2 />
+                </span>
+                Share Analytics
+              </button>
+              <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-[#e7e3ce] border border-[#d3c2c8]/20  hover:opacity-90 transition-opacity text-sm font-semibold">
+                <span>
+                  <Share2 />
+                </span>
+                Re-Play
+              </button>
             </div>
           </div>
 
-          {/* Leaderboard Section */}
-          <div className="bg-white overflow-hidden mb-8">
-            {/* Header */}
-            <div className="bg-card p-4">
-              <div className="flex items-center justify-center gap-3">
-                <Trophy size={28} className="text-primary" />
-                <h2 className="text-2xl font-bold text-primary">Leaderboard</h2>
+          {/* Quiz overview card  */}
+          <section className="mt-10 mb-10 bg-[#f0eee5]  rounded-xl p-8 shadow flex flex-col md:flex-row gap-8 items-center border-none overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary opacity-[0.03] rounded-full -mr-20 -mt-20"></div>
+            <div className="shrink-0 relative">
+              <img
+                src={data.thumbnails}
+                alt={data.title}
+                className="w-64 h-48 object-cover rounded-xl shadow-inner"
+              />
+            </div>
+            <div className="flex-grow space-y-4">
+              <div className="flex items-center gap-4">
+                <h2 className="font-logo-secondary text-3xl font-bold text-primary">
+                  {data.title}
+                </h2>
+                <span className="px-3 py-1 bg-white text-[#504448] border border-[#d3c2c8]/30 rounded-full text-xs font-bold tracking-wide uppercase">
+                  {data.difficulty}
+                </span>
+              </div>
+              <p className="font-body text-[#504448] max-w-2xl leading-relaxed">
+                {data.description}
+              </p>
+              <div className="flex gap-8 pt-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-pink">
+                    <Calendar className="w-4 h-4" />
+                  </span>
+                  <span className="text-sm font-semibold text-primary">
+                    {" "}
+                    {formatDate(data.start_date)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-pink">
+                    <Clock className="w-4 h-4" />
+                  </span>
+                  <span className="text-sm font-semibold text-primary">
+                    {" "}
+                    {data.totalQuestions * 10} Sec. Duration
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-pink ">
+                    <CircleQuestionMark className="w-4 h-4" />
+                  </span>
+                  <span className="text-sm font-semibold text-primary">
+                    {data.totalQuestions} Questions
+                  </span>
+                </div>
               </div>
             </div>
+          </section>
 
-            {/* Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full">
+          {/* stats overview section  */}
+          <section className="mt-10 mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-white p-8 rounded-xl shadow border-none hover:translate-y-[-4px] transition-transform duration-300">
+              <p className="text-[#504448] text-sm font-medium tracking-wide mb-2 uppercase">
+                Total Participants
+              </p>
+              <div className="flex items-end justify-between">
+                <h1 className="font-logo-secondary text-4xl font-bold text-primary">
+                  {data.stats.totalPlayers}
+                </h1>
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-xl shadow border-none hover:translate-y-[-4px] transition-transform duration-300">
+              <p className="text-[#504448] text-sm font-medium tracking-wide mb-2 uppercase">
+                Average Accuracy
+              </p>
+              <div className="flex items-end justify-between">
+                <h1 className="font-logo-secondary text-4xl font-bold text-primary">
+                  {data.stats.averagePercentage}%
+                </h1>
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-xl shadow border-none hover:translate-y-[-4px] transition-transform duration-300">
+              <p className="text-[#504448] text-sm font-medium tracking-wide mb-2 uppercase">
+                Completion Rate
+              </p>
+              <div className="flex items-end justify-between">
+                <h1 className="font-logo-secondary text-4xl font-bold text-primary">
+                  {data.stats.averageScore}%
+                </h1>
+              </div>
+            </div>
+          </section>
+
+          {/* leaderboard section  */}
+
+          <section className="mt-10 mb-10 space-y-6">
+            <div className="font-logo-secondary text-2xl font-bold text-primary">
+              Global Leaderboard
+            </div>
+            <div className="bg-[#f6f4eb] rounded-xl overflow-hidden border border-[#d3c2c8]/10 ">
+              <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-white text-primary text-sm font-semibold">
-                    <th className="py-4 px-6 text-left">Rank</th>
-                    <th className="py-4 px-6 text-left">Player</th>
-                    <th className="py-4 px-6 text-center">Score</th>
-                    <th className="py-4 px-6 text-center">Percentage</th>
+                  <tr className="bg-[#eae8df]">
+                    <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-[#504448] ">
+                      Rank
+                    </th>
+                    <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-[#504448] ">
+                      Player name
+                    </th>
+                    <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-[#504448] ">
+                      Score
+                    </th>
+                    <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-[#504448] ">
+                      Correct answer
+                    </th>
+                    <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-[#504448] ">
+                      Accuracy%
+                    </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-[#d3c2c8]/10">
                   {displayedLeaderboard.map((player, index) => (
                     <tr
                       key={index}
-                      className={`border-b border-gray-100 hover:bg-secondary-shadow/50 transition-colors ${
-                        player.rank <= 3 ? "bg-secondary-shadow/60" : ""
-                      }`}
+                      className="bg-[#e7e3ce]/5 hover:bg-[#fbf9f0] transition-colors group"
                     >
-                      <td className="py-4 px-6">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-2xl font-bold`}>
+                      <td className="px-8 py-6 font-logo-secondary font-bold text-lg text-primary">
+                        <div>
+                          <span className="text-primary">
+                            {" "}
                             {getRankBadge(player.rank)}
                           </span>
                         </div>
                       </td>
-                      <td className="py-4 px-6">
+                      <td className="px-8 py-6 ">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink to-primary flex items-center justify-center text-white font-semibold">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
                             {player.fullName.charAt(0)}
                           </div>
-                          <span className="font-medium text-primary">
+                          <p className="font-bold text-primary">
                             {player.fullName}
-                          </span>
+                          </p>
                         </div>
                       </td>
-                      <td className="py-4 px-6 text-center">
-                        <span
-                          className={`inline-block text-pink font-semibold px-4 py-1 rounded-full ${player.rank <= 3 ? "bg-pink/10" : ""}`}
-                        >
-                          {player.score}
-                        </span>
+                      <td className="px-8 py-6 font-semibold text-primary">
+                        {player.score} pts
                       </td>
-                      <td className="py-4 px-6 text-center">
-                        <span className="text-primary-shadow font-medium">
-                          {player.percentage}%
-                        </span>
+                      <td className="px-8 py-6 font-medium text-[#504448]">
+                        15/15
+                      </td>
+                      <td className="px-8 py-6 ">
+                        <div className="flex items-center gap-2">
+                          <div className="flex-grow w-24 h-1.5 bg-[#e7e3ce] rounded-full overflow-hidden">
+                            <div
+                              style={{ width: `${player.percentage}%` }}
+                              className="h-full bg-pink"
+                            ></div>
+                          </div>
+                          <span className="text-sm font-bold text-primary">
+                            {player.percentage}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
-
-            {/* Show More Button */}
-            {leaderboard.length > 5 && (
-              <div className="p-4 bg-secondary-shadow/30 text-center">
-                <button
-                  onClick={() => setShowAllPlayers(!showAllPlayers)}
-                  className="text-primary hover:text-pink font-medium text-sm transition-colors"
-                >
-                  {showAllPlayers
-                    ? "Show Less"
-                    : `Show All ${leaderboard.length} Players`}
-                </button>
+              <div className="bg-[#eae8df]/50 px-8 py-6 flex justify-between items-center">
+                <p className="text-xs font-bold text-[#504448] uppercase tracking-wider">
+                  Showing 4 of 42 sessions
+                </p>
+                <div className="flex gap-2 text-xs font-bold">
+                  <button className="w-8 h-8 rounded bg-white border border-[#d3c2c8]/20 flex items-center justify-center text-primary disabled:opacity-30">
+                    <span>
+                      <ChevronLeft />
+                    </span>
+                  </button>
+                  <button className="w-8 h-8 rounded bg-primary border flex items-center justify-center text-white ">
+                    1
+                  </button>
+                  <button className="w-8 h-8 rounded bg-white border border-[#d3c2c8]/20 flex items-center justify-center text-primary transition-colors hover:bg-[#fbf9f0]">
+                    2
+                  </button>
+                  <button className="w-8 h-8 rounded bg-white border border-[#d3c2c8]/20 flex items-center justify-center text-primary disabled:opacity-30">
+                    <span>
+                      <ChevronRight />
+                    </span>
+                  </button>
+                </div>
               </div>
-            )}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap justify-center gap-9">
-            <button
-              onClick={() => navigate(`/home/quiz/${data.quizid}`)}
-              className="flex gap-2 items-center cursor-pointer justify-center bg-pink text-white px-4 py-2 rounded-md font-medium hover:bg-pink-600 transition"
-            >
-              <Eye size={20} />
-              View Full Quiz
-            </button>
-
-            <button className="flex gap-2 items-center cursor-pointer justify-center bg-pink text-white px-4 py-2 rounded-md font-medium hover:bg-pink-600 transition">
-              <Share2 size={20} />
-              Share Result
-            </button>
-          </div>
+            </div>
+          </section>
         </div>
       </div>
     );
