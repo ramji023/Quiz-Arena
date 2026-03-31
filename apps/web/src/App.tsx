@@ -28,7 +28,7 @@ export default function App() {
             <Route index element={<LandingPage />} />
             <Route path="/auth" element={<LandingPage />}>
               {" "}
-              // show landing page of QuizArena
+               {/* show landing page of QuizArena */}
               <Route path="signup" element={<Signup />} /> // show singnup
               component
               <Route path="login" element={<Login />} /> // show login component
