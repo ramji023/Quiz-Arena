@@ -3,10 +3,9 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { ErrorNote } from "../pages/ErrorPages/ErrorNote";
 export default function Layout() {
- 
   return (
     <>
-      <div className="">
+      <div className="font-body">
         <Navbar />
         <Outlet />
         <ErrorNote />

@@ -1,9 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { MoveLeft, Triangle, Star, User, ListChecks } from "lucide-react";
+import { Clock, Play, CircleCheck, ChevronDown } from "lucide-react";
 import { useGetQuiz } from "../../queries/reactQueries";
 import { useQuizStore } from "../../stores/quizStore";
 import { type Quiz } from "../../types/quizForm";
-import { Button } from "@repo/ui/components/ui/Button";
 import useShowLoader from "../../hooks/useShowLoader";
 import QuizSkeleton from "../LoadingComponents/QuizSkeleton";
 import useErrorStore from "../../stores/errorStore";
@@ -21,7 +20,7 @@ export default function Quiz() {
     setError(
       "page",
       "Server Error",
-      "Something went wrong while processing Quizzes"
+      "Something went wrong while processing Quizzes",
     );
     return <ErrorPage />;
   }
@@ -33,93 +32,124 @@ export default function Quiz() {
       navigate("/home/themes");
     }
     return (
-      <div className="mx-20">
-        {/* Header with Back + Play buttons */}
-        <div className="flex items-center justify-between mb-6">
-          <div
-            onClick={() => navigate("/home")}
-            className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-bg transition"
-          >
-            <MoveLeft size={30} strokeWidth={1.5} />
+      <div className="mx-15 my-10">
+        {/* quiz general information  */}
+        <section className="flex flex-col md:flex-row gap-12 items-center mb-24">
+          <div className="w-full md:w-5/12 aspect-square rounded-2xl overflow-hidden bg-[#eae8df] shadow-xl rotate-[-1deg]">
+            <img
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2kmXRChhCyWKl-fs-D3VfhsnRHA7Ml0E8_XZG5TWDVwbF5wfpFXurclrf-qVHG-Oj1rOH-JVc62RyROdEIBm7i-XKxVEculm_pYJrlahI01Az6x9ErsvUxYe-Hlgf1hN9IJiZ0amaL2k7jhuDCzyzt3Xh1at4bq5KBAs2dFKw5CnbjspEKm4f6cXwMam6TtGXcJ-GvTmcB147tw1pcAW7LBrGtxeX5n3z-1TZZbf9FSIT1Pgzby8uXUTGvdLenZ4aeW2ZPxIcR8g"
+              alt=""
+              className="w-full h-full object-cover"
+            />
           </div>
-
-          <Button
-            variant="primary"
-            size="md"
-            onClick={() => {
-              setSelectedQuiz(data);
-            }}
-          >
-            Play
-            <Triangle className="rotate-90" size={15} />
-          </Button>
-        </div>
-
-        {/* Main Content */}
-        <div className="flex flex-col justify-center items-center">
-          {/* Title & Description */}
-          <div className="mb-4 text-center">
-            <h1 className="text-2xl font-bold mb-1">{data.title}</h1>
-            <p className="text-gray-600 break-words text-sm max-w-xl">
+          <div className="w-full md:w-8/12 flex flex-col pt-4">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="px-4 py-1 rounded-full bg-[#e7e3ce] text-[#676554] text-xs font-bold tracking-widest uppercase">
+                {data.difficulty}
+              </span>
+              <span className="text-[#504448] text-sm flex items-center gap-1">
+                <span>
+                  <Clock className="w-4 h-4" />
+                </span>
+                15 Mins
+              </span>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-logo-secondary font-bold text-primary leading-tight mb-6">
+              {data.title}
+            </h1>
+            <p className="text-lg text-[#504448] font-body leading-relaxed mb-8 max-w-xl">
               {data.description}
             </p>
+            <div className="mb-10">
+              <p className="text-xs text-[#504448] uppercase tracking-wider font-bold">
+                Created by
+              </p>
+              <p className="text-pink font-semibold">
+                {data.createdBy.username}
+              </p>
+            </div>
+            <div>
+              <button
+                onClick={() => {
+                  setSelectedQuiz(data);
+                }}
+                className="px-10 py-4 rounded-full bg-[#ff319f] text-white font-bold text-lg hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-[#ff319f]/20 flex items-center gap-3"
+              >
+                <span>
+                  <Play className="fill-white" />
+                </span>
+                Host Quiz
+              </button>
+            </div>
+          </div>
+        </section>
+        {/* questions list */}
+        <section className="space-y-12">
+          <div className="flex justify-between items-end mb-8 border-b border-[#e4e3da] pb-6">
+            <div>
+              <h2 className="text-3xl font-logo-secondary font-bold text-primary">
+                Question Breakdown
+              </h2>
+              <p className="text-[#504448]">
+                {data.questions.length} Questions total •{" "}
+                {data.questions.length * 10} Points possible
+              </p>
+            </div>
           </div>
 
-          {/* Quiz Metadata */}
-          <div className="flex flex-wrap justify-center items-center gap-6 mb-10 text-gray-700 text-sm">
-            <div className="flex items-center gap-2">
-              <User size={16} />{" "}
-              <span>
-                Created by: <strong>{data.createdBy.username}</strong>
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <ListChecks size={16} />{" "}
-              <span>
-                Questions: <strong>{data.questions.length}</strong>
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Star size={16} className="text-yellow-500 fill-yellow-500" />
-              <span>4.8 / 5</span>
-            </div>
-          </div>
-
-          {/* Questions */}
-          <div className="space-y-6 w-full max-w-2xl">
+          <div className="space-y-8">
+            {/* question box  */}
             {data.questions.map((q, index) => (
-              <div key={index} className="border-l-4 border-pink-300 pl-4">
-                <h2 className="font-semibold text-lg mb-2 flex flex-wrap justify-between items-center gap-2">
-                  <span className="flex-1 min-w-0 break-words">
-                    {index + 1}. {q.question}
-                  </span>
-                  <span className="text-xs font-extralight text-gray-500 whitespace-nowrap">
-                    (points: {q.points})
-                  </span>
-                </h2>
-
-                <ul className="space-y-1">
+              <article
+                key={index}
+                className="group bg-[#f6f4eb] p-8 rounded-2xl hover:bg-white hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex items-center gap-4">
+                    <span className="w-8 h-8 flex items-center justify-center rounded-full bg-primary text-white text-xs font-bold">
+                      {index + 1}
+                    </span>
+                    <span className="text-sm font-bold text-[#8c0053] tracking-widest uppercase">
+                      {q.points} points
+                    </span>
+                  </div>
+                </div>
+                <h1 className="text-2xl font-headline font-semibold text-primary-container mb-8 leading-snug">
+                  {q.question}
+                </h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {q.options.map((option, i) => {
                     return (
-                      <li
+                      <div
                         key={i}
-                        className={`flex items-center gap-2 ${
+                        className={`p-5 rounded-xl flex items-center justify-between transition-colors ${
                           option.isCorrect
-                            ? "text-pink-700 font-medium"
-                            : "text-gray-700"
+                            ? "bg-white border-[#ff319f]/30 text-primary font-bold shadow-sm"
+                            : "bg-[#eae8df] text-[#1b1c17] group-hover:bg-[#f0eee5]"
                         }`}
                       >
                         <span>{option.text}</span>
                         {option.isCorrect && (
-                          <span className="text-pink-600">✔</span>
+                          <span className="text-pink">
+                            <CircleCheck />
+                          </span>
                         )}
-                      </li>
+                      </div>
                     );
                   })}
-                </ul>
-              </div>
+                </div>
+              </article>
             ))}
           </div>
+        </section>
+        {/* footer button  */}
+        <div className="pt-12 flex justify-center">
+          <button className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all">
+            Show All 12 Questions
+            <span>
+              <ChevronDown />
+            </span>
+          </button>
         </div>
       </div>
     );

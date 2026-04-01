@@ -2,10 +2,9 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, CheckCircle2 } from "lucide-react";
 import useSuccessStore from "../../stores/SuccessStore";
 
-
 export const SuccessNote = () => {
-  const message = useSuccessStore((s)=>s.message)
-  const clearMessage = useSuccessStore((s)=>s.clearMessage)
+  const message = useSuccessStore((s) => s.message);
+  const clearMessage = useSuccessStore((s) => s.clearMessage);
   return (
     <AnimatePresence>
       {message && (
@@ -14,10 +13,33 @@ export const SuccessNote = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -20, scale: 0.95 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          className="fixed top-9 right-9 z-[100] flex items-start gap-4 p-4 rounded-xl border backdrop-blur-xl bg-emerald-500/20 border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.3)] min-w-[320px] max-w-[420px]"
+          className="fixed top-9 right-9 z-[100] group bg-[#f0fdf4] flex items-stretch rounded-2xl overflow-hidden min-h-[80px] transition-all hover:scale-[1.01] hover:shadow-xl hover:shadow-[#3b142a]/5 min-w-[320px] max-w-[420px]"
         >
+          <div className="w-1.5 bg-green-500"></div>
+          <div className="flex items-start gap-4 p-5 flex-1">
+            <div className="mt-0.5 text-white">
+              <span>
+                <CheckCircle2 className="fill-green-600" />
+              </span>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-bold text-green-900 text-lg mb-1 leading-none">
+                Success
+              </h4>
+              <p className="text-green-800/80 font-body text-sm leading-relaxed">
+                {message}
+              </p>
+            </div>
+            <button
+              onClick={clearMessage}
+              className="text-green-600/40 hover:text-green-600 transition-colors"
+            >
+              <span></span>
+              <X />
+            </button>
+          </div>
           {/* Animated background gradient */}
-          <motion.div
+          {/* <motion.div
             className="absolute inset-0 rounded-xl opacity-50"
             style={{
               background:
@@ -31,10 +53,10 @@ export const SuccessNote = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-          />
+          /> */}
 
           {/* Icon with pulse animation */}
-          <motion.div
+          {/* <motion.div
             className="relative flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-500"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -58,10 +80,10 @@ export const SuccessNote = () => {
               }}
             />
             <CheckCircle2 className="w-5 h-5 relative z-10 text-white" />
-          </motion.div>
+          </motion.div> */}
 
           {/* Content */}
-          <div className="flex-1 pt-0.5">
+          {/* <div className="flex-1 pt-0.5">
             <motion.h4
               className="font-semibold text-sm text-emerald-400"
               initial={{ opacity: 0, x: -10 }}
@@ -80,17 +102,17 @@ export const SuccessNote = () => {
                 {message}
               </motion.p>
             )}
-          </div>
+          </div> */}
 
           {/* Close button */}
-          <motion.button
+          {/* <motion.button
             onClick={clearMessage}
             className="p-1.5 cursor-pointer z-100 rounded-lg hover:bg-white/10 transition-colors text-muted-foreground hover:text-foreground"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
             <X className="w-4 h-4" />
-          </motion.button>
+          </motion.button> */}
         </motion.div>
       )}
     </AnimatePresence>

@@ -8,7 +8,6 @@ export default function ThemesPage() {
   const navigate = useNavigate();
   const location = useLocation(); // send some data through navigation
 
-  
   //navigateion function to move to "/theme/themeId" route
   function navigation(id: string) {
     navigate(`/theme/${id}`, { state: true }); // set state to true so that when we go to theme page then it will know that we have to open quiz popup model to select or reject the theme
@@ -35,14 +34,19 @@ export default function ThemesPage() {
 
   return (
     <>
-      <div className="text-primary">
-        <div className="px-6 mt-6 mb-0">
-          <h1 className="text-base text-primary">
-            Here are some in-built themes.
+      <div className="">
+        {/* header  */}
+        <div className="px-6 mt-6 mb-16 max-w-2xl">
+          <h1 className="font-logo-secondary text-5xl font-bold text-primary leading-tight mb-4">
+            Choose your <span className="italic text-pink">Vibe</span>
           </h1>
+          <p className="text-[#504448] text-lg leading-relaxed">
+            Select a visual theme that matches your intellectual energy. This
+            skin will be applied to your entire session.
+          </p>
         </div>
         {/* second section  */}
-        <div className="p-6 flex gap-6 flex-wrap gap-y-6 gap-x-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {THEMES.map((theme, index) => (
             <div key={index}>
               <ThemeCard

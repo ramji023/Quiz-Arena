@@ -7,34 +7,34 @@ export default function Navbar() {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
       });
     }
   };
   return (
     <>
-      <div className="bg-primary font-poppins flex items-center justify-between px-5 py-3 text-secondary">
+      <div className="bg-primary font-body flex items-center justify-between px-5 py-3 text-secondary">
         <div className="cursor-pointer">
           <Logo />
         </div>
         <ul className="flex justify-between items-center gap-10 text-md">
-          <li 
+          <li
             className="mx-2 cursor-pointer hover:text-pink-500 transition-colors"
-            onClick={() => scrollToSection('about')}
+            onClick={() => scrollToSection("about")}
           >
             About
           </li>
-          <li 
+          <li
             className="mx-2 cursor-pointer hover:text-pink-500 transition-colors"
-            onClick={() => scrollToSection('features')}
+            onClick={() => scrollToSection("features")}
           >
             Features
           </li>
-          <li 
+          <li
             className="mx-2 cursor-pointer hover:text-pink-500 transition-colors"
-            onClick={() => scrollToSection('how-it-works')}
+            onClick={() => scrollToSection("how-it-works")}
           >
             How It Works
           </li>

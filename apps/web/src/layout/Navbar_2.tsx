@@ -1,16 +1,23 @@
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 // import { useNavigate } from "react-router-dom";
 // import { Button } from "@repo/ui/components/ui/Button";
 import { Bell, Search } from "lucide-react";
 export default function Navbar_2() {
+  const navigate = useNavigate();
   const name = useAuthStore((s) => s.userName);
   console.log("user name is : ", name);
   return (
     <>
-      <div className="bg-background-color py-2 px-8 flex justify-between items-center w-full">
+      <div className="bg-background-color py-2 px-8 my-2 flex justify-between items-center w-full">
         <div className="flex items-center gap-8">
-          <div className="font-logo-secondary tracking-widest text-primary italic">
-            <span className="text-2xl">ARENA</span>
+          <div
+            onClick={() => {
+              navigate("/home");
+            }}
+            className=" text-pink"
+          >
+            <span className="text-lg font-poppins font-bold cursor-pointer">QuizArena</span>
           </div>
           <div className="hidden lg:flex items-center gap-1 bg-background-color-secondary px-4 py-2 rounded-full w-96 text-text-body-variant">
             <span>

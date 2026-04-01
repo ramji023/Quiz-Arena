@@ -15,7 +15,7 @@ export interface QuizFormState {
 export interface AllQuizzes {
   title: string;
   difficulty: "easy" | "medium" | "hard";
-  thumbnails:string;
+  thumbnails: string;
   id: string;
   _count: {
     questions: number;
@@ -51,7 +51,7 @@ export interface HostQuizzes {
   quiz_id: {
     id: string;
     title: string;
-    thumbnails:string;
+    thumbnails: string;
     difficulty: string;
     _count: {
       questions: number;
@@ -67,7 +67,7 @@ export interface HostQuiz {
   quizid: string;
   title: string;
   description: string;
-  thumbnails:string;
+  thumbnails: string;
   difficulty: string;
   start_date: string;
   totalQuizPoints: number;

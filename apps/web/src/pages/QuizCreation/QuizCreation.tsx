@@ -1,7 +1,7 @@
 import { Button } from "@repo/ui/components/ui/Button";
 import { InputBox } from "./InputBox";
-import { Plus, Save } from "lucide-react";
-import { QuestionBox } from "./QuestionBox";
+import { Copy, Plus, Save, Trash2, Zap } from "lucide-react";
+import { QuestionBox, QuestionBoxVariant } from "./QuestionBox";
 import { useEffect } from "react";
 import { QuizFormState } from "../../types/quizForm";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -46,7 +46,7 @@ export default function QuizCreation() {
         setError(
           "notification",
           "Application Error",
-          "Something went wrong. Please try again."
+          "Something went wrong. Please try again.",
         );
       }
     },
@@ -72,7 +72,7 @@ export default function QuizCreation() {
           options: Array(4)
             .fill(null)
             .map(() => ({ text: "", isCorrect: false })),
-          points: 0,
+          points: 10,
         })),
     },
   });
@@ -94,7 +94,7 @@ export default function QuizCreation() {
                 { text: "", isCorrect: false },
                 { text: "", isCorrect: false },
               ],
-              points: q.points ?? 0,
+              points: q.points ?? 10,
             }))
           : [],
       });
@@ -115,27 +115,23 @@ export default function QuizCreation() {
 
   return (
     <>
-      <div className="text-primary">
-        {/* first common heading  */}
-        <div className="flex flex-row-reverse justify-between">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => {
-              navigate("/home/ai-quiz");
-            }}
-          >
-            Use Ai-Quiz Builder <Plus className="w-4 h-4" />
-          </Button>
-        </div>
+      <div className="text-text-body">
+        <Intro />
         <form onSubmit={handleSubmit(onSubmit)}>
           <AutoSave control={control} />
-          <div className="p-6">
-            {/* enter quiz details  */}
-            <div>
-              <InputBox
+
+          {/* general info box  */}
+          <section className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-2 h-8 bg-pink rounded-full"></div>
+              <h4 className="text-xl font-bold font-logo-secondary text-primary">
+                General Information
+              </h4>
+            </div>
+            <div className="space-y-6">
+              <InputBoxVariant
                 label="Quiz Title"
-                placeholder="enter quiz title"
+                placeholder="e.g., The Renaissance Masterpieces"
                 type="text"
                 {...register("title", {
                   required: {
@@ -145,7 +141,8 @@ export default function QuizCreation() {
                 })}
                 error={errors.title?.message}
               />
-              <InputBox
+
+              <InputBoxVariant
                 label="Description"
                 placeholder="write description..."
                 type="text"
@@ -157,14 +154,17 @@ export default function QuizCreation() {
                 })}
                 error={errors.description?.message}
               />
-              <div className="flex flex-col gap-1 p-2 min-w-[300px]">
-                <label htmlFor="difficulty" className="text-sm font-semibold">
+              <div className="mb-3 ml-1">
+                <label
+                  htmlFor="difficulty"
+                  className="block text-sm font-semibold text-primary mb-2 ml-1"
+                >
                   Difficulty
                 </label>
                 <select
                   id="difficulty"
                   {...register("difficulty", { required: true })}
-                  className="px-2 py-2 rounded outline-1 hover:bg-secondary-shadow"
+                  className="w-[50%] bg-[#f6f4eb] px-4 py-4 border-none outline-none rounded-xl focus:ring-2 focus:ring-[#ffd9e4] text-[#1b1c17]"
                 >
                   <option value="easy">Easy</option>
                   <option value="medium">Medium</option>
@@ -172,50 +172,133 @@ export default function QuizCreation() {
                 </select>
               </div>
             </div>
-            {/* question card  */}
-            <div className="px-2 py-5 flex flex-col gap-6">
-              {fields.map((field, index) => (
-                <QuestionBox
-                  key={field.id}
-                  index={index}
-                  register={register}
-                  control={control}
-                  remove={remove}
-                  errors={errors}
-                />
-              ))}
+          </section>
+
+          {/* question box  */}
+          <div className="space-y-8 mt-10">
+            <div className="flex items-center justify-between px-2">
+              <h4 className="text-xl font-bold font-logo-secondary text-primary">
+                Questions List
+              </h4>
+              <span className="text-xs font-bold text-[#504448] bg-[#f0eee5] px-3 py-1 rounded-full uppercase tracking-widest">
+                2 Questions Added
+              </span>
             </div>
 
-            <div className="flex justify-evenly items-center">
-              <Button
-                variant="primary"
-                type="button"
-                size="sm"
-                onClick={() =>
-                  append({
-                    question: "",
-                    options: Array(4)
-                      .fill(null)
-                      .map(() => ({ text: "", isCorrect: false })),
-                    points: 0,
-                  })
-                }
-              >
-                Add Question <Plus className="w-4 h-4" />
-              </Button>
-              <Button
-                size="sm"
-                variant="primary"
-                type="submit"
-                onClick={() => {}}
-                loading={quizCreation.isPending}
-              >
-                Save Quiz <Save className="w-4 h-4" />
-              </Button>
+            {fields.map((field, index) => (
+              <QuestionBoxVariant
+                key={field.id}
+                index={index}
+                register={register}
+                control={control}
+                remove={remove}
+                errors={errors}
+              />
+            ))}
+          </div>
+
+          {/* add question button  */}
+          <div className="flex items-center gap-4 py-4 mt-4 mb-20 pt-5 pb-5">
+            <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent to-[#d3c2c8]/30"></div>
+            <button
+              type="button"
+              onClick={() =>
+                append({
+                  question: "",
+                  options: Array(4)
+                    .fill(null)
+                    .map(() => ({ text: "", isCorrect: false })),
+                  points: 10,
+                })
+              }
+              className="flex items-center gap-2 bg-primary text-[#e7e3ce] px-6 py-2.5 rounded-full font-bold text-sm shadow-sm hover:scale-105 active:scale-95 transition-all"
+            >
+              <span>
+                <Plus />
+              </span>
+              <span>Add Question</span>
+            </button>
+            <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-[#d3c2c8]/30"></div>
+          </div>
+
+          {/* add action buttons  */}
+          <div className="fixed bottom-0 left-0 right-0 md:left-64 bg-white border-t-0 shadow-[0_-8px_30px_rgb(0,0,0,0.04)] z-40">
+            <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
+              <div className="hidden sm:block">
+                <p className="text-xs font-bold text-[#504448] uppercase tracking-widest">
+                  Auto saved 2 min ago
+                </p>
+              </div>
+              <div className="flex items-center gap-4 w-full sm:w-auto">
+                <button className="flex-1 sm:flex-none px-8 py-3.5 rounded-3xl bg-primary text-[#e7e3ce] font-bold text-sm hover:bg-[#1f0113] transition-all">
+                  <span>Save as Draft</span>
+                </button>
+                <button
+                  type="submit"
+                  // loading={quizCreation.isPending}
+                  className="flex-1 sm:flex-none px-10 py-3.5 rounded-3xl bg-pink text-white font-bold text-sm shadow-lg shadow-[#fc2e9d]/20 hover:scale-[1.02] active:scale-95 transition-all"
+                >
+                  <span>Create Quiz</span>
+                </button>
+              </div>
             </div>
           </div>
         </form>
       </div>
+    </>
+  );
+}
+
+import React from "react";
+
+interface InputProp {
+  label?: string;
+  placeholder: string;
+  type: string;
+  error?: string;
+}
+
+// use forwardRef to integrate react hook form
+const InputBoxVariant = React.forwardRef<HTMLInputElement, InputProp>(
+  ({ label, placeholder, type, error, ...rest }, ref) => {
+    return (
+      <div>
+        {label && (
+          <label className="block text-sm font-semibold text-primary mb-2 ml-1">
+            {label}
+          </label>
+        )}
+        <input
+          ref={ref}
+          type={type}
+          placeholder={placeholder}
+          className="w-full bg-[#f6f4eb] border-none outline-none rounded-xl px-4 py-4 focus:ring-2 focus:ring-[#ffd9e4] text-[#1b1c17] placeholder:text-[#504448]/40 transition-all"
+          {...rest}
+        />
+        {error && (
+          <p className="text-xs text-red-500 flex flex-row-reverse">{error}</p>
+        )}
+      </div>
+    );
+  },
+);
+
+InputBox.displayName = "InputBox";
+
+function Intro() {
+  return (
+    <>
+      <section className="relative overflow-hidden rounded-2xl bg-primary p-10 text-[#ece3ce] mb-12 mt-5">
+        <div className="relative z-10 max-w-xl">
+          <h1 className="text-3xl font-logo-secondary font-bold mb-3">
+            The Arena Awaits
+          </h1>
+          <p className="text-[#b07993] text-lg leading-relaxed">
+            Craft your intellectual challenge. Balance rigor with curiosity to
+            engage your challengers in the ultimate battle of wits.
+          </p>
+        </div>
+      </section>
     </>
   );
 }

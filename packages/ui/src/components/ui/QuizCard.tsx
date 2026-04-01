@@ -98,7 +98,12 @@ export default function QuizCard({
                 <Bookmark className="w-6 h-6" />
               </button>
             </div>
-            <button className="bg-pink shadow-lg hover:shadow-pink/30 text-white flex items-center gap-2 px-6 py-2.5 rounded-full font-label text-xs font-bold transition-all active:scale-95">
+            <button
+              onClick={() => {
+                navigation(quiz.id);
+              }}
+              className="bg-pink shadow-lg hover:shadow-pink/30 text-white flex items-center gap-2 px-6 py-2.5 rounded-full font-label text-xs font-bold transition-all active:scale-95"
+            >
               See Details
             </button>
           </div>

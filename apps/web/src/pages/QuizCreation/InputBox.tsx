@@ -20,10 +20,14 @@ export const InputBox = React.forwardRef<HTMLInputElement, InputProp>(
           className="px-2 py-2 rounded outline-1 hover:bg-bg"
           {...rest}
         />
-        {error && <p className="text-xs text-red-500 flex flex-row-reverse">{error}</p>}
+        {error && (
+          <p className="text-xs text-red-500 flex flex-row-reverse">{error}</p>
+        )}
       </div>
     );
-  }
+  },
 );
 
 InputBox.displayName = "InputBox";
+
+

@@ -12,7 +12,7 @@ import QuizCardSkeleton from "../LoadingComponents/CardSkeleton";
 import ErrorPage from "../ErrorPages/ErrorPage";
 import useErrorStore from "../../stores/errorStore";
 import useSuccessStore from "../../stores/SuccessStore";
-import { MoveRight, Play } from "lucide-react";
+import { ArrowDownWideNarrow, MoveRight, Play } from "lucide-react";
 export default function Quizzes() {
   const navigate = useNavigate();
   // function to set error from useErrorStore
@@ -126,6 +126,40 @@ export default function Quizzes() {
           <div className="text-text-body py-3">
             <SubSection />
             <FeaturedQuizzes />
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+              <h3 className="text-2xl font-logo-secondary italic font-bold text-primary">
+                The Quizzes Library
+              </h3>
+              <div className="flex items-center gap-4 bg-[#f0eee5] p-1 rounded-2xl">
+                <button className="px-6 py-2 bg-primary text-white rounded-xl text-sm font-bold">
+                  All
+                </button>
+                <button className="px-6 py-2  text-[#504448]/70 hover:text-primary rounded-xl text-sm font-bold transition-colors">
+                  Easy
+                </button>
+                <button className="px-6 py-2  text-[#504448]/70 hover:text-primary rounded-xl text-sm font-bold transition-colors">
+                  Medium
+                </button>
+                <button className="px-6 py-2  text-[#504448]/70 hover:text-primary rounded-xl text-sm font-bold transition-colors">
+                  Hard
+                </button>
+              </div>
+              <div className="flex items-center gap-2 text-[#504448] text-sm font-bold">
+                <span>
+                  <ArrowDownWideNarrow />
+                </span>
+                <span>Sort by:</span>
+                <select
+                  name=""
+                  id=""
+                  className="bg-transparent border-none focus:ring-0 text-primary font-black cursor-pointer p-0"
+                >
+                  <option value="">Most Played</option>
+                  <option value="">Newest</option>
+                  <option value="">Highest Rated</option>
+                </select>
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {data.map((quiz, index) => (
                 <QuizCard key={index} quiz={quiz} navigation={navigation} />

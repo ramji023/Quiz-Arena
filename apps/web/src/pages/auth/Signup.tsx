@@ -7,10 +7,11 @@ import { useMutation } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInterceptor";
 import useErrorStore from "../../stores/errorStore";
 import useSuccessStore from "../../stores/SuccessStore";
+import { X } from "lucide-react";
 export default function Signup() {
   const navigate = useNavigate();
   const setError = useErrorStore((s) => s.setError);
-  const setMessage = useSuccessStore((s)=>s.setMessage)
+  const setMessage = useSuccessStore((s) => s.setMessage);
   const signupMutation = useMutation({
     mutationFn: async (data: AuthForm) => {
       const response = await api.post("/api/v1/user/auth/signup", data);
@@ -19,7 +20,7 @@ export default function Signup() {
     onSuccess: (data) => {
       // console.log("response from signup endpoint ", data);
       navigate("/auth/login");
-      setMessage("Your most welcome in QuizArena !!")
+      setMessage("Your most welcome in QuizArena !!");
     },
     onError: (err: Error | any) => {
       // console.log("something went wrong while signed up : ", err);
@@ -34,7 +35,7 @@ export default function Signup() {
         setError(
           "notification",
           "Application Error",
-          "Something went wrong. Please try again."
+          "Something went wrong. Please try again.",
         );
       }
     },
@@ -57,22 +58,34 @@ export default function Signup() {
 
   return (
     <>
-      <div className="fixed top-0 left-0 w-full h-full backdrop-blur-[2px] z-50 flex justify-center items-center">
-        <div className="w-[400px] h-[470px] bg-secondary rounded-xl  p-6 flex flex-col gap-3  font-poppins">
-          <div className=" flex flex-col gap-5 items-center justify-center p-4">
+      <div
+        onClick={() => navigate("/")}
+        className="fixed top-0 left-0 w-full h-full backdrop-blur-[2px] z-50 flex justify-center items-center"
+      >
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="w-[400px] h-[470px] bg-white rounded-xl p-10 flex flex-col"
+        >
+          <button
+            onClick={() => navigate("/")}
+            className="flex justify-end text-primary hover:text-pink transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <div className=" flex flex-col gap-4 items-center justify-center p-4">
             <div>
               <Logo />
             </div>
-            <h1 className=" text-base text-slate-600">Create Your Account</h1>
+            <h1 className="text-sm text-[#504448]">Create Your Account</h1>
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="text-primary">
               <div className="flex flex-col gap-1 py-1">
-                <label className="text-base">Email</label>
+                <label className="text-xs font-semibold uppercase tracking-widest text-[#504448] ml-1">Email</label>
                 <input
                   type="text"
-                  placeholder="Enter email"
-                  className="p-2 rounded-lg outline-1 outline-secondary bg-white text-base"
+                  placeholder="bob@gmail.com"
+                  className="px-4 py-3 rounded-xl text-[#504448] bg-[#eae8df] text-sm placeholder:text-[#827379]/50"
                   {...register("email", {
                     required: {
                       value: true,
@@ -85,11 +98,11 @@ export default function Signup() {
                 </span>
               </div>
               <div className="flex flex-col gap-1 py-1 ">
-                <label className="text-base">Password</label>
+                <label className="text-xs font-semibold uppercase tracking-widest text-[#504448] ml-1">Password</label>
                 <input
                   type="text"
-                  placeholder="Enter Strong Password"
-                  className="p-2 rounded-lg outline-1 outline-secondary bg-white text-base"
+                  placeholder="••••••••"
+                  className="px-4 py-3 rounded-xl text-[#504448] bg-[#eae8df] text-sm placeholder:text-[#827379]/50"
                   {...register("password", {
                     required: {
                       value: true,
@@ -102,7 +115,7 @@ export default function Signup() {
                 </span>
               </div>
             </div>
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center mt-3">
               <Button
                 variant="primary"
                 type="submit"
@@ -113,8 +126,8 @@ export default function Signup() {
               </Button>
             </div>
           </form>
-          <div className="">
-            <p className="text-sm text-slate-600 text-center">
+          <div className="mt-3">
+            <p className="text-xs text-[#504448] text-center">
               If you have already registered,{" "}
               <span
                 onClick={() => {

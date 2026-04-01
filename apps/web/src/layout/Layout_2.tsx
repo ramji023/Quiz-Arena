@@ -39,7 +39,7 @@ export default function Layout_2() {
           {sidebarOpen ? (
             <>
               <ChevronLeft className="w-5 h-5" />
-              <span className="text-sm">Menu</span>
+              <span className="text-sm font-medium">Menu</span>
             </>
           ) : (
             <Menu className="w-5 h-5" />
